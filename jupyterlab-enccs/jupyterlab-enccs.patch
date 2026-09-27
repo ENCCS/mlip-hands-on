@@ -1,0 +1,347 @@
+diff --git a/src/myst.ts b/src/myst.ts
+index ce9d5cb..f7b3a58 100644
+--- a/src/myst.ts
++++ b/src/myst.ts
+@@ -1,5 +1,6 @@
+ import { mystParse } from 'myst-parser';
+ import { copyNode, References } from 'myst-common';
++import type { DirectiveSpec } from 'myst-common';
+ import {
+   abbreviationPlugin,
+   basicTransformationsPlugin,
+@@ -39,6 +40,7 @@ import { IUserExpressionMetadata } from './userExpressions';
+ import { IMySTMarkdownCell } from './types';
+ import { Cell, ICellModel } from '@jupyterlab/cells';
+ import { MySTModel } from './widget';
++import { selectAll } from 'unist-util-select';
+ 
+ export interface IMySTDocumentState {
+   references: References;
+@@ -51,11 +53,100 @@ export interface IMySTExpressionsState {
+   trusted: boolean;
+ }
+ 
++// ENCCS lesson directives are defined by sphinx-lesson for the static site.
++// Preserve their source spelling while rendering equivalent callouts in Lab.
++const enccsDirectives: DirectiveSpec[] = [
++  'questions',
++  'objectives',
++  'keypoints'
++].map(name => ({
++  name,
++  body: { type: 'myst' },
++  run(data) {
++    return [{
++      type: 'admonition',
++      class: `enccs-${name}`,
++      children: [
++        {
++          type: 'admonitionTitle',
++          children: [{ type: 'text', value: name[0].toUpperCase() + name.slice(1) }]
++        },
++        ...(Array.isArray(data.body) ? data.body : [])
++      ]
++    }];
++  }
++}));
++
++async function resolveLessonIncludes(
++  tree: any,
++  resolver: IRenderMime.IResolver
++): Promise<void> {
++  const nodes = selectAll('code', tree) as any[];
++  for (const node of nodes) {
++    const include = node.enccsInclude;
++    if (!include) continue;
++    if (include.unsupportedOptions) continue;
++    const path = include.path as string;
++    // Relative paths are resolved by Jupyter's authenticated file resolver,
++    // whose root is set by the server. Never fetch a URL supplied directly by
++    // Markdown, nor cross origin or use another server route.
++    if (!path || path.startsWith('/') || path.includes('\\') || path.includes('\0') || /^[a-z][a-z0-9+.-]*:/i.test(path)) continue;
++    try {
++      const resolved = await resolver.resolveUrl(path);
++      const downloadUrl = await resolver.getDownloadUrl(resolved);
++      const url = new URL(downloadUrl, window.location.href);
++      if (url.origin !== window.location.origin) continue;
++      if (!decodeURIComponent(url.pathname).includes('/files/')) continue;
++      const response = await fetch(url.href, { credentials: 'same-origin' });
++      if (!response.ok) continue;
++      const declaredSize = Number(response.headers.get('content-length'));
++      if (declaredSize > 200_000) continue;
++      const bytes = await response.arrayBuffer();
++      if (bytes.byteLength > 200_000) continue;
++      const source = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
++      let lines = source.split(/\r?\n/);
++      const filter = include.filter as {
++        lines?: number[][];
++        startAt?: string;
++        endAt?: string;
++        endBefore?: string;
++      } | undefined;
++      if (Object.entries(filter ?? {}).some(([key, value]) => value !== undefined && !['lines', 'startAt', 'endAt', 'endBefore'].includes(key))) continue;
++      if (filter?.lines) {
++        if (filter.lines.length !== 1 || filter.lines[0].length !== 2) continue;
++        const [start, end] = filter.lines[0];
++        if (start < 1 || end < start || end > lines.length) continue;
++        lines = lines.slice(start - 1, end);
++      } else {
++        if (filter?.startAt) {
++          const index = lines.findIndex(line => line.includes(filter.startAt!));
++          if (index < 0) continue;
++          lines = lines.slice(index);
++        }
++        if (filter?.endBefore) {
++          const index = lines.findIndex(line => line.includes(filter.endBefore!));
++          if (index < 0) continue;
++          lines = lines.slice(0, index);
++        }
++        if (filter?.endAt) {
++          const index = lines.findIndex(line => line.includes(filter.endAt!));
++          if (index < 0) continue;
++          lines = lines.slice(0, index + 1);
++        }
++      }
++      node.value = lines.join('\n');
++    } catch {
++      // Keep an explicit unavailable marker instead of silently omitting text.
++    }
++  }
++}
++
+ export function markdownParse(text: string): Root {
+   const parseMyst = (content: string) => {
+     return mystParse(content, {
+       markdownit: { linkify: true },
+       directives: [
++        ...enccsDirectives,
+         cardDirective,
+         ...gridDirectives,
+         proofDirective,
+@@ -67,6 +158,23 @@ export function markdownParse(text: string): Root {
+   };
+ 
+   const mdast = parseMyst(text);
++  // The parser recognizes Sphinx's literalinclude, but its unresolved node
++  // would otherwise disappear in a notebook. Keep a visible code placeholder
++  // until the asynchronous Jupyter-root file resolver fills it.
++  const supportedOptions = new Set(['language', 'lines', 'start-at', 'end-at', 'end-before', 'linenos', 'emphasize-lines']);
++  for (const directive of selectAll('mystDirective', mdast) as any[]) {
++    if (directive.name !== 'literalinclude') continue;
++    const unsupportedOptions = Object.keys(directive.options ?? {}).some(
++      option => !supportedOptions.has(option)
++    );
++    for (const node of directive.children ?? []) {
++      if (node.type !== 'include') continue;
++      const path = String(node.file ?? '');
++      node.type = 'code';
++      node.value = `[literalinclude unavailable: ${path}]`;
++      node.enccsInclude = { path, filter: node.filter, unsupportedOptions };
++    }
++  }
+   // Parsing individually here requires that link and footnote references are contained to the cell
+   // This is consistent with the current Jupyter markdown renderer
+   unified()
+@@ -204,6 +312,7 @@ export async function processCellMDAST(
+   mdast: any
+ ) {
+   mdast = copyNode(mdast);
++  await resolveLessonIncludes(mdast, resolver);
+   try {
+     // Go through all links and replace the source if they are local
+     await imageUrlSourceTransform(mdast as any, {
+diff --git a/style/base.css b/style/base.css
+index 4467d7b..2a21793 100644
+--- a/style/base.css
++++ b/style/base.css
+@@ -5,6 +5,7 @@
+ */
+ @import url('app.css');
+ @import url('~katex/dist/katex.css');
++@import url('enccs.css');
+ 
+ /* Allow overflow on input areas for myst */
+ .jp-MySTMarkdownCell .jp-InputArea,
+diff --git a/style/enccs.css b/style/enccs.css
+new file mode 100644
+index 0000000..111cfad
+--- /dev/null
++++ b/style/enccs.css
+@@ -0,0 +1,177 @@
++/* ENCCS-inspired lesson content, deliberately outside Lab chrome and editors. */
++.jp-Notebook .jp-RenderedMySTMarkdown .myst {
++  --enccs-ink: var(--jp-ui-font-color0);
++  --enccs-muted: var(--jp-ui-font-color2);
++  --enccs-rule: var(--jp-border-color2);
++  --enccs-panel: var(--jp-layout-color1);
++  --enccs-panel-alt: var(--jp-layout-color2);
++  --enccs-accent: var(--jp-brand-color1);
++  max-width: min(100%, 80ch);
++  margin-inline: auto;
++  padding-inline: clamp(0.5rem, 2vw, 1.5rem);
++  color: var(--enccs-ink);
++  line-height: 1.65;
++  overflow-wrap: break-word;
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst :is(h1, h2, h3, h4) {
++  color: var(--enccs-ink);
++  line-height: 1.25;
++  scroll-margin-top: 2rem;
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst h1 {
++  margin-block: 0.35em 0.85em;
++  padding-bottom: 0.3em;
++  border-bottom: 3px solid var(--enccs-accent);
++  font-size: clamp(1.8rem, 2.7vw, 2.35rem);
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst h2 {
++  margin-block: 1.6em 0.6em;
++  padding-bottom: 0.3em;
++  border-bottom: 1px solid var(--enccs-rule);
++  font-size: clamp(1.35rem, 2vw, 1.7rem);
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst h3 {
++  margin-block: 1.4em 0.5em;
++  font-size: 1.2rem;
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst :is(p, ul, ol) {
++  margin-block: 0.65em 1em;
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst li + li {
++  margin-top: 0.3em;
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst :is(a, a:visited) {
++  color: var(--jp-content-link-color);
++  text-decoration: underline;
++  text-decoration-thickness: 0.08em;
++  text-underline-offset: 0.16em;
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst a:focus-visible {
++  outline: 2px solid var(--enccs-accent);
++  outline-offset: 2px;
++}
++
++/* The directive names remain the same in Sphinx and the notebook source. */
++.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-questions,
++.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-objectives,
++.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-keypoints {
++  margin-block: 1.25rem;
++  padding: 0.75rem 1rem;
++  border: 1px solid var(--enccs-rule);
++  border-left: 5px solid var(--enccs-accent);
++  border-radius: 0.3rem;
++  background: var(--enccs-panel);
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-objectives {
++  border-left-color: var(--jp-success-color1);
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-keypoints {
++  border-left-color: var(--jp-warn-color1);
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-questions > :first-child,
++.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-objectives > :first-child,
++.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-keypoints > :first-child {
++  margin-top: 0;
++  font-weight: 700;
++  letter-spacing: 0.01em;
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-questions > :last-child,
++.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-objectives > :last-child,
++.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-keypoints > :last-child {
++  margin-bottom: 0;
++}
++
++/* Literalinclude and fenced code are reading material, not executable cells. */
++.jp-Notebook .jp-RenderedMySTMarkdown .myst pre {
++  max-width: 100%;
++  margin-block: 1rem 1.25rem;
++  padding: 0.8rem 1rem;
++  border: 1px solid var(--enccs-rule);
++  border-left: 3px solid var(--enccs-accent);
++  border-radius: 0.25rem;
++  background: var(--enccs-panel-alt);
++  overflow-x: auto;
++  font-size: 0.9em;
++  line-height: 1.5;
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst :not(pre) > code {
++  padding: 0.12em 0.3em;
++  border-radius: 0.2em;
++  background: var(--enccs-panel-alt);
++  font-size: 0.92em;
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst table,
++.jp-Notebook:has(.jp-RenderedMySTMarkdown .myst) .jp-OutputArea .jp-RenderedHTMLCommon table {
++  display: block;
++  max-width: 100%;
++  margin-block: 1rem 1.35rem;
++  border-collapse: collapse;
++  overflow-x: auto;
++  font-variant-numeric: tabular-nums;
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst :is(th, td),
++.jp-Notebook:has(.jp-RenderedMySTMarkdown .myst) .jp-OutputArea .jp-RenderedHTMLCommon :is(th, td) {
++  padding: 0.45rem 0.7rem;
++  border-bottom: 1px solid var(--enccs-rule, var(--jp-border-color2));
++  text-align: start;
++  white-space: nowrap;
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst th,
++.jp-Notebook:has(.jp-RenderedMySTMarkdown .myst) .jp-OutputArea .jp-RenderedHTMLCommon th {
++  background: var(--enccs-panel-alt, var(--jp-layout-color2));
++  font-weight: 700;
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst :is(figure, .figure) {
++  margin: 1.5rem auto;
++  text-align: center;
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst :is(figure, .figure) img,
++.jp-Notebook:has(.jp-RenderedMySTMarkdown .myst) .jp-OutputArea img {
++  max-width: 100%;
++  height: auto;
++}
++
++.jp-Notebook .jp-RenderedMySTMarkdown .myst :is(figcaption, .caption) {
++  margin-top: 0.5rem;
++  color: var(--enccs-muted);
++  font-size: 0.88em;
++  line-height: 1.45;
++}
++
++/* Outputs get a quiet frame; input editors and execution controls are untouched. */
++.jp-Notebook:has(.jp-RenderedMySTMarkdown .myst) .jp-CodeCell .jp-OutputArea {
++  margin-top: 0.4rem;
++  padding-left: 0.65rem;
++  border-left: 2px solid var(--jp-border-color2);
++}
++
++@media (max-width: 700px) {
++  .jp-Notebook .jp-RenderedMySTMarkdown .myst {
++    padding-inline: 0.35rem;
++    line-height: 1.55;
++  }
++
++  .jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-questions,
++  .jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-objectives,
++  .jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-keypoints {
++    padding-inline: 0.75rem;
++  }
++}

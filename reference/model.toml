@@ -1,0 +1,20 @@
+[model]
+format = 1
+id = "mace-mp-0a-small"
+status = "locked"
+family = "MACE-MP-0a"
+variant = "small"
+filename = "2023-12-10-mace-128-L0_energy_epoch-249.model"
+url = "https://github.com/ACEsuit/mace-foundations/releases/download/mace_mp_0/2023-12-10-mace-128-L0_energy_epoch-249.model"
+release_tag = "mace_mp_0"
+published_size_bytes = 32581838
+sha256 = "2ddb079cee0e131eaaf6912ba581b394551ead283e95c99cfe78c605d10b5736"
+license = "MIT"
+license_url = "https://github.com/ACEsuit/mace-foundations/blob/main/LICENSE"
+target_system = "bulk-materials"
+blockers = []
+
+[validated_arrhenius_mliap_export]
+format = "mliap"
+dtype = "float32"
+sha256 = "db578c556298ad3bb1f4a93faa50d540eb2b9792215e81ef7548dd7e20a746e8"

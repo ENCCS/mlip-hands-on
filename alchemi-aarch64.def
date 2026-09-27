@@ -1,0 +1,28 @@
+Bootstrap: docker
+From: docker.io/library/python@sha256:519591d6871b7bc437060736b9f7456b8731f1499a57e22e6c285135ae657bf7
+
+# Build from this directory on an aarch64 Apptainer builder.
+%files
+    locks/build-requirements.lock /opt/mlip/build-requirements.lock
+    locks/requirements.lock /opt/mlip/requirements.lock
+    examples/alchemi_si.py /opt/mlip/alchemi_si.py
+
+%environment
+    export PYTHONNOUSERSITE=1
+    export PYTHONUNBUFFERED=1
+
+%post
+    set -eu
+    python -m pip install --no-cache-dir --no-deps --require-hashes \
+        -r /opt/mlip/build-requirements.lock
+    python -m pip install --no-cache-dir --no-deps --no-build-isolation \
+        --require-hashes -r /opt/mlip/requirements.lock
+
+%test
+    python -c 'import platform; assert platform.machine() == "aarch64"'
+    python -c 'import torch,nvalchemi,mace; assert torch.version.cuda == "12.6"'
+    python -m py_compile /opt/mlip/alchemi_si.py
+
+%labels
+    org.mlip-md-lesson.environment alchemi-aarch64
+    org.mlip-hands-on.cuda 12.6

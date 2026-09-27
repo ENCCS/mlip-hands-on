@@ -1,0 +1,17 @@
+atoms_per_replica,method,processes,group_wall_seconds,replica_steps_per_second
+64,ALCHEMI batch,1,18.745,85.358
+64,LAMMPS sequential,1,690.053,2.319
+64,LAMMPS ordinary sharing,2,361.698,4.424
+64,LAMMPS ordinary sharing,4,176.423,9.069
+64,LAMMPS ordinary sharing,8,100.010,15.998
+64,LAMMPS CUDA MPS,2,339.398,4.714
+64,LAMMPS CUDA MPS,4,165.881,9.645
+64,LAMMPS CUDA MPS,8,88.336,18.113
+512,ALCHEMI batch,1,26.599,60.153
+512,LAMMPS sequential,1,716.230,2.234
+512,LAMMPS ordinary sharing,2,333.660,4.795
+512,LAMMPS ordinary sharing,4,201.097,7.956
+512,LAMMPS ordinary sharing,8,114.335,13.994
+512,LAMMPS CUDA MPS,2,351.858,4.547
+512,LAMMPS CUDA MPS,4,171.070,9.353
+512,LAMMPS CUDA MPS,8,90.782,17.625

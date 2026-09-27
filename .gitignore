@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+_build/
+.jupyter_cache/
+.ipynb_checkpoints/
+*.ipynb
+__pycache__/
+artifacts/
+results/

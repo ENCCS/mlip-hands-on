@@ -1,0 +1,2 @@
+# Unified-diff context lines necessarily contain a leading space.
+jupyterlab-enccs/*.patch whitespace=-blank-at-eol
