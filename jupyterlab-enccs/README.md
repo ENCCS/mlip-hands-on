@@ -41,7 +41,27 @@ unavailable marker.
 Keep the Jupyter server root at the lesson repository so included files are
 inside the authorized file boundary.
 
-The published Sphinx rendering remains the complete handout. A clean
-JupyterLab visual and accessibility check of all pages is required before
-using a patched extension in a class. Do not assume a local wheel build is
-equivalent to a tested site installation.
+The published Sphinx rendering remains the complete handout. The patch is
+complete for the directives this lesson uses, not a general Sphinx renderer.
+The JupyterLab DOM uses `.jp-MarkdownCell .myst`; styling that targets an
+imagined `.jp-RenderedMySTMarkdown` wrapper does not apply. The lesson patch
+uses the observed selector and scopes it to notebook content.
+
+For a private JupyterLab test session with the patched wheel installed,
+`check_rendering.py` checks every episode, setup and reference page plus a
+fixture containing all three ENCCS callouts and a relative literal include:
+
+```bash
+python -m pip install selenium
+python jupyterlab-enccs/check_rendering.py \
+  --base-url http://127.0.0.1:8877 \
+  --token-file /path/to/private/token \
+  --geckodriver /path/to/geckodriver
+```
+
+The September 2026 ASUS browser check passed all 15 pages, and the Arrhenius
+private installation reported both `jupyterlab-myst` and `jupyterlab-jupytext`
+healthy. The upstream source's two unit suites passed (7 tests). This does
+not establish general Sphinx-directive compatibility or screen-reader
+acceptance; an instructor should still inspect the live notebook on their
+target browser before class.

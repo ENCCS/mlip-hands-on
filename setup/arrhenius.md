@@ -1,3 +1,15 @@
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: '0.13'
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
 # Arrhenius setup
 
 These commands are an Arrhenius example, not a portable Slurm policy. Check
@@ -53,9 +65,30 @@ paths entirely also removes needed packages, so prepend the private paths as
 shown rather than clearing them. The tested server accepted an authenticated
 request for a lesson `.md` file and returned a notebook with code cells.
 
-The notebook server binds to compute-node loopback and keeps token
-authentication. It does not allocate a GPU or open a laptop tunnel. See
-[Opening the notebook](notebook.md) for the connection concept.
+The direct `start-jupyter.sh` command binds to compute-node loopback and
+keeps token authentication. The submitted Arrhenius job instead enables
+short-lived TLS on the allocated node, since Arrhenius does not permit a
+direct SSH jump into that node. Both modes keep Jupyter token authentication.
+See [Opening the notebook](notebook.md) for the connection and certificate
+check. Do not use the submitted TLS mode without a private job-log directory.
+
+To submit one bounded Jupyter allocation from the login node, set
+`MLIP_ACCOUNT`, `MLIP_LESSON_ROOT`, `MLIP_NOTEBOOK_VENV`, `MLIP_ENV_FILE`, and
+`MLIP_JOB_LOG_DIR` outside Git, then run:
+
+```bash
+bash scripts/submit-arrhenius-jupyter.sh
+```
+
+The helper creates a mode-0700 job-log directory and prints the one job ID
+and log path. The log contains Jupyter's private token URL. A companion
+`jupyter-<job-id>.fingerprint` file in the same directory contains the
+short-lived TLS certificate fingerprint. If your account
+can use a short-lived reservation, set `MLIP_RESERVATION` explicitly after
+checking its current policy; this lesson does not assume one is available.
+Never submit a second job to recover an uncertain submission response: first
+inspect the scheduler read-only. The job lasts at most two hours unless you
+set a shorter limit when submitting.
 
 For the native MPI build, the tested Arrhenius module family is loaded by
 `scripts/build-lammps-mpi.sbatch`:

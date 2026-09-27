@@ -1,3 +1,15 @@
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: '0.13'
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
 # Environment variables
 
 The repository ships `.env.example`. Copy it to `.env`, edit the paths for

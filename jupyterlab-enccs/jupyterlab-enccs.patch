@@ -169,7 +169,7 @@ index 0000000..111cfad
 +++ b/style/enccs.css
 @@ -0,0 +1,177 @@
 +/* ENCCS-inspired lesson content, deliberately outside Lab chrome and editors. */
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst {
++.jp-Notebook .jp-MarkdownCell .myst {
 +  --enccs-ink: var(--jp-ui-font-color0);
 +  --enccs-muted: var(--jp-ui-font-color2);
 +  --enccs-rule: var(--jp-border-color2);
@@ -184,55 +184,55 @@ index 0000000..111cfad
 +  overflow-wrap: break-word;
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst :is(h1, h2, h3, h4) {
++.jp-Notebook .jp-MarkdownCell .myst :is(h1, h2, h3, h4) {
 +  color: var(--enccs-ink);
 +  line-height: 1.25;
 +  scroll-margin-top: 2rem;
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst h1 {
++.jp-Notebook .jp-MarkdownCell .myst h1 {
 +  margin-block: 0.35em 0.85em;
 +  padding-bottom: 0.3em;
 +  border-bottom: 3px solid var(--enccs-accent);
 +  font-size: clamp(1.8rem, 2.7vw, 2.35rem);
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst h2 {
++.jp-Notebook .jp-MarkdownCell .myst h2 {
 +  margin-block: 1.6em 0.6em;
 +  padding-bottom: 0.3em;
 +  border-bottom: 1px solid var(--enccs-rule);
 +  font-size: clamp(1.35rem, 2vw, 1.7rem);
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst h3 {
++.jp-Notebook .jp-MarkdownCell .myst h3 {
 +  margin-block: 1.4em 0.5em;
 +  font-size: 1.2rem;
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst :is(p, ul, ol) {
++.jp-Notebook .jp-MarkdownCell .myst :is(p, ul, ol) {
 +  margin-block: 0.65em 1em;
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst li + li {
++.jp-Notebook .jp-MarkdownCell .myst li + li {
 +  margin-top: 0.3em;
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst :is(a, a:visited) {
++.jp-Notebook .jp-MarkdownCell .myst :is(a, a:visited) {
 +  color: var(--jp-content-link-color);
 +  text-decoration: underline;
 +  text-decoration-thickness: 0.08em;
 +  text-underline-offset: 0.16em;
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst a:focus-visible {
++.jp-Notebook .jp-MarkdownCell .myst a:focus-visible {
 +  outline: 2px solid var(--enccs-accent);
 +  outline-offset: 2px;
 +}
 +
 +/* The directive names remain the same in Sphinx and the notebook source. */
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-questions,
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-objectives,
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-keypoints {
++.jp-Notebook .jp-MarkdownCell .myst aside.enccs-questions,
++.jp-Notebook .jp-MarkdownCell .myst aside.enccs-objectives,
++.jp-Notebook .jp-MarkdownCell .myst aside.enccs-keypoints {
 +  margin-block: 1.25rem;
 +  padding: 0.75rem 1rem;
 +  border: 1px solid var(--enccs-rule);
@@ -241,30 +241,30 @@ index 0000000..111cfad
 +  background: var(--enccs-panel);
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-objectives {
++.jp-Notebook .jp-MarkdownCell .myst aside.enccs-objectives {
 +  border-left-color: var(--jp-success-color1);
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-keypoints {
++.jp-Notebook .jp-MarkdownCell .myst aside.enccs-keypoints {
 +  border-left-color: var(--jp-warn-color1);
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-questions > :first-child,
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-objectives > :first-child,
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-keypoints > :first-child {
++.jp-Notebook .jp-MarkdownCell .myst aside.enccs-questions > :first-child,
++.jp-Notebook .jp-MarkdownCell .myst aside.enccs-objectives > :first-child,
++.jp-Notebook .jp-MarkdownCell .myst aside.enccs-keypoints > :first-child {
 +  margin-top: 0;
 +  font-weight: 700;
 +  letter-spacing: 0.01em;
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-questions > :last-child,
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-objectives > :last-child,
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-keypoints > :last-child {
++.jp-Notebook .jp-MarkdownCell .myst aside.enccs-questions > :last-child,
++.jp-Notebook .jp-MarkdownCell .myst aside.enccs-objectives > :last-child,
++.jp-Notebook .jp-MarkdownCell .myst aside.enccs-keypoints > :last-child {
 +  margin-bottom: 0;
 +}
 +
 +/* Literalinclude and fenced code are reading material, not executable cells. */
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst pre {
++.jp-Notebook .jp-MarkdownCell .myst pre {
 +  max-width: 100%;
 +  margin-block: 1rem 1.25rem;
 +  padding: 0.8rem 1rem;
@@ -277,15 +277,15 @@ index 0000000..111cfad
 +  line-height: 1.5;
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst :not(pre) > code {
++.jp-Notebook .jp-MarkdownCell .myst :not(pre) > code {
 +  padding: 0.12em 0.3em;
 +  border-radius: 0.2em;
 +  background: var(--enccs-panel-alt);
 +  font-size: 0.92em;
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst table,
-+.jp-Notebook:has(.jp-RenderedMySTMarkdown .myst) .jp-OutputArea .jp-RenderedHTMLCommon table {
++.jp-Notebook .jp-MarkdownCell .myst table,
++.jp-Notebook:has(.jp-MarkdownCell .myst) .jp-OutputArea .jp-RenderedHTMLCommon table {
 +  display: block;
 +  max-width: 100%;
 +  margin-block: 1rem 1.35rem;
@@ -294,32 +294,32 @@ index 0000000..111cfad
 +  font-variant-numeric: tabular-nums;
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst :is(th, td),
-+.jp-Notebook:has(.jp-RenderedMySTMarkdown .myst) .jp-OutputArea .jp-RenderedHTMLCommon :is(th, td) {
++.jp-Notebook .jp-MarkdownCell .myst :is(th, td),
++.jp-Notebook:has(.jp-MarkdownCell .myst) .jp-OutputArea .jp-RenderedHTMLCommon :is(th, td) {
 +  padding: 0.45rem 0.7rem;
 +  border-bottom: 1px solid var(--enccs-rule, var(--jp-border-color2));
 +  text-align: start;
 +  white-space: nowrap;
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst th,
-+.jp-Notebook:has(.jp-RenderedMySTMarkdown .myst) .jp-OutputArea .jp-RenderedHTMLCommon th {
++.jp-Notebook .jp-MarkdownCell .myst th,
++.jp-Notebook:has(.jp-MarkdownCell .myst) .jp-OutputArea .jp-RenderedHTMLCommon th {
 +  background: var(--enccs-panel-alt, var(--jp-layout-color2));
 +  font-weight: 700;
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst :is(figure, .figure) {
++.jp-Notebook .jp-MarkdownCell .myst :is(figure, .figure) {
 +  margin: 1.5rem auto;
 +  text-align: center;
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst :is(figure, .figure) img,
-+.jp-Notebook:has(.jp-RenderedMySTMarkdown .myst) .jp-OutputArea img {
++.jp-Notebook .jp-MarkdownCell .myst :is(figure, .figure) img,
++.jp-Notebook:has(.jp-MarkdownCell .myst) .jp-OutputArea img {
 +  max-width: 100%;
 +  height: auto;
 +}
 +
-+.jp-Notebook .jp-RenderedMySTMarkdown .myst :is(figcaption, .caption) {
++.jp-Notebook .jp-MarkdownCell .myst :is(figcaption, .caption) {
 +  margin-top: 0.5rem;
 +  color: var(--enccs-muted);
 +  font-size: 0.88em;
@@ -327,21 +327,21 @@ index 0000000..111cfad
 +}
 +
 +/* Outputs get a quiet frame; input editors and execution controls are untouched. */
-+.jp-Notebook:has(.jp-RenderedMySTMarkdown .myst) .jp-CodeCell .jp-OutputArea {
++.jp-Notebook:has(.jp-MarkdownCell .myst) .jp-CodeCell .jp-OutputArea {
 +  margin-top: 0.4rem;
 +  padding-left: 0.65rem;
 +  border-left: 2px solid var(--jp-border-color2);
 +}
 +
 +@media (max-width: 700px) {
-+  .jp-Notebook .jp-RenderedMySTMarkdown .myst {
++  .jp-Notebook .jp-MarkdownCell .myst {
 +    padding-inline: 0.35rem;
 +    line-height: 1.55;
 +  }
 +
-+  .jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-questions,
-+  .jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-objectives,
-+  .jp-Notebook .jp-RenderedMySTMarkdown .myst aside.enccs-keypoints {
++  .jp-Notebook .jp-MarkdownCell .myst aside.enccs-questions,
++  .jp-Notebook .jp-MarkdownCell .myst aside.enccs-objectives,
++  .jp-Notebook .jp-MarkdownCell .myst aside.enccs-keypoints {
 +    padding-inline: 0.75rem;
 +  }
 +}

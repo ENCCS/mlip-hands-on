@@ -1,3 +1,15 @@
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: '0.13'
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
 # Limits and provenance
 
 The pinned silicon/MACE runs show how to execute and measure MD.

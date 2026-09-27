@@ -1,23 +1,47 @@
+---
+jupytext:
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: '0.13'
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
 # Open a notebook from your computer
 
 JupyterLab runs on the allocated GPU node. Your browser runs on your own
-computer. An SSH tunnel connects a browser port to a loopback-only Jupyter
-port; the browser must still provide Jupyter's private token. Do not bind
-Jupyter to a public network address or place the token in a shared document.
+computer. SSH encrypts the laptop-to-login hop; the Arrhenius launch script
+also enables TLS for the login-to-compute hop. Jupyter requires its private
+token. Keep the token and the generated certificate key out of Git.
 
-Start with `scripts/start-jupyter.sh` inside the allocation. A connection
-script must use the actual allocated node and the site's permitted SSH route.
-On a site where direct SSH to that node is allowed, the shape is:
+Start the bounded job with `scripts/submit-arrhenius-jupyter.sh`, as described
+in [Arrhenius setup](arrhenius.md). On your laptop, the included script looks
+up the node of that running Slurm job and forwards through the login host:
 
 ```bash
-ssh -N -L 127.0.0.1:18888:127.0.0.1:8888 <allocated-node>
+bash scripts/connect-from-laptop.sh notebook <login-ssh-alias> <job-id>
 ```
 
-Then open the token URL in your browser, replacing its port with `18888`.
-Some sites do not allow that direct route. In that case, use an approved
-login-node relay with encryption and loopback binding, or use the static
-handout. The instructor guide points to the session-specific connection
-script; do not reuse an old job's node, certificate, or token.
+Then open the private token URL printed by Jupyter, replacing its port with
+`18888` and keeping `https://`. The script never reads or stores the token.
+The certificate is self-signed. Before forwarding, the connection script
+compares the live compute-node certificate with the owner-private
+`jupyter-<job-id>.fingerprint` beside the job log. It refuses a mismatch. The
+browser may still warn because this short-lived certificate is not signed by
+a public authority; confirm the script's successful check before accepting
+that warning. An expired job must not be reused.
+
+The live HTML handout is a separate loopback service. From your laptop, use:
+
+```bash
+bash scripts/connect-from-laptop.sh html <html-host-ssh-alias>
+```
+
+This maps the host's port `8766` to `http://127.0.0.1:18766/` on your laptop.
+Change the local or remote ports with the optional arguments if necessary.
 
 Double-click a lesson `.md` file in JupyterLab. The provided launch script
 sets MyST Markdown to open as a Jupytext notebook by default. The Markdown
