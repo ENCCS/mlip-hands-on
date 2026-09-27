@@ -6,7 +6,7 @@ native Python/LAMMPS installation for ML-IAP/Kokkos. Keeping them separate
 avoids loading two incompatible CUDA or MPI stacks into one notebook kernel.
 
 The core exercises need one GPU and prepared artifacts. Building a SIF and
-LAMMPS is covered in the first episodes, but need not happen during a class.
+LAMMPS is covered in the first episodes, but can be done before the GPU session.
 No notebook submits a Slurm job. Obtain an allocation before running GPU cells.
 
 Read the [Arrhenius setup](arrhenius.md), copy `.env.example` to a private

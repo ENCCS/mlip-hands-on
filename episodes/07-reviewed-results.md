@@ -15,9 +15,9 @@ kernelspec:
 
 # Read a completed shared-GPU benchmark
 
-For eight **independent** silicon/MACE trajectories on one GH200, how does
-ALCHEMI batching compare with eight native LAMMPS processes sharing the GPU?
-This offline page reads a small checked-in CSV. Its cells do **not** run MD,
+Use the checked-in measurements to compare ALCHEMI batching with eight native
+LAMMPS processes sharing one GH200. Each run advances eight **independent**
+silicon/MACE trajectories. This offline page reads a small CSV; its cells do **not** run MD,
 request an allocation, or contact Slurm.
 
 The CSV contains two completed NVE matrices, at 64 and 512 atoms per

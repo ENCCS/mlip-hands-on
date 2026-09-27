@@ -1,7 +1,10 @@
 # MLIP lesson repository
 
 This repository is the source of the published MyST lesson and its runnable
-examples. Keep the explanations readable to a learner and the scripts small.
+examples. Write participant-facing pages as practical how-to guides: show the
+command or code, the expected result, and only the explanation needed to use
+or interpret it. Keep scripts small. Put facilitation advice in the instructor
+guide, not the episodes.
 Do not depend on Remote Agent, Agent Workbench, or a separate hands-on
 framework for the primary exercises.
 
