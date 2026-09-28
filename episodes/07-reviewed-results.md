@@ -15,14 +15,16 @@ kernelspec:
 
 # Read a completed shared-GPU benchmark
 
-Use the checked-in measurements to compare ALCHEMI batching with eight native
-LAMMPS processes sharing one GH200. Each run advances eight **independent**
+Use the checked-in measurements from **one Arrhenius GH200** to compare
+ALCHEMI batching with eight native LAMMPS processes sharing that GPU. Each
+run advances eight **independent**
 silicon/MACE trajectories. This offline page reads a small CSV; its cells do **not** run MD,
 request an allocation, or contact Slurm.
 
 The CSV contains two completed NVE matrices, at 64 and 512 atoms per
 replica. An incomplete 4,096-atom matrix is excluded. These results are
-independent site measurements, not the timings from your notebook session.
+Arrhenius measurements, not the timings from your notebook session. JUPITER
+has passed short functional checks, but has no matching throughput matrix yet.
 
 ## Reference measurements
 
@@ -86,7 +88,7 @@ for ax, atoms in zip(axes, (64, 512)):
     ax.set_title(f"Eight simulations × {atoms} atoms")
     ax.set_xlabel("Time to finish all eight (s; shorter is better)")
     ax.invert_yaxis()
-fig.suptitle("One GH200, completed NVE workflows (one run per case)")
+fig.suptitle("Arrhenius GH200: completed NVE workflows (one run per case)")
 fig.tight_layout()
 plt.show()
 ```
