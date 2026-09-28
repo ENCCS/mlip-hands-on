@@ -24,6 +24,8 @@ def arguments():
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--cells", type=int, choices=(4, 16), required=True)
     parser.add_argument("--steps", type=int, choices=(10, 100), required=True)
+    parser.add_argument("--gpu-binding", choices=("shared", "per-rank"), default="shared",
+                        help="shared GPU visibility or one Slurm-bound GPU per MPI rank")
     args = parser.parse_args()
     if not args.model.is_file() or not args.output_dir.is_dir():
         parser.error("the pinned model and private output directory must exist")
@@ -43,13 +45,23 @@ def run(args):
     rank = int(os.environ["SLURM_PROCID"])
     local_rank = int(os.environ["SLURM_LOCALID"])
     nodes = int(os.environ["SLURM_JOB_NUM_NODES"])
-    if nodes != 1 or expected not in (1, 2, 4) or not 0 <= rank < expected:
+    if nodes not in (1, 2) or expected not in (1, 2, 4, 8) or not 0 <= rank < expected:
         raise RuntimeError("unreviewed rank geometry")
-    if not 0 <= local_rank < expected or torch.cuda.device_count() != expected:
-        raise RuntimeError("each rank must see all allocated GPUs on this node")
+    if args.gpu_binding == "shared":
+        if nodes != 1 or expected > 4 or torch.cuda.device_count() != expected:
+            raise RuntimeError("shared binding requires one node and peer-visible GPUs")
+        gpus_per_rank = expected
+    else:
+        if (nodes == 1 and expected > 4) or (nodes == 2 and expected != 8):
+            raise RuntimeError("unreviewed per-rank node geometry")
+        if torch.cuda.device_count() != 1:
+            raise RuntimeError("Slurm must bind exactly one GPU to each rank")
+        gpus_per_rank = 1
+    if not 0 <= local_rank < (expected // nodes):
+        raise RuntimeError("unexpected local MPI rank")
     total_start = time.perf_counter()
     lmp = lammps.lammps(cmdargs=["-log", "none", "-screen", "none",
-                                 "-k", "on", "g", str(expected)])
+                                 "-k", "on", "g", str(gpus_per_rank)])
     try:
         if (lmp.extract_setting("world_size") != expected or
                 lmp.extract_setting("world_rank") != rank):
@@ -87,9 +99,9 @@ def run(args):
         energy = float(lmp.get_thermo("pe"))
         if not math.isfinite(energy) or elapsed <= 0:
             raise RuntimeError("non-finite LAMMPS result")
-        memory = [torch.cuda.memory_allocated(index) for index in range(expected)]
-        selected = max(range(expected), key=memory.__getitem__)
-        if memory[selected] <= 0 or selected != local_rank:
+        memory = [torch.cuda.memory_allocated(index) for index in range(gpus_per_rank)]
+        selected = max(range(gpus_per_rank), key=memory.__getitem__)
+        if memory[selected] <= 0 or (args.gpu_binding == "shared" and selected != local_rank):
             raise RuntimeError("MPI rank did not select its distinct local GPU")
     finally:
         lmp.close()
@@ -99,7 +111,8 @@ def run(args):
         "engine": "lammps-mliap-kokkos-mpi", "model_sha256": MODEL_SHA256,
         "cells": args.cells, "atoms": atoms, "trajectories": 1,
         "nodes": nodes, "gpus": expected, "rank": rank, "local_rank": local_rank,
-        "visible_gpus": expected, "selected_device_index": selected,
+        "gpu_binding": args.gpu_binding,
+        "visible_gpus": gpus_per_rank, "selected_device_index": selected,
         "torch_memory_bytes": memory,
         "temperature_k": 300.0, "timestep_fs": 0.1,
         "warmup_steps": 0, "measured_steps": args.steps,

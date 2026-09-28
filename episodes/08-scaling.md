@@ -34,6 +34,11 @@ multi-GPU records include an unresolved rank-count energy difference, so
 this lesson does **not** present cross-engine multi-GPU scientific agreement
 or a two-node speed ranking as established results.
 
+JUPITER has a separate [per-rank GPU binding and native MPI setup](../setup/jupiter.md).
+One-, two-, and four-GPU one-node runs and an eight-GPU two-node run have
+passed short functional checks there. Ten measured steps on 512 atoms are
+not a scaling study; do not plot those elapsed times as speedups.
+
 For a capacity experiment, increase atoms or replicas by predeclared steps,
 record completed runs and failures, and stop at the first resource limit.
 The largest completed case is a **tested workload**, not an intrinsic GPU

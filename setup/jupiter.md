@@ -12,10 +12,12 @@ kernelspec:
 
 # JUPITER setup: native LAMMPS first
 
-JUPITER's booster nodes use four GH200 GPUs and an aarch64 CPU. This profile
-has passed a short, one-GPU silicon run with the pinned MACE ML-IAP export.
-It has **not** yet qualified the ALCHEMI environment, a Jupyter session, or
-multi-GPU results. Do not use an Arrhenius SIF or MPI binary here.
+JUPITER's booster nodes use four GH200 GPUs and aarch64 CPUs. This profile
+has passed short one-, two-, four-, and eight-GPU silicon runs with the pinned
+MACE ML-IAP export; the eight-GPU run used two nodes. These are functional
+checks, **not** throughput or scientific-equivalence benchmarks. The ALCHEMI
+environment and a Jupyter session are not yet qualified here. Do not use an
+Arrhenius SIF or MPI binary here.
 
 The tested native module family is:
 
@@ -80,6 +82,34 @@ LAMMPS, ML-IAP/Kokkos, the wrapper, model and GPU step execute together; it
 does not measure throughput or establish scientific agreement. Do not submit
 it until the private export has been verified against the hash in the script.
 
+For one coupled 512-atom trajectory, the MPI script uses a distinct Slurm GPU
+binding on each rank. JUPITER's documented job examples request both `--gres`
+and `--gpus-per-task=1`; each rank then sees its own GPU as device zero.
+The shared-visibility mode used on Arrhenius is not selected here. For example,
+the one-node four-GPU functional check is:
+
+```bash
+sbatch --account=<PROJECT> --nodes=1 --ntasks=4 \
+  --gres=gpu:4 --gpus-per-task=1 --cpus-per-task=8 \
+  --mem=256G --time=00:15:00 \
+  --export=ALL,MLIP_JUPITER_ROOT,MLIP_LESSON_ROOT,MLIP_JUPITER_BUILD_ID \
+  scripts/test-jupiter-lammps-mpi.sbatch
+```
+
+The same script accepts one node with one or two ranks, or two nodes with
+eight ranks (four per node). Change the `--nodes`, `--ntasks`, `--gres`, and
+`--ntasks-per-node` requests together; `--gres=gpu:4` is **per node** for the
+two-node case. It runs ten measured NVE steps, writes one private result per
+rank, and verifies completion. On this system a partial-GPU request can still
+allocate an exclusive whole node, so do not read the requested GPU count as
+the billed allocation. Inspect current policy and queue before submitting.
+
+The tested one-node two- and four-GPU and two-node eight-GPU runs completed.
+At 512 atoms and ten measured steps, rank-wise final energies were internally
+identical within each job but differed slightly across rank counts. These
+checks do not establish decomposition-independent scientific agreement or
+useful scaling.
+
 The `container`-group route is intentionally omitted from this profile.
 Native LAMMPS does not require that group. A future ALCHEMI virtual
-environment and multi-GPU site test need separate qualification.
+environment needs separate qualification.

@@ -37,6 +37,12 @@ be turned into a multi-GPU scientific-equivalence or two-node scaling claim.
 LAMMPS 1/2/4-GPU timings are an application measurement, not proof that
 GPU-direct MPI alone caused any speedup.
 
+On JUPITER, the native ML-IAP/Kokkos route passed short 1/2/4-GPU one-node
+and 8-GPU two-node functional tests with a pinned export. The MPI checks ran
+only ten measured steps of one 512-atom system. Their final energies differed
+slightly by rank count. They establish an executable route, not a throughput
+ranking, a convergence result, or agreement with ALCHEMI.
+
 Treat the plotted numbers as reviewed *examples* and label the configuration
 and repetitions behind every performance statement. For a fresh benchmark,
 predeclare the atom-count and replica matrix, repeat completed jobs, report

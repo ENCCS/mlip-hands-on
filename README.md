@@ -17,6 +17,6 @@ pages on loopback. Publishing never runs the GPU cells. The offline results
 episode reads only the small checked-in CSV.
 
 Site-specific commands live in `setup/arrhenius.md` and `setup/jupiter.md`.
-The JUPITER profile currently qualifies native one-GPU LAMMPS only; it does
-not imply that the ALCHEMI or multi-GPU route works there. See
+The JUPITER profile qualifies short native LAMMPS functional checks from one
+through eight GPUs, but not ALCHEMI, Jupyter, or scaling performance. See
 `reference/instructor.md` before a live session.
