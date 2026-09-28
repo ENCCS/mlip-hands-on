@@ -1,6 +1,12 @@
 # Molecular dynamics with MACE on GPUs
 
-This repository contains the source of a short, runnable MyST lesson. The
+This independent local Git repository is the maintained source of the
+MLIP MyST/Jupyter lesson. The older in-tree lesson in `mlip-hands-on` is
+historical and should not receive new edits. This repository does not yet
+have a Git remote; copying it to another host requires a separate reviewed
+transfer or publication step.
+
+It contains the source of a short, runnable MyST lesson. The
 same Markdown files build a web handout and open as notebooks in JupyterLab.
 The lesson uses one pinned MACE checkpoint to run silicon molecular dynamics
 with NVIDIA ALCHEMI Toolkit and LAMMPS ML-IAP/Kokkos.

@@ -1,12 +1,17 @@
 # MLIP lesson repository
 
-This repository is the source of the published MyST lesson and its runnable
+This repository is the source of the standalone MyST lesson and its runnable
 examples. Write participant-facing pages as practical how-to guides: show the
 command or code, the expected result, and only the explanation needed to use
 or interpret it. Keep scripts small. Put facilitation advice in the instructor
 guide, not the episodes.
 Do not depend on Remote Agent, Agent Workbench, or a separate hands-on
 framework for the primary exercises.
+
+This is the sole maintained lesson source. The former
+`mlip-hands-on/arrhenius-mlip-hands-on/lessons/` tree is historical Git
+material, not a second active copy. Keep scientific contracts and accepted
+benchmark evidence owned by `mlip-hands-on`; do not move them here implicitly.
 
 The Markdown files are the notebook source. Do not maintain `.ipynb` copies.
 Keep model weights, SIFs, native binaries, credentials, personal paths,
