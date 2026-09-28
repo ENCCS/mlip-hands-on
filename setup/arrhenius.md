@@ -12,12 +12,14 @@ kernelspec:
 
 # Arrhenius setup
 
+:::{note} Arrhenius hardware
 An [Arrhenius GPU node](https://www.naiss.se/resources/arrhenius-technical-description/)
 has four GH200 Grace–Hopper superchips. Each combines a 72-core Arm CPU
 with one NVIDIA GPU with 96 GB of high-bandwidth memory. The core notebook
 exercises request **one** GH200; the optional LAMMPS scaling example uses
 one, two, or four on one node. The hardware description does not mean all
 four GPUs share one pool of GPU memory.
+:::
 
 These commands are an Arrhenius example, not a portable Slurm policy. Check
 the current account, reservation, partition, modules, and GPU allocation

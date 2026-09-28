@@ -19,10 +19,13 @@ JUPITER Booster racks. Photo: Forschungszentrum Jülich / Sascha Kreklau;
 ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)).
 This copy was resized; the photo does not imply institutional endorsement.
 
+:::{note} JUPITER hardware
 According to the [JUPITER Booster configuration](https://apps.fz-juelich.de/jsc/hps/jupiter/configuration.html),
 each booster node has four GH200 superchips; each combines a 72-core Arm
-CPU with a GPU with 96 GB of high-bandwidth memory. This profile
-has passed short one-, two-, four-, and eight-GPU silicon runs with the pinned
+CPU with a GPU with 96 GB of high-bandwidth memory.
+:::
+
+This profile has passed short one-, two-, four-, and eight-GPU silicon runs with the pinned
 MACE ML-IAP export; the eight-GPU run used two nodes. These are functional
 checks, **not** throughput or scientific-equivalence benchmarks. Both cells
 in the eight-replica MyST page completed through a private Jupyter kernel.
