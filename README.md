@@ -1,10 +1,11 @@
 # Molecular dynamics with MACE on GPUs
 
-This independent local Git repository is the maintained source of the
+This independent Git repository is the maintained source of the
 MLIP MyST/Jupyter lesson. The older in-tree lesson in `mlip-hands-on` is
 historical and should not receive new edits. This repository does not yet
-have a Git remote; copying it to another host requires a separate reviewed
-transfer or publication step.
+have a published lesson site. Its configured `origin` is
+`git@github.com:ENCCS/mlip-hands-on.git`; pushing and enabling GitHub Pages
+require separate review.
 
 It contains the source of a short, runnable MyST lesson. The
 same Markdown files build a web handout and open as notebooks in JupyterLab.
@@ -19,8 +20,17 @@ in Git.
 
 To build the pages in a Python environment with `requirements.txt` installed,
 run `make html`. `make livehtml PORT=8766` watches the Markdown and serves the
-pages on loopback. Publishing never runs the GPU cells. The offline results
-episode reads only the small checked-in CSV.
+pages on loopback. Published pages never execute GPU MD cells. During the build,
+the offline results episode reads the small checked-in CSV to render its table
+and figure.
+
+GitHub Actions checks shell and Python examples, scans tracked lesson text for
+known private site values, and runs the strict Sphinx HTML build on pull
+requests and pushes to `main`. The HTML is retained as a workflow artifact.
+There is no Pages deployment job yet: confirm the ENCCS organization plan,
+Pages policy, and intended public/private visibility before enabling it.
+The source scan is a guardrail; publication still needs human review of the
+rendered pages and files.
 
 Site-specific commands live in `setup/arrhenius.md`, `setup/jupiter.md`, and
 `setup/leonardo.md`.
