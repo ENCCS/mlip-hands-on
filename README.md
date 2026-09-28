@@ -18,5 +18,7 @@ episode reads only the small checked-in CSV.
 
 Site-specific commands live in `setup/arrhenius.md` and `setup/jupiter.md`.
 The JUPITER profile qualifies short native LAMMPS functional checks from one
-through eight GPUs, but not ALCHEMI, Jupyter, or scaling performance. See
+through eight GPUs and separate native ALCHEMI one-GPU single/batched smokes,
+but not a
+Jupyter session, scientific agreement, or scaling performance. See
 `reference/instructor.md` before a live session.

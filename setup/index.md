@@ -24,8 +24,8 @@ No notebook submits a Slurm job. Obtain an allocation before running GPU cells.
 For the complete ALCHEMI-and-LAMMPS notebook route, read the
 [Arrhenius setup](arrhenius.md), copy `.env.example` to a private `.env`,
 and check each selected artifact before starting a GPU session. The
-[JUPITER setup](jupiter.md) currently qualifies native one-GPU LAMMPS, not
-the whole notebook route. The complete variable list is in
+[JUPITER setup](jupiter.md) qualifies short native LAMMPS and ALCHEMI runs,
+not the whole notebook route. The complete variable list is in
 [Environment variables](../reference/environment.md).
 
 :::{note}

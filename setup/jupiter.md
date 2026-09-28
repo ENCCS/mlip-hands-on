@@ -10,14 +10,15 @@ kernelspec:
   name: python3
 ---
 
-# JUPITER setup: native LAMMPS first
+# JUPITER setup: native LAMMPS and ALCHEMI
 
 JUPITER's booster nodes use four GH200 GPUs and aarch64 CPUs. This profile
 has passed short one-, two-, four-, and eight-GPU silicon runs with the pinned
 MACE ML-IAP export; the eight-GPU run used two nodes. These are functional
-checks, **not** throughput or scientific-equivalence benchmarks. The ALCHEMI
-environment and a Jupyter session are not yet qualified here. Do not use an
-Arrhenius SIF or MPI binary here.
+checks, **not** throughput or scientific-equivalence benchmarks. A Jupyter
+session is not yet qualified here. Do not use an Arrhenius SIF or MPI binary
+here. Native ALCHEMI has separately passed one-GPU, one- and eight-trajectory
+five-step NVE smokes. Neither smoke is a throughput benchmark.
 
 The tested native module family is:
 
@@ -110,6 +111,52 @@ identical within each job but differed slightly across rank counts. These
 checks do not establish decomposition-independent scientific agreement or
 useful scaling.
 
+## Native ALCHEMI without the container group
+
+JUPITER compute nodes have no outbound internet. Download the pinned Python
+packages from a login node into a private wheelhouse; the locked build and
+runtime requirements are in `locks/`. The download helper checks both lock
+hashes and does not install packages:
+
+```bash
+export MLIP_LESSON_ROOT=/path/to/staged/mlip-md-lesson
+export MLIP_WHEELHOUSE_OUTPUT=/e/project1/<PROJECT>/<USER>/mlip-md-lesson/alchemi-wheels.tar
+bash scripts/prepare-jupiter-wheelhouse.sh
+sha256sum "$MLIP_WHEELHOUSE_OUTPUT"
+```
+
+Record the resulting SHA-256 and use that exact archive for an offline,
+fresh virtual environment on a booster node. Do not put the wheelhouse, logs,
+or environment in Git. The script verifies the archive and both locks before
+installation; it does not replace a working environment:
+
+```bash
+export MLIP_JUPITER_WHEELHOUSE="$MLIP_WHEELHOUSE_OUTPUT"
+export MLIP_JUPITER_WHEELHOUSE_SHA256=<reviewed-archive-sha256>
+sbatch --account=<PROJECT> \
+  --export=ALL,MLIP_JUPITER_ROOT,MLIP_LESSON_ROOT,MLIP_JUPITER_WHEELHOUSE,MLIP_JUPITER_WHEELHOUSE_SHA256 \
+  scripts/prepare-jupiter-alchemi-env.sbatch
+```
+
+After that job completes successfully, set `MLIP_JUPITER_ALCHEMI_ENV_ID` to
+its job ID. Put the original MACE checkpoint named in
+`reference/model.toml` in the private `inputs/` directory. A short GPU check
+uses the same silicon trajectory as the Arrhenius example:
+
+```bash
+export MLIP_JUPITER_ALCHEMI_ENV_ID=<completed-environment-job-id>
+export MLIP_JUPITER_REPLICAS=1
+sbatch --account=<PROJECT> \
+  --export=ALL,MLIP_JUPITER_ROOT,MLIP_LESSON_ROOT,MLIP_JUPITER_ALCHEMI_ENV_ID,MLIP_JUPITER_REPLICAS \
+  scripts/test-jupiter-alchemi.sbatch
+```
+
+Set `MLIP_JUPITER_REPLICAS=8` for the separate batched functional check.
+Both replica counts completed on one GPU with the pinned checkpoint. The smoke
+script refuses other replica counts; adjust it only after reviewing a new
+test. These checks prove that the pinned native environment, GPU, model, and
+short trajectories work together. They do not establish comparative speed,
+temperature equilibration, or scientific agreement with LAMMPS.
+
 The `container`-group route is intentionally omitted from this profile.
-Native LAMMPS does not require that group. A future ALCHEMI virtual
-environment needs separate qualification.
+Neither native LAMMPS nor this native ALCHEMI environment needs that group.
