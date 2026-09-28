@@ -12,6 +12,13 @@ kernelspec:
 
 # JUPITER setup: native LAMMPS and ALCHEMI
 
+![Rows of JUPITER Booster computing racks.](../_static/jupiter-booster-racks.jpg)
+
+JUPITER Booster racks. Photo: Forschungszentrum Jülich / Sascha Kreklau;
+[source and license details](https://commons.wikimedia.org/wiki/File:JUPITER_racks_with_logos_of_supporters_and_partners._Copyright-_Forschungszentrum_J%C3%BClich_-_Sascha_Kreklau.jpg)
+([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)).
+This copy was resized; the photo does not imply institutional endorsement.
+
 JUPITER's booster nodes use four GH200 GPUs and aarch64 CPUs. This profile
 has passed short one-, two-, four-, and eight-GPU silicon runs with the pinned
 MACE ML-IAP export; the eight-GPU run used two nodes. These are functional

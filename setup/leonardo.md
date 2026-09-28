@@ -12,6 +12,13 @@ kernelspec:
 
 # Leonardo setup: A100 single-GPU route
 
+![Leonardo supercomputer cabinets in Bologna.](../_static/leonardo-cabinets.png)
+
+Leonardo supercomputer. Photo: National Institute of Geophysics and
+Volcanology (INGV); [source and license details](https://commons.wikimedia.org/wiki/File:Leonardo_supercomputer.png)
+([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)).
+This copy was resized; the photo does not imply institutional endorsement.
+
 Leonardo's Booster nodes use x86_64 CPUs and four NVIDIA A100 GPUs. Do not
 reuse an Arrhenius GH200/aarch64 executable or SIF. The bounded Leonardo
 qualification ran the same lesson silicon examples on **one A100**: one and

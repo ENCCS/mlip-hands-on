@@ -12,3 +12,16 @@ and [MIT code license](https://github.com/ENCCS/python-for-hpc/blob/main/LICENSE
 are included for this ENCCS course; no course prose or scientific code was
 copied. The MLIP lesson prose and example code here are original project
 content.
+
+The site setup pages also include two resized photographs licensed under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/):
+
+- `_static/jupiter-booster-racks.jpg`: JUPITER Booster racks by
+  Forschungszentrum Jülich / Sascha Kreklau;
+  [Wikimedia Commons source](https://commons.wikimedia.org/wiki/File:JUPITER_racks_with_logos_of_supporters_and_partners._Copyright-_Forschungszentrum_J%C3%BClich_-_Sascha_Kreklau.jpg).
+- `_static/leonardo-cabinets.png`: Leonardo supercomputer by the National
+  Institute of Geophysics and Volcanology (INGV);
+  [Wikimedia Commons source](https://commons.wikimedia.org/wiki/File:Leonardo_supercomputer.png).
+
+Only the image dimensions were changed. Their inclusion does not imply that
+the photographers or institutions endorse this lesson.
