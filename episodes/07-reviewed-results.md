@@ -15,22 +15,60 @@ kernelspec:
 
 # Read a completed shared-GPU benchmark
 
-Use the checked-in measurements from **one Arrhenius GH200** to compare
-ALCHEMI batching with eight native LAMMPS processes sharing that GPU. Each
-run advances eight **independent**
-silicon/MACE trajectories. This offline page reads a small CSV; its cells do **not** run MD,
-request an allocation, or contact Slurm.
+Use completed, site-labelled measurements from **one GH200** on Arrhenius
+or JUPITER to compare ALCHEMI batching with eight native LAMMPS processes
+sharing that GPU. Each row advances eight **independent** silicon/MACE
+trajectories. This offline page reads checked-in CSVs; its cells do **not**
+run MD, request an allocation, or contact Slurm.
 
-The CSV contains two completed NVE matrices, at 64 and 512 atoms per
-replica. An incomplete 4,096-atom matrix is excluded. These results are
-Arrhenius measurements, not the timings from your notebook session. JUPITER
-has passed short functional checks, but has no matching throughput matrix yet.
+Each site has completed NVE matrices at 64 and 512 atoms per trajectory.
+The incomplete Arrhenius 4,096-atom matrix is excluded. These are recorded
+site runs, not timings from your notebook session. Do not compare the two
+sites as if their runtime and startup conditions were identical.
 
 ## Reference measurements
 
-The read-only cell below renders the reviewed CSV as a table in both the
-published handout and the live notebook. Re-running it does not run MD or
-change the reference data.
+The synchronized tabs show three easy-to-compare rows from each site's
+complete matrix. They select **displayed reference data only**, not a
+compute backend or a notebook kernel.
+
+::::{tab-set}
+:sync-group: site
+
+:::{tab-item} Arrhenius
+:sync: arrhenius
+One Arrhenius GH200; time to finish all eight trajectories, in seconds:
+
+| Atoms/trajectory | ALCHEMI batch | LAMMPS ordinary, 8 clients | LAMMPS MPS, 8 clients |
+| ---: | ---: | ---: | ---: |
+| 64 | 18.745 | 100.010 | 88.336 |
+| 512 | 26.599 | 114.335 | 90.782 |
+
+[All 16 Arrhenius rows](reviewed-shared-gpu-nve.csv).
+:::
+
+:::{tab-item} JUPITER
+:sync: jupiter
+One JUPITER GH200 (a full node was allocated); time to finish all eight
+trajectories, in seconds:
+
+| Atoms/trajectory | ALCHEMI batch | LAMMPS ordinary, 8 clients | LAMMPS MPS, 8 clients |
+| ---: | ---: | ---: | ---: |
+| 64 | 76.380 | 95.733 | 73.033 |
+| 512 | 35.166 | 115.179 | 75.696 |
+
+[All 16 JUPITER comparison rows](reviewed-shared-gpu-nve-jupiter.csv).
+The private JUPITER matrix also retains a redundant ordinary-sharing
+one-client row at each size. The site MPS server was observed during the
+concurrent clients.
+:::
+
+::::
+
+The read-only cell below renders one full reviewed CSV as a table in both
+the published handout and the live notebook. Change `site` in the cell to
+inspect the other site; choosing a tab does not silently change a notebook
+variable. Re-running the cell does not run MD or change reference data.
 
 Each row completes eight simulations, each with 10 warmup and 200 measured
 steps at 0.1 fs. `processes` is the number of LAMMPS client processes; the
@@ -49,7 +87,12 @@ from pathlib import Path
 from IPython.display import Markdown, display
 
 episode_dir = Path.cwd() / "episodes" if (Path.cwd() / "episodes").is_dir() else Path.cwd()
-with (episode_dir / "reviewed-shared-gpu-nve.csv").open(newline="") as stream:
+site = "Arrhenius"  # change to "JUPITER" to inspect its full table and figure
+sources = {
+    "Arrhenius": "reviewed-shared-gpu-nve.csv",
+    "JUPITER": "reviewed-shared-gpu-nve-jupiter.csv",
+}
+with (episode_dir / sources[site]).open(newline="") as stream:
     rows = list(csv.DictReader(stream))
 
 assert len(rows) == 16 and {int(row["atoms_per_replica"]) for row in rows} == {64, 512}
@@ -88,20 +131,28 @@ for ax, atoms in zip(axes, (64, 512)):
     ax.set_title(f"Eight simulations × {atoms} atoms")
     ax.set_xlabel("Time to finish all eight (s; shorter is better)")
     ax.invert_yaxis()
-fig.suptitle("Arrhenius GH200: completed NVE workflows (one run per case)")
+fig.suptitle(f"{site} GH200: completed NVE workflows (one run per case)")
 fig.tight_layout()
 plt.show()
 ```
 
 ## Interpret the measurement
 
-At 64 atoms per simulation, ALCHEMI finished all eight in 18.745 s;
+On Arrhenius, at 64 atoms per simulation, ALCHEMI finished all eight in 18.745 s;
 the fastest tested LAMMPS mode took 88.336 s, about 4.71 times as long.
 At 512 atoms, the corresponding times were 26.599 s and 90.782 s,
 about 3.41 times as long. This is not a repeated-run
 estimate, intrinsic kernel speedup, trajectory-equivalence result, or GPU
 memory limit. The 4,096-atom matrix timed out before its eighth row; do not
 fill that gap by extrapolation.
+
+On JUPITER, the 64-atom ALCHEMI group took 76.380 s while its 512-atom
+group took 35.166 s. The larger case is **not** intrinsically faster:
+startup and cache effects may dominate this one-run end-to-end measure, and
+their cause was not isolated. Eight LAMMPS MPS clients took 73.033 s at
+64 atoms and 75.696 s at 512 atoms, compared with 95.733 s and 115.179 s
+under ordinary sharing. These completed cases support showing both modes,
+not a general MPS or cross-site speedup claim.
 
 For a new comparison, record model and software hashes, GPU occupancy,
 initial positions and velocities, and the exact warmup and timed-step counts.
