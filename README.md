@@ -16,7 +16,8 @@ run `make html`. `make livehtml PORT=8766` watches the Markdown and serves the
 pages on loopback. Publishing never runs the GPU cells. The offline results
 episode reads only the small checked-in CSV.
 
-Site-specific commands live in `setup/arrhenius.md` and `setup/jupiter.md`.
+Site-specific commands live in `setup/arrhenius.md`, `setup/jupiter.md`, and
+`setup/leonardo.md`.
 The JUPITER profile qualifies short native LAMMPS ML-IAP and Metatomic
 functional checks from one through eight GPUs, native ALCHEMI one-GPU
 single/batched smokes, and a bounded MyST notebook/server check. These do
