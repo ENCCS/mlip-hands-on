@@ -46,6 +46,13 @@ ALCHEMI one-GPU check completed both one and eight independent 64-atom,
 five-measured-step NVE trajectories; neither is a cross-engine validation or a
 performance measurement.
 
+The separate JUPITER Metatomic/Kokkos fork also completed five-step silicon
+functional checks on one GPU, on two and four GPUs in one node, and on eight
+GPUs in two nodes. The multi-GPU input had 512 atoms. A freshly exported
+Metatomic model passed a one-GPU check, but its file hash differed from an
+earlier export; record and verify each export separately. These checks add a
+working path, not a speed comparison with ML-IAP or ALCHEMI.
+
 Treat the plotted numbers as reviewed *examples* and label the configuration
 and repetitions behind every performance statement. For a fresh benchmark,
 predeclare the atom-count and replica matrix, repeat completed jobs, report

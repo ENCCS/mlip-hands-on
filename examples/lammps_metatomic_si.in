@@ -1,0 +1,22 @@
+# Short silicon NVE smoke with an exported Metatomic MACE model.
+# Supply the private model path as: -var model /path/to/model.pt
+package kokkos newton on neigh half
+units metal
+atom_style atomic/kk
+boundary p p p
+
+lattice diamond 5.43
+region box block 0 2 0 2 0 2 units lattice
+create_box 1 box
+create_atoms 1 box
+mass 1 28.085
+
+pair_style metatomic/kk ${model}
+pair_coeff * * 14
+timestep 0.0001
+velocity all create 300.0 37214 mom yes rot yes dist gaussian
+fix integrate all nve/kk
+thermo_style custom step temp pe ke etotal
+thermo 1
+run_style verlet/kk
+run 5

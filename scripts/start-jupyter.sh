@@ -2,9 +2,8 @@
 # Run *inside* one reviewed GPU allocation; creates no Slurm job or tunnel.
 set -euo pipefail
 : "${SLURM_JOB_ID:?start this only inside an allocated GH200 shell}"
-command -v jupyter >/dev/null || { echo 'Jupyter is not installed in this environment' >&2; exit 1; }
-python -c 'import jupytext, matplotlib; from jupytext import TextFileContentsManager' >/dev/null || {
-  echo 'Jupytext and Matplotlib are required for all MyST notebook chapters' >&2
+python -c 'import jupyterlab, jupytext, matplotlib; from jupytext import TextFileContentsManager' >/dev/null || {
+  echo 'JupyterLab, Jupytext and Matplotlib are required for the MyST notebook chapters' >&2
   exit 1
 }
 here=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
@@ -26,11 +25,11 @@ if [[ "${MLIP_JUPYTER_TLS:-0}" == 1 ]]; then
     >"$MLIP_JOB_LOG_DIR/jupyter-${SLURM_JOB_ID}.fingerprint"
   chmod 600 "$MLIP_JOB_LOG_DIR/jupyter-${SLURM_JOB_ID}.fingerprint"
   echo 'TLS notebook relay is ready; compare its certificate fingerprint before using the browser.'
-  exec jupyter lab --no-browser --ip=0.0.0.0 --port="${MLIP_JUPYTER_PORT:-8888}" \
+  exec python -m jupyterlab --no-browser --ip=0.0.0.0 --port="${MLIP_JUPYTER_PORT:-8888}" \
     --certfile="$tls_dir/cert.pem" --keyfile="$tls_dir/key.pem" \
     --ServerApp.allow_remote_access=True --ServerApp.root_dir="$here" \
     --ServerApp.contents_manager_class=jupytext.TextFileContentsManager
 fi
-exec jupyter lab --no-browser --ip=127.0.0.1 --port="${MLIP_JUPYTER_PORT:-8888}" \
+exec python -m jupyterlab --no-browser --ip=127.0.0.1 --port="${MLIP_JUPYTER_PORT:-8888}" \
   --ServerApp.allow_remote_access=False --ServerApp.root_dir="$here" \
   --ServerApp.contents_manager_class=jupytext.TextFileContentsManager

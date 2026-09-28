@@ -15,8 +15,10 @@ kernelspec:
 JUPITER's booster nodes use four GH200 GPUs and aarch64 CPUs. This profile
 has passed short one-, two-, four-, and eight-GPU silicon runs with the pinned
 MACE ML-IAP export; the eight-GPU run used two nodes. These are functional
-checks, **not** throughput or scientific-equivalence benchmarks. A Jupyter
-session is not yet qualified here. Do not use an Arrhenius SIF or MPI binary
+checks, **not** throughput or scientific-equivalence benchmarks. Both cells
+in the eight-replica MyST page completed through a private Jupyter kernel.
+A short private JupyterLab server passed TLS-fingerprint and authenticated-API
+checks, then its allocation was cancelled. Do not use an Arrhenius SIF or MPI binary
 here. Native ALCHEMI has separately passed one-GPU, one- and eight-trajectory
 five-step NVE smokes. Neither smoke is a throughput benchmark.
 
@@ -157,6 +159,114 @@ script refuses other replica counts; adjust it only after reviewing a new
 test. These checks prove that the pinned native environment, GPU, model, and
 short trajectories work together. They do not establish comparative speed,
 temperature equilibration, or scientific agreement with LAMMPS.
+
+The same `scripts/run-alchemi.sh` used by the MyST notebook cells accepts an
+explicit native mode on JUPITER. In an allocated GPU step, set:
+
+```bash
+export MLIP_ALCHEMI_RUNNER=native
+export MLIP_NATIVE_ALCHEMI_PYTHON="$MLIP_JUPITER_ROOT/env-alchemi-$MLIP_JUPITER_ALCHEMI_ENV_ID/bin/python"
+export MLIP_MODEL="$MLIP_JUPITER_ROOT/inputs/mace-mp-0a-small-2ddb079cee0e131e.model"
+```
+
+The eight-replica short smoke and both cells in the eight-replica MyST page
+passed through that exact runner. Launch
+the notebook only inside a GPU-bound `srun` step so the kernel sees one GPU.
+
+For a private JupyterLab environment, build the course's patched MyST wheel
+as described in `jupyterlab-enccs/README.md`
+and stage it under the private root. The preparation script checks the exact
+wheel identity, then installs Jupytext and Matplotlib alongside the site's
+JupyterLab 4.3.4 in a fresh private environment:
+
+```bash
+export MLIP_JUPITER_MYST_WHEEL="$MLIP_JUPITER_ROOT/inputs/jupyterlab_myst-2.4.2-py3-none-any.whl"
+export MLIP_JUPITER_MYST_WHEEL_SHA256=<reviewed-wheel-sha256>
+export MLIP_JUPITER_JUPYTER_ENV="$MLIP_JUPITER_ROOT/jupyter-env-course"
+bash scripts/prepare-jupiter-jupyter-env.sh
+```
+
+After reviewing the private environment and the source lesson, one bounded
+GPU notebook session is submitted with a private log. The `%j` placeholder
+is replaced by Slurm with the job ID:
+
+```bash
+sbatch --account=<PROJECT> \
+  --output="$MLIP_JUPYTER_ROOT/jupyter-%j.log" \
+  --error="$MLIP_JUPYTER_ROOT/jupyter-%j.err" \
+  --export=ALL,MLIP_JUPITER_ROOT,MLIP_LESSON_ROOT,MLIP_JUPITER_ALCHEMI_ENV_ID,MLIP_JUPITER_JUPYTER_ENV \
+  scripts/jupiter-jupyter.sbatch
+```
+
+From your laptop, use the notebook mode of `scripts/connect-from-laptop.sh`
+with your JUPITER SSH alias and job ID to verify the private TLS fingerprint
+and forward the notebook.
+Cancel the allocation when finished; closing the browser does not stop Slurm.
+
+## Metatomic MACE in native LAMMPS/Kokkos
+
+This is a separate LAMMPS pair style from the ML-IAP route above. The pinned
+Metatomic fork needed a four-file compatibility patch: two Kokkos classes
+still declared a device-picker override removed from their base classes.
+The patch removes only those stale declarations and dead definitions; it does
+not change the force calculation. Keep the original checkpoint, exported
+Metatomic model, package overlays, and LAMMPS build outside Git.
+
+On a login node, prepare the pinned fork and private Python overlays:
+
+```bash
+export MLIP_LESSON_ROOT=/path/to/staged/mlip-md-lesson
+export MLIP_METATOMIC_SOURCE="$MLIP_JUPITER_ROOT/lammps-metatomic-patched-6a3910424d0aeccf27ad1fc233be1933f72631d2"
+export MLIP_METATOMIC_OVERLAY="$MLIP_JUPITER_ROOT/metatomic-overlay-course"
+export MLIP_MACE_EXPORT_OVERLAY="$MLIP_JUPITER_ROOT/mace-export-overlay-course"
+bash scripts/prepare-jupiter-metatomic-source.sh
+bash scripts/prepare-jupiter-metatomic-env.sh
+```
+
+The exporter uses the pinned original MACE checkpoint, zero training epochs,
+and a tiny dummy silicon structure to make a Metatomic-format model. The
+dummy structure supplies the export interface; it is not training data for a
+new potential. Record the printed SHA-256 of the fresh export instead of
+assuming exports are byte-identical:
+
+```bash
+export MLIP_MACE_MODEL="$MLIP_JUPITER_ROOT/inputs/mace-mp-0a-small-2ddb079cee0e131e.model"
+export MLIP_METATOMIC_EXPORT_DIR="$MLIP_JUPITER_ROOT/metatomic-export-course"
+bash scripts/export-jupiter-metatomic-model.sh
+```
+
+Build the MPI/CUDA/Hopper LAMMPS executable on one booster node. The script
+checks the four patched source hashes and links against the NCCL bundled with
+the pinned PyTorch environment, rather than an older site NCCL:
+
+```bash
+sbatch --account=<PROJECT> \
+  --export=ALL,MLIP_JUPITER_ROOT,MLIP_METATOMIC_SOURCE,MLIP_METATOMIC_OVERLAY,MLIP_JUPITER_ALCHEMI_ENV_ID \
+  scripts/build-jupiter-metatomic-mpi.sbatch
+```
+
+Set `MLIP_JUPITER_METATOMIC_BUILD_ID` to the completed build job ID,
+`MLIP_METATOMIC_MODEL` to the private exported `model.pt`, and
+`MLIP_METATOMIC_MODEL_SHA256` to its recorded hash. The smoke script checks
+all three identities. Its default input is a 64-atom silicon NVE trajectory;
+for multi-GPU runs, set `MLIP_METATOMIC_INPUT` to the staged
+`examples/lammps_metatomic_si_512.in` instead. A two-GPU example is:
+
+```bash
+export MLIP_METATOMIC_INPUT="$MLIP_LESSON_ROOT/examples/lammps_metatomic_si_512.in"
+sbatch --account=<PROJECT> --nodes=1 --ntasks=2 --ntasks-per-node=2 \
+  --gres=gpu:2 --gpus-per-task=1 --cpus-per-task=8 --mem=128G \
+  --export=ALL,MLIP_JUPITER_ROOT,MLIP_LESSON_ROOT,MLIP_JUPITER_METATOMIC_BUILD_ID,MLIP_METATOMIC_MODEL,MLIP_METATOMIC_MODEL_SHA256,MLIP_METATOMIC_OVERLAY,MLIP_JUPITER_ALCHEMI_ENV_ID,MLIP_METATOMIC_INPUT \
+  scripts/test-jupiter-metatomic-mpi.sbatch
+```
+
+One, two, and four GPUs on one node and eight GPUs across two nodes passed
+short functional runs with this Metatomic fork. For four GPUs, request four
+ranks and four GPUs on one node. For eight, request two nodes, four ranks and
+four GPUs *per node*, and eight total ranks. These five-step smokes do not
+measure scaling, establish cross-engine force agreement, or prove a long
+trajectory stable. The earlier ML-IAP/Kokkos path remains the reviewed
+performance baseline until a separate matched benchmark is completed.
 
 The `container`-group route is intentionally omitted from this profile.
 Neither native LAMMPS nor this native ALCHEMI environment needs that group.

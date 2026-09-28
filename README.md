@@ -17,8 +17,8 @@ pages on loopback. Publishing never runs the GPU cells. The offline results
 episode reads only the small checked-in CSV.
 
 Site-specific commands live in `setup/arrhenius.md` and `setup/jupiter.md`.
-The JUPITER profile qualifies short native LAMMPS functional checks from one
-through eight GPUs and separate native ALCHEMI one-GPU single/batched smokes,
-but not a
-Jupyter session, scientific agreement, or scaling performance. See
+The JUPITER profile qualifies short native LAMMPS ML-IAP and Metatomic
+functional checks from one through eight GPUs, native ALCHEMI one-GPU
+single/batched smokes, and a bounded MyST notebook/server check. These do
+not establish scientific agreement or scaling performance. See
 `reference/instructor.md` before a live session.

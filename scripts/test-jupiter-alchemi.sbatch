@@ -26,12 +26,15 @@ module load Stages/2025 GCC/13.3.0 Python/3.12.3 >/dev/null
 export PYTHONNOUSERSITE=1
 export TORCH_COMPILE_DISABLE=1
 export TORCH_DISABLE_NATIVE_JIT=1
+export MLIP_ALCHEMI_RUNNER=native
+export MLIP_MODEL="$model"
+export MLIP_NATIVE_ALCHEMI_PYTHON="$venv/bin/python"
 result="$MLIP_JUPITER_ROOT/results/alchemi-${MLIP_JUPITER_REPLICAS}-$SLURM_JOB_ID"
 mkdir -p -m 700 "$MLIP_JUPITER_ROOT/results"
 mkdir -m 700 "$result"
 srun --nodes=1 --ntasks=1 --gpus=1 --cpu-bind=cores \
-  "$venv/bin/python" "$MLIP_LESSON_ROOT/examples/alchemi_si.py" \
-  --model "$model" --integrator nve --replicas "$MLIP_JUPITER_REPLICAS" --cells 2 \
+  bash "$MLIP_LESSON_ROOT/scripts/run-alchemi.sh" \
+  --integrator nve --replicas "$MLIP_JUPITER_REPLICAS" --cells 2 \
   --warmup 1 --steps 5 >"$result/md.json" 2>"$result/md.err"
 "$venv/bin/python" - "$result/md.json" "$MLIP_JUPITER_REPLICAS" <<'PY'
 import json, math, pathlib, sys
