@@ -2,10 +2,10 @@
 
 This independent Git repository is the maintained source of the
 MLIP MyST/Jupyter lesson. The older in-tree lesson in `mlip-hands-on` is
-historical and should not receive new edits. This repository does not yet
-have a published lesson site. Its configured `origin` is
-`git@github.com:ENCCS/mlip-hands-on.git`; pushing and enabling GitHub Pages
-require separate review.
+historical and should not receive new edits. The public source is
+[ENCCS/mlip-hands-on](https://github.com/ENCCS/mlip-hands-on), and the
+[lesson pages](https://enccs.github.io/mlip-hands-on/) are built from
+the `main` branch by GitHub Actions.
 
 It contains the source of a short, runnable MyST lesson. The
 same Markdown files build a web handout and open as notebooks in JupyterLab.
@@ -27,8 +27,8 @@ and figure.
 GitHub Actions checks shell and Python examples, scans tracked lesson text for
 known private site values, and runs the strict Sphinx HTML build on pull
 requests and pushes to `main`. The HTML is retained as a workflow artifact.
-There is no Pages deployment job yet: confirm the ENCCS organization plan,
-Pages policy, and intended public/private visibility before enabling it.
+A successful `main` push also publishes that exact build to GitHub Pages;
+pull requests never deploy.
 The source scan is a guardrail; publication still needs human review of the
 rendered pages and files.
 
