@@ -14,7 +14,8 @@ import torch
 from ase.build import bulk
 
 
-def one_replica(model, steps, warmup, seed, integrator, cells):
+def one_replica(model, steps, warmup, seed, integrator, cells,
+                atom_sort_interval):
     import lammps
     from lammps.mliap import activate_mliappy_kokkos
 
@@ -46,7 +47,7 @@ def one_replica(model, steps, warmup, seed, integrator, cells):
         if lmp.get_natoms() != count:
             raise RuntimeError("LAMMPS atom count mismatch")
         for command in (
-            "atom_modify sort 0 0.0",
+            f"atom_modify sort {atom_sort_interval} 0.0",
             f"pair_style mliap/kk unified {model} 0",
             "pair_coeff * * Si",
             f"velocity all create 300 {seed} mom yes rot yes dist gaussian",
@@ -65,7 +66,7 @@ def one_replica(model, steps, warmup, seed, integrator, cells):
         energy = float(lmp.get_thermo("pe"))
         if not math.isfinite(energy):
             raise RuntimeError("non-finite potential energy")
-        return elapsed
+        return elapsed, energy
     finally:
         lmp.close()
 
@@ -77,9 +78,11 @@ def main():
     parser.add_argument("--steps", type=int, default=200)
     parser.add_argument("--warmup", type=int, default=10)
     parser.add_argument("--integrator", choices=("langevin", "nve"), default="langevin")
-    parser.add_argument("--cells", type=int, choices=(2, 4, 8, 10), default=2)
+    parser.add_argument("--cells", type=int, choices=(2, 4, 8, 10, 16, 17, 18), default=2)
     parser.add_argument("--replica-start", type=int, default=0,
                         help="first global replica index for disjoint process seeds")
+    parser.add_argument("--atom-sort-interval", type=int, choices=(0, 100), default=0,
+                        help="0 preserves the baseline; 100 tests documented GPU sorting")
     args = parser.parse_args()
     if not args.mliap_model.is_file():
         parser.error("ML-IAP export is absent")
@@ -102,10 +105,14 @@ def main():
 
     total_started = time.perf_counter()
     measured = []
+    final_energies = []
     for index in range(args.replicas):
-        measured.append(one_replica(args.mliap_model, args.steps, args.warmup,
-                                    20260924 + 2 * (args.replica_start + index),
-                                    args.integrator, args.cells))
+        elapsed, energy = one_replica(args.mliap_model, args.steps, args.warmup,
+                                      20260924 + 2 * (args.replica_start + index),
+                                      args.integrator, args.cells,
+                                      args.atom_sort_interval)
+        measured.append(elapsed)
+        final_energies.append(energy)
     total_seconds = time.perf_counter() - total_started
     measured_seconds = sum(measured)
     print(json.dumps({
@@ -119,6 +126,8 @@ def main():
         "replica_steps_per_second": args.replicas * args.steps / measured_seconds,
         "end_to_end_replica_steps_per_second": args.replicas * args.steps / total_seconds,
         "mean_replica_latency_seconds": measured_seconds / args.replicas,
+        "atom_sort_interval": args.atom_sort_interval,
+        "final_potential_energies_ev": final_energies,
         "local_rank": int(os.environ.get("SLURM_LOCALID", "0")),
         "mliap_model_sha256": digest.hexdigest(),
     }, sort_keys=True))
