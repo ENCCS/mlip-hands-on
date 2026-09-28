@@ -12,8 +12,10 @@ kernelspec:
 
 # The MACE potential and the two MD engines
 
-A molecular-dynamics engine advances atomic positions and velocities. It
-needs forces at each step. Here a MACE machine-learned interatomic potential
+A molecular-dynamics (MD) engine advances atomic positions and velocities
+one step at a time. The resulting sequence of atomic states is a
+**trajectory**. The engine needs forces at each step. Here a MACE
+machine-learned interatomic potential
 predicts those forces for diamond-structure silicon. MACE is a family of
 models, not a single universal checkpoint; a model suitable for one chemical
 domain may not be suitable for another.
@@ -28,6 +30,9 @@ their formats differ; the export still needs its own validation.
 :lines: 1-13
 ```
 
+Open the complete [model identity file](../reference/model.toml) to see the
+checkpoint and export hashes before preparing either engine.
+
 Other MACE families include MACE-MPA, MACE-OMAT, and MACE-OFF. They cover
 different training data and intended applications. Listing them here does
 not mean that our pinned ALCHEMI image or ML-IAP export can run them without
@@ -35,8 +40,10 @@ new preparation and tests. See the
 [MACE foundation-model documentation](https://mace-docs.readthedocs.io/en/latest/guide/foundation_models.html)
 when choosing a model for a new system.
 
-ALCHEMI Toolkit builds atomic data structures, calls the model, and advances
-many systems through one Python program. LAMMPS provides a compiled MD
+ALCHEMI Toolkit builds atomic data structures, calls the model, and can
+advance many independent systems together in a **batch**: they share one
+program and GPU allocation but do not exchange forces with each other.
+LAMMPS provides a compiled MD
 engine; ML-IAP lets it call the MACE potential, while Kokkos runs supported
 work on the GPU. In the first comparison both engines use one silicon system
 on one GPU. Later, ALCHEMI batches independent systems and LAMMPS runs

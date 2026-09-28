@@ -18,6 +18,13 @@ your allocation, and keep that file private. The example uses
 account. A model file, SIF, native runtime, and results directory are
 artifacts outside Git.
 
+For the first Arrhenius notebook run, usually edit `MLIP_PROJECT_ROOT` in
+the private `.env` and check that its derived model, SIF, native runtime,
+and results paths actually exist. Change an individual derived path only
+when you placed that artifact elsewhere. The remaining variables below
+belong to optional builds, scaling jobs, or the other site; do not fill them
+all in before the first exercise.
+
 | Variable | Example or source | Used for |
 | --- | --- | --- |
 | `MLIP_PROJECT_ROOT` | `/nobackup/proj/disk/snicXXXX-XX-X/personal/USER/mlip-md` | Convenience base path in `.env.example` only. |

@@ -12,10 +12,12 @@ kernelspec:
 
 # Build native LAMMPS with ML-IAP, Kokkos, and MPI
 
-The native path uses a separate CPython 3.12 environment with Torch, MACE,
-and CuPy. ML-IAP embeds Python, so the build also needs matching `Python.h`
-and `libpython3.12.so`. The notebook venv is not a substitute for that
-development installation.
+The native path uses a separately prepared CPython 3.12 archive with Torch,
+MACE, and CuPy. ML-IAP embeds Python, so the build also needs matching
+`Python.h` and `libpython3.12.so`. The notebook venv is not a substitute
+for that development installation. The pinned source and Python archives
+are private build inputs, **not** part of the lesson checkout; obtain and
+verify them before attempting the build.
 
 The supplied Arrhenius build job takes a pinned LAMMPS source archive and a
 prepared native Python archive. It checks their identities, then loads the
@@ -40,7 +42,10 @@ MPI stack used when running the executable.
 The script runs in a separately reviewed Slurm build allocation and writes
 an MPI runtime candidate archive. It does not overwrite an existing LAMMPS
 installation, submit itself, or prove that multi-GPU MD is scientifically
-correct. A one-rank smoke precedes the optional 1/2/4-GPU scaling episode.
+correct. Read the complete [build job](../scripts/build-lammps-mpi.sbatch):
+the excerpts omit identity checks, private output paths, and build
+validation. A one-rank smoke precedes the optional 1/2/4-GPU scaling
+episode.
 
 ## Export the same checkpoint for ML-IAP
 
@@ -60,6 +65,8 @@ Arrhenius build it should match the value in `reference/model.toml`. A fresh
 export did match that value and completed a short one-rank LAMMPS run. On
 another site, check the export and one-rank run again; a matching hash alone
 is not a force or trajectory validation.
+The complete [exporter source](../examples/export_mace_mliap.py) is included
+so you can inspect its model check and refusal to overwrite an export.
 
 On Arrhenius, the tested multi-rank runner uses site MPICH with PMI2/CXI,
 `gpu/aware on`, and peer-visible GPUs. Hiding every other GPU from a rank

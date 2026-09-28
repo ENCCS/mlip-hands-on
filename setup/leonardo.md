@@ -19,7 +19,9 @@ Volcanology (INGV); [source and license details](https://commons.wikimedia.org/w
 ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)).
 This copy was resized; the photo does not imply institutional endorsement.
 
-Leonardo's Booster nodes use x86_64 CPUs and four NVIDIA A100 GPUs. Do not
+The [Leonardo Booster](https://docs.hpc.cineca.it/hpc/leonardo.html) uses
+x86_64 CPU nodes with four NVIDIA A100 GPUs, each with 64 GiB of memory.
+Do not
 reuse an Arrhenius GH200/aarch64 executable or SIF. The bounded Leonardo
 qualification ran the same lesson silicon examples on **one A100**: one and
 eight native ALCHEMI trajectories, and one LAMMPS ML-IAP/Kokkos trajectory.

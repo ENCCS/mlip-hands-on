@@ -39,35 +39,52 @@ physical questions and should not share one performance or trajectory claim.
 :end-before: def main
 ```
 
+The complete [ALCHEMI example](../examples/alchemi_si.py) also shows the
+seeded initial velocities and the timing code.
+
 With the Arrhenius environment selected and one GPU allocated, this cell
 runs the single trajectory. The helper script mounts the model and this
 lesson's Python file read-only into the SIF, so it runs the code shown above.
+From the repository root, the equivalent terminal command is:
+
+```bash
+bash scripts/run-alchemi.sh --replicas 1 --cells 2 \
+  --integrator nve --warmup 10 --steps 200
+```
+
+The command prints a structured result; the notebook formats a few fields
+as a table. Neither command submits a job. Both require an existing GPU
+allocation and the selected environment variables from the setup page.
 
 ```{code-cell} ipython3
 import json
 import subprocess
+from time import perf_counter
 from pathlib import Path
 from IPython.display import Markdown, display
 
 lesson = Path.cwd().parent if Path.cwd().name == "episodes" else Path.cwd()
+started = perf_counter()
 completed = subprocess.run(
     ["bash", str(lesson / "scripts/run-alchemi.sh"), "--replicas", "1", "--cells", "2",
      "--integrator", "nve", "--warmup", "10", "--steps", "200"],
     check=True, capture_output=True, text=True,
 )
+command_wall = perf_counter() - started
 one = json.loads(completed.stdout.strip().splitlines()[-1])
 display(Markdown(
-    "| Atoms | Timed steps | MD time (s) | Steps/s | Peak Torch memory (GiB) |\n"
+    "| Atoms | Timed steps | Whole command (s) | MD steps only (s) | Peak Torch memory (GiB) |\n"
     "| ---: | ---: | ---: | ---: | ---: |\n"
     f"| {one['atoms_per_replica']} | {one['measured_steps']} | "
-    f"{one['measured_seconds']:.3f} | "
-    f"{one['replica_steps_per_second']:.2f} | "
+    f"{command_wall:.3f} | {one['measured_seconds']:.3f} | "
     f"{one['peak_torch_allocated_bytes']/2**30:.2f} |"
 ))
 ```
 
 :::{note}
-This confirms that the MD run completes and gives one short timing. It does not validate
-the model against reference science. PyTorch's peak allocation is not total
+The whole-command clock includes SIF startup, model loading, warmup, and MD;
+the MD-only clock excludes those setup costs. Neither includes queue wait.
+One short timing does not predict sustained production speed or validate the
+model against reference science. PyTorch's peak allocation is not total
 GPU memory use.
 :::

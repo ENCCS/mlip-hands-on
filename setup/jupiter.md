@@ -19,7 +19,9 @@ JUPITER Booster racks. Photo: Forschungszentrum Jülich / Sascha Kreklau;
 ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)).
 This copy was resized; the photo does not imply institutional endorsement.
 
-JUPITER's booster nodes use four GH200 GPUs and aarch64 CPUs. This profile
+According to the [JUPITER Booster configuration](https://apps.fz-juelich.de/jsc/hps/jupiter/configuration.html),
+each booster node has four GH200 superchips; each combines a 72-core Arm
+CPU with a GPU with 96 GB of high-bandwidth memory. This profile
 has passed short one-, two-, four-, and eight-GPU silicon runs with the pinned
 MACE ML-IAP export; the eight-GPU run used two nodes. These are functional
 checks, **not** throughput or scientific-equivalence benchmarks. Both cells
@@ -268,6 +270,32 @@ Set `MLIP_JUPITER_METATOMIC_BUILD_ID` to the completed build job ID,
 all three identities. Its default input is a 64-atom silicon NVE trajectory;
 for multi-GPU runs, set `MLIP_METATOMIC_INPUT` to the staged
 `examples/lammps_metatomic_si_512.in` instead. A two-GPU example is:
+
+```{literalinclude} ../examples/lammps_metatomic_si.in
+:language: text
+```
+
+The [complete 64-atom input](../examples/lammps_metatomic_si.in) is shown
+above; the [512-atom input](../examples/lammps_metatomic_si_512.in) changes
+the diamond-lattice box from `0 2` to `0 4` in each direction. `units metal`
+makes the timestep unit picoseconds, so `0.0001` is 0.1 fs. `pair_style`
+loads the exported model passed as `${model}`, while `pair_coeff * * 14`
+maps the one atom type to silicon's atomic number. The `nve/kk` fix
+integrates without a thermostat; `thermo 1` prints diagnostic quantities
+each step, and `run 5` advances only five steps. The job script supplies
+the model variable and launches the MPI ranks with `srun`. In isolation,
+the corresponding LAMMPS command is:
+
+```bash
+lmp -k on g 1 -sf kk -var model "$MLIP_METATOMIC_MODEL" \
+  -in "$MLIP_METATOMIC_INPUT"
+```
+
+That line is an explanation of the input interface, **not** a replacement
+for the validated Slurm job: its GPU count and rank binding come from the
+allocation. Opening this notebook does not submit it.
+
+A two-GPU job request, to issue manually after checking the site policy, is:
 
 ```bash
 export MLIP_METATOMIC_INPUT="$MLIP_LESSON_ROOT/examples/lammps_metatomic_si_512.in"
