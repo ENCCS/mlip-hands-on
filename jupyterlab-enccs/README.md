@@ -59,7 +59,8 @@ python jupyterlab-enccs/check_rendering.py \
   --geckodriver /path/to/geckodriver
 ```
 
-The September 2026 ASUS browser check passed all 15 pages, and the Arrhenius
+The September 2026 ASUS browser check passed all 16 current pages, including
+the JUPITER setup page, in an isolated JupyterLab workspace. The Arrhenius
 private installation reported both `jupyterlab-myst` and `jupyterlab-jupytext`
 healthy. The upstream source's two unit suites passed (7 tests). This does
 not establish general Sphinx-directive compatibility or screen-reader

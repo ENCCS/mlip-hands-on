@@ -17,6 +17,7 @@ single notebook run.
 
 setup/index
 setup/arrhenius
+setup/jupiter
 setup/notebook
 ```
 

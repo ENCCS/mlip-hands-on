@@ -66,8 +66,8 @@ On Arrhenius, the tested multi-rank runner uses site MPICH with PMI2/CXI,
 caused an earlier ML-IAP ghost-exchange failure. These are implementation
 details of this site profile, not portable defaults. On another cluster,
 recheck the compiler/MPI ABI, device assignment, network transport, and
-Slurm options. A future Leonardo profile should live alongside this one,
-not be mixed into the Arrhenius commands.
+Slurm options. [JUPITER's native setup](../setup/jupiter.md) is separate;
+a future Leonardo profile should be separate too.
 
 NCCL matters to ALCHEMI's separate distributed `DomainParallel` path; it
 is not a replacement for the MPI configuration of this LAMMPS build.

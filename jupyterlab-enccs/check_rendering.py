@@ -2,10 +2,12 @@
 """Check the lesson's MyST rendering in a private JupyterLab session."""
 
 import argparse
+import os
 from pathlib import Path
 from urllib.parse import quote
 
 from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
@@ -14,14 +16,20 @@ from selenium.webdriver.support.ui import WebDriverWait
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base-url", required=True, help="Private JupyterLab base URL")
-    parser.add_argument("--token-file", required=True, type=Path)
+    token_source = parser.add_mutually_exclusive_group(required=True)
+    token_source.add_argument("--token-file", type=Path)
+    token_source.add_argument("--token-env", help="name of a private token environment variable")
     parser.add_argument("--geckodriver", default="geckodriver")
     args = parser.parse_args()
 
     root = Path(__file__).resolve().parents[1]
-    token = args.token_file.read_text(encoding="utf-8").strip()
+    token = (
+        args.token_file.read_text(encoding="utf-8").strip()
+        if args.token_file is not None
+        else os.environ.get(args.token_env, "").strip()
+    )
     if not token:
-        raise SystemExit("empty token file")
+        raise SystemExit("empty Jupyter token")
     pages = [
         page
         for folder in ("episodes", "setup", "reference")
@@ -43,20 +51,31 @@ def main() -> None:
             )
             url = (
                 args.base_url.rstrip("/")
-                + "/lab/tree/"
+                + f"/lab/workspaces/mlip-render-{os.getpid()}/tree/"
                 + quote(relative, safe="/")
                 + "?token="
                 + quote(token, safe="")
             )
             driver.get(url)
-            WebDriverWait(driver, 30).until(
-                lambda current: any(
-                    heading.text == expected_heading
-                    for heading in current.find_elements(
-                        "css selector", ".jp-Notebook .myst h1"
+            try:
+                WebDriverWait(driver, 30).until(
+                    lambda current: any(
+                        heading.text == expected_heading
+                        for heading in current.find_elements(
+                            "css selector", ".jp-Notebook .myst h1"
+                        )
                     )
                 )
-            )
+            except TimeoutException as error:
+                observed = driver.execute_script(
+                    """return {
+                        notebooks: document.querySelectorAll('.jp-Notebook').length,
+                        markdownViewers: document.querySelectorAll('.jp-MarkdownViewer').length,
+                        headings: [...document.querySelectorAll('h1')]
+                            .map(item => item.textContent.trim()).slice(0, 6)
+                    };"""
+                )
+                raise SystemExit(f"notebook did not open: {relative}: {observed}") from error
             if page.name == "renderer-fixture.md":
                 WebDriverWait(driver, 15).until(
                     lambda current: current.execute_script(

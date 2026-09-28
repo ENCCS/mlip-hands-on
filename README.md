@@ -16,6 +16,7 @@ run `make html`. `make livehtml PORT=8766` watches the Markdown and serves the
 pages on loopback. Publishing never runs the GPU cells. The offline results
 episode reads only the small checked-in CSV.
 
-Site-specific commands live in `setup/arrhenius.md`. A future site profile can
-provide another compiler, MPI, scheduler, and GPU setup without changing the
-scientific examples. See `reference/instructor.md` before a live session.
+Site-specific commands live in `setup/arrhenius.md` and `setup/jupiter.md`.
+The JUPITER profile currently qualifies native one-GPU LAMMPS only; it does
+not imply that the ALCHEMI or multi-GPU route works there. See
+`reference/instructor.md` before a live session.

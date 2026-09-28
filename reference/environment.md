@@ -33,6 +33,9 @@ artifacts outside Git.
 | `MLIP_MPI_BUILD_ROOT` | Existing private artifact directory | Destination for a distinct MPI build candidate. |
 | `MLIP_MPI_ARCHIVE` | Verified MPI runtime archive | Input for the 1/2/4-GPU scaling job. |
 | `MLIP_MPI_ARCHIVE_SHA256` | 64-character digest | Verifies that archive before extraction. |
+| `MLIP_JUPITER_ROOT` | `/e/project1/<PROJECT>/<USER>/mlip-md-lesson` | Private JUPITER inputs, build candidates, and results, outside Git. |
+| `MLIP_JUPITER_BUILD_ID` | Successful build job ID | Selects the exact native JUPITER build for Python packaging and runtime checks. |
+| `MLIP_LESSON_ROOT` | Private source stage on a site | Selects the exact lesson example scripts inside a site job. |
 | `MLIP_LOCAL_RANK` | Set by a launcher when needed | Optional rank annotation in the ALCHEMI result. Do not set for a one-GPU notebook. |
 | `MLIP_ALLOCATED_CUDA_DEVICES` | Set inside the MPI job | Preserves the allocation's peer-visible GPU list for each rank. Do not set manually. |
 
