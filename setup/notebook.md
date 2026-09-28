@@ -13,17 +13,22 @@ kernelspec:
 # Open a notebook from your computer
 
 JupyterLab runs on the allocated GPU node. Your browser runs on your own
-computer. SSH encrypts the laptop-to-login hop; the Arrhenius launch script
-also enables TLS for the login-to-compute hop. Jupyter requires its private
+computer. SSH encrypts the laptop-to-login hop; both site launch scripts
+enable TLS for the login-to-compute hop. Jupyter requires its private
 token. Keep the token and the generated certificate key out of Git.
 
-Start the bounded job with `scripts/submit-arrhenius-jupyter.sh`, as described
-in [Arrhenius setup](arrhenius.md). On your laptop, the included script looks
-up the node of that running Slurm job and forwards through the login host:
+Start the bounded job with `scripts/submit-arrhenius-jupyter.sh` on Arrhenius
+or `scripts/submit-jupiter-jupyter.sh` on JUPITER, as described in their
+respective setup pages. On your laptop, the included script looks up the node
+of that running Slurm job and forwards through the login host:
 
 ```bash
 bash scripts/connect-from-laptop.sh notebook <login-ssh-alias> <job-id>
 ```
+
+Use the alias from your own laptop's SSH configuration for the site's login
+node. The same laptop script supports both sites; no personal hostname is
+embedded in the lesson.
 
 Then open the private token URL printed by Jupyter, replacing its port with
 `18888` and keeping `https://`. The script never reads or stores the token.

@@ -44,6 +44,7 @@ artifacts outside Git.
 | `MLIP_NATIVE_ALCHEMI_PYTHON` | Reviewed private Python executable | Runs the pinned native ALCHEMI example on JUPITER. |
 | `MLIP_JUPITER_MYST_WHEEL` / `MLIP_JUPITER_MYST_WHEEL_SHA256` | Reviewed private wheel and digest | Input for the private JUPITER MyST renderer; the selected build is hash-checked. |
 | `MLIP_JUPITER_JUPYTER_ENV` | Fresh private environment path | JupyterLab/Jupytext/Matplotlib environment for the JUPITER notebook server. |
+| `MLIP_JOB_LOG_DIR` | Owner-only directory outside Git | Token-bearing Jupyter job logs and TLS fingerprint for either site. |
 | `MLIP_METATOMIC_SOURCE` | Patched private LAMMPS checkout | Pinned Metatomic fork with the reviewed Kokkos compatibility patch. |
 | `MLIP_METATOMIC_OVERLAY` | Private package directory | Metatomic build/runtime and export dependencies. |
 | `MLIP_MACE_EXPORT_OVERLAY` | Private package directory | MACE 0.3.14 needed by the experimental Metatomic exporter. |

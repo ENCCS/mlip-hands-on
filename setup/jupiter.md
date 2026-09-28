@@ -186,9 +186,10 @@ export MLIP_JUPITER_JUPYTER_ENV="$MLIP_JUPITER_ROOT/jupyter-env-course"
 bash scripts/prepare-jupiter-jupyter-env.sh
 ```
 
-After reviewing the private environment and the source lesson, one bounded
-GPU notebook session is submitted with a private log. The `%j` placeholder
-is replaced by Slurm with the job ID:
+After reviewing the private environment and source lesson, submit one bounded
+GPU notebook session. The direct Slurm form below requires `MLIP_JUPITER_ROOT`
+to be owner-only because it stores a token-bearing log there. The `%j`
+placeholder is replaced by Slurm with the job ID:
 
 ```bash
 sbatch --account=<PROJECT> \
@@ -196,6 +197,15 @@ sbatch --account=<PROJECT> \
   --error="$MLIP_JUPYTER_ROOT/jupyter-%j.err" \
   --export=ALL,MLIP_JUPITER_ROOT,MLIP_LESSON_ROOT,MLIP_JUPITER_ALCHEMI_ENV_ID,MLIP_JUPITER_JUPYTER_ENV \
   scripts/jupiter-jupyter.sbatch
+```
+
+The preferred helper keeps logs in their own owner-only directory, validates
+the environment paths, and prints the one job ID without showing the token:
+
+```bash
+export MLIP_ACCOUNT=<PROJECT>
+export MLIP_JOB_LOG_DIR="$MLIP_JUPITER_ROOT/private-jupyter-logs"
+bash scripts/submit-jupiter-jupyter.sh
 ```
 
 From your laptop, use the notebook mode of `scripts/connect-from-laptop.sh`
