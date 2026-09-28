@@ -30,9 +30,12 @@ current reviewed GCC/CUDA environment:
 :lineno-match:
 ```
 
-The CMake configuration enables MPI, ML-IAP, Kokkos, Python, Hopper GPU
-code, and Grace CPU code. `mpicc` and `mpicxx` must come from the same site
-MPI stack used when running the executable.
+This Arrhenius build targets its GH200 nodes: an Arm Grace CPU and Hopper GPU.
+The CMake configuration enables MPI, ML-IAP, Kokkos, Python, and the explicit
+`Kokkos_ARCH_ARMV9_GRACE` and `Kokkos_ARCH_HOPPER90` targets. `mpicc` and
+`mpicxx` must come from the same site MPI stack used when running the
+executable. JUPITER needs its own GH200 build against its compiler/MPI stack;
+the Arrhenius executable is not a portable binary.
 
 ```{literalinclude} ../scripts/build-lammps-mpi.sbatch
 :language: bash
