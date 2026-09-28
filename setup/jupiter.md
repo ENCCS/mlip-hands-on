@@ -273,6 +273,7 @@ for multi-GPU runs, set `MLIP_METATOMIC_INPUT` to the staged
 
 ```{literalinclude} ../examples/lammps_metatomic_si.in
 :language: text
+:lineno-match:
 ```
 
 The [complete 64-atom input](../examples/lammps_metatomic_si.in) is shown

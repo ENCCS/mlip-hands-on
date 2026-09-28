@@ -28,6 +28,7 @@ their formats differ; the export still needs its own validation.
 ```{literalinclude} ../reference/model.toml
 :language: toml
 :lines: 1-13
+:lineno-match:
 ```
 
 Open the complete [model identity file](../reference/model.toml) to see the

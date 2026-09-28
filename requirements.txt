@@ -1,6 +1,7 @@
 # Documentation and notebook environment; not part of the ALCHEMI SIF.
 sphinx>=8.2.3,<9
 sphinx-lesson==0.8.20
+sphinx-design==0.7.0
 sphinx-evita @ https://github.com/ENCCS/sphinx-evita/archive/refs/tags/v0.1.0b1.zip
 furo==2025.12.19
 sphinx-autobuild>=2024.10

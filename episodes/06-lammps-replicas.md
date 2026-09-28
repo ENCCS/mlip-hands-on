@@ -23,6 +23,7 @@ The relevant input is visible below; the
 :language: python
 :start-at: for command in (
 :end-at: lmp.command("run 0")
+:lineno-match:
 ```
 
 With the MPI-enabled native runtime extracted and selected as

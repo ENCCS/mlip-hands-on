@@ -27,6 +27,7 @@ current reviewed GCC/CUDA environment:
 :language: bash
 :start-at: source /software/sse2/init/hpc_init_sse.sh
 :end-at: test -x "$(command -v make)"
+:lineno-match:
 ```
 
 The CMake configuration enables MPI, ML-IAP, Kokkos, Python, Hopper GPU
@@ -37,6 +38,7 @@ MPI stack used when running the executable.
 :language: bash
 :start-at: cmake -S
 :end-at: -D Python_LIBRARY=
+:lineno-match:
 ```
 
 The script runs in a separately reviewed Slurm build allocation and writes

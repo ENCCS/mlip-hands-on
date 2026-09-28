@@ -39,16 +39,72 @@ notebook kernel.
 
 The core exercises need one GPU and prepared artifacts. Building a SIF and
 LAMMPS is covered in the first episodes, but can be done before the GPU session.
-No notebook submits a Slurm job. Obtain an allocation before running GPU cells.
 
-For the complete ALCHEMI-and-LAMMPS notebook route, read the
-[Arrhenius setup](arrhenius.md) and check each selected artifact before
-starting a GPU session. The
-[JUPITER setup](jupiter.md) qualifies short native ML-IAP and Metatomic LAMMPS
-runs, the ALCHEMI MyST batch chapter, and a bounded Jupyter server check.
-The full LAMMPS notebook route remains Arrhenius-specific. The complete
-variable list is in
+:::{important}
+No notebook submits a Slurm job. Obtain an allocation and check the selected
+model and runtime artifacts before running GPU cells.
+:::
+
+## Choose a site
+
+The tabs below point to different tested routes; they do not make the sites
+interchangeable. Selecting a site under **Prepare** also selects it under
+**Run**. The complete variable list is in
 [Environment variables](../reference/environment.md).
+
+### Prepare
+
+::::{tab-set}
+:sync-group: site
+
+:::{tab-item} Arrhenius
+:sync: arrhenius
+Read the [Arrhenius setup](arrhenius.md) for the ALCHEMI SIF and native
+MPI-LAMMPS runtime. This is the complete ALCHEMI-and-LAMMPS notebook route.
+:::
+
+:::{tab-item} JUPITER
+:sync: jupiter
+Read the [JUPITER setup](jupiter.md) for its separate native ALCHEMI,
+ML-IAP/Kokkos, and Metatomic environments. Do not reuse the Arrhenius SIF
+or MPI binary.
+:::
+
+:::{tab-item} Leonardo
+:sync: leonardo
+Read the [Leonardo setup](leonardo.md) for its bounded A100 single-GPU route.
+It does not qualify the complete LAMMPS notebook sequence.
+:::
+
+::::
+
+### Run
+
+::::{tab-set}
+:sync-group: site
+
+:::{tab-item} Arrhenius
+:sync: arrhenius
+After checking the artifacts and obtaining one GPU, run the
+[silicon trajectory](../episodes/04-silicon-md.md),
+[ALCHEMI batch](../episodes/05-batched-md.md), and
+[LAMMPS replicas](../episodes/06-lammps-replicas.md) in order.
+:::
+
+:::{tab-item} JUPITER
+:sync: jupiter
+Use the [JUPITER-specific job and notebook instructions](jupiter.md).
+The ALCHEMI batch notebook has passed a short native functional check;
+the full LAMMPS notebook route remains Arrhenius-specific.
+:::
+
+:::{tab-item} Leonardo
+:sync: leonardo
+Use only the [tested Leonardo single-GPU commands](leonardo.md) unless a
+separate site check qualifies a broader route.
+:::
+
+::::
 
 :::{note}
 The lesson uses NVIDIA ALCHEMI **Toolkit**, not the separately packaged

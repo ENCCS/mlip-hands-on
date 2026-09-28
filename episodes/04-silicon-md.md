@@ -26,6 +26,7 @@ batch still contains just one physical simulation:
 :language: python
 :start-at: def make_batch
 :end-before: def run_steps
+:lineno-match:
 ```
 
 The integrator and neighbor-list hook are explicit. `--integrator nve`
@@ -37,6 +38,7 @@ physical questions and should not share one performance or trajectory claim.
 :language: python
 :start-at: def run_steps
 :end-before: def main
+:lineno-match:
 ```
 
 The complete [ALCHEMI example](../examples/alchemi_si.py) also shows the

@@ -70,13 +70,17 @@ The MPI-enabled example below is the reviewed *job template* for this
 32,768-atom case. Check its account, partition, time, memory, and GPU request
 against the current site before any manual submission. Change the MPI rank,
 GPU, CPU, and memory requests together for a separately reviewed two- or
-four-GPU job. Opening this page or running a notebook cell submits nothing;
-do not treat `sbatch --test-only` as proof that a reservation or allocation
-will actually run.
+four-GPU job. Opening this page or running a notebook cell submits nothing.
+
+:::{warning}
+Do not treat `sbatch --test-only` as proof that a reservation or allocation
+will actually run. Verify current site policy and the real job outcome.
+:::
 
 ```{literalinclude} ../scripts/lammps-mpi-size-benchmark.sbatch
 :language: bash
 :lines: 1-16
+:lineno-match:
 ```
 
 Read the [complete job script](../scripts/lammps-mpi-size-benchmark.sbatch)

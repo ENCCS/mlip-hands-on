@@ -34,9 +34,11 @@ The file resolver uses Jupyter's authenticated, same-origin `/files/` route
 under the selected server root. It rejects absolute paths, cross-origin
 downloads, non-UTF-8 content, and files over 200 kB. It currently supports
 `:language:`, one contiguous `:lines:` range, `:start-at:`, `:end-at:`, and
-`:end-before:`. It accepts `:linenos:` and `:emphasize-lines:` for the
-Sphinx source but presents plain code in Lab; highlighting and source line
-numbers belong to the published page. Unsupported options leave an explicit
+`:end-before:`. With `:lineno-match:`, the notebook prefixes each displayed
+line with its original source number and renders the excerpt as plain text;
+the published page keeps syntax highlighting and matching line numbers.
+It accepts `:linenos:` and `:emphasize-lines:` for the Sphinx source but does
+not highlight individual notebook lines. Unsupported options leave an explicit
 unavailable marker.
 Keep the Jupyter server root at the lesson repository so included files are
 inside the authorized file boundary.
@@ -66,3 +68,11 @@ healthy. The upstream source's two unit suites passed (7 tests). This does
 not establish general Sphinx-directive compatibility or screen-reader
 acceptance; an instructor should still inspect the live notebook on their
 target browser before class.
+
+The lesson's setup hub now has two synchronized site tab sets. Its 2026-09-28
+ASUS browser check selected JUPITER in the first set and observed JUPITER in
+the second in both the published Sphinx HTML and the patched MyST notebook.
+The HTML build requires `sphinx-design==0.7.0`; the notebook uses the patched
+renderer in the private JupyterLab environment. This does not establish
+cross-page tab synchronization or make site-specific GPU commands portable.
+The SIF build excerpt tests matching original line numbers in both views.

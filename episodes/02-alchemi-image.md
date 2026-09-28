@@ -20,12 +20,14 @@ They are part of this repository, not generated during a class.
 ```{literalinclude} ../alchemi-aarch64.def
 :language: text
 :lines: 1-11
+:lineno-match:
 ```
 
 ```{literalinclude} ../alchemi-aarch64.def
 :language: text
 :start-at: %post
 :end-before: %labels
+:lineno-match:
 ```
 
 The complete [Apptainer definition](../alchemi-aarch64.def) and its
@@ -51,6 +53,7 @@ an incomplete build from appearing at the final SIF path. After
 :language: bash
 :start-at: staged=
 :end-at: mv -n
+:lineno-match:
 :emphasize-lines: 5
 ```
 

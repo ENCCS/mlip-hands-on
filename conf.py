@@ -2,7 +2,7 @@
 
 project = "Molecular dynamics with MACE on GPUs"
 author = "ENCCS contributors"
-extensions = ["sphinx_lesson", "sphinx_evita", "myst_nb"]
+extensions = ["sphinx_lesson", "sphinx_evita", "myst_nb", "sphinx_design"]
 master_doc = "index"
 exclude_patterns = ["_build", "AGENTS.md", "README.md", "THIRD_PARTY.md",
                     "jupyterlab-enccs/README.md", "jupyterlab-enccs/renderer-fixture.md"]
