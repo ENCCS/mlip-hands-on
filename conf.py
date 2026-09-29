@@ -5,7 +5,7 @@ html_title = project
 author = "ENCCS contributors"
 extensions = ["sphinx_lesson", "sphinx_evita", "myst_nb", "sphinx_design"]
 master_doc = "index"
-exclude_patterns = ["_build", "AGENTS.md", "README.md", "THIRD_PARTY.md",
+exclude_patterns = ["_build", "**/.pixi", "AGENTS.md", "README.md", "THIRD_PARTY.md",
                     "jupyterlab-enccs/README.md", "jupyterlab-enccs/renderer-fixture.md"]
 nb_execution_mode = "off"
 myst_enable_extensions = ["colon_fence"]
