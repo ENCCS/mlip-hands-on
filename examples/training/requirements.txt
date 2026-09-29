@@ -1,0 +1,10 @@
+# Installed on top of the LUMI CSC PyTorch module (ROCm); torch is not listed on purpose.
+matgl==4.0.3
+lightning==2.6.1
+torch-geometric==2.8.0.post1
+torchdata==0.11.0
+pymatgen-core>=2026.5.18
+ase>=3.25
+huggingface_hub>=0.24
+pandas>=2.2
+matplotlib>=3.9

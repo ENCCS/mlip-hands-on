@@ -41,6 +41,7 @@ setup/notebook
 
 episodes/a1-batched-relaxation
 episodes/a2-orb-models
+episodes/a4-training
 ```
 
 ## Part B: molecular dynamics
