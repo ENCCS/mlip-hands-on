@@ -12,12 +12,9 @@ kernelspec:
 
 # Background: universal MLIPs
 
-This page summarises the concepts behind the hands-on parts, condensed from
-the ENCCS and Sweden AI Factory webinar *Universal Machine Learning
-Interatomic Potentials on HPC* (30 September 2026). The webinar slides, with
-the figures and tables summarised here, are shared through the
-[ENCCS events page](https://enccs.se/events). Numbered references are listed
-at the end; review articles are collected in {doc}`../reference/reading`.
+This page summarises the concepts behind the hands-on parts. Numbered
+references are listed at the end; review articles are collected in
+{doc}`../reference/reading`.
 
 ## Interatomic potentials and MLIPs
 
