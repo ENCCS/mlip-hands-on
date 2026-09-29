@@ -13,6 +13,8 @@ throughput separately.
 
 Contributors: Wei Li (Part B) and Karim Elgammal (Part A).
 
+![Lesson map: Part A screening and Part B molecular dynamics.](_static/lesson-map.drawio.png)
+
 ## Setup
 
 ```{toctree}

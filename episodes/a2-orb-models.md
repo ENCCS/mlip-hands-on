@@ -78,6 +78,8 @@ and so adds a one-off cost to the timed serial baseline.
 
 ## Graphite interlayer spacing
 
+![Graphite test: three model variants, cell relaxation, comparison with PBE and experiment.](../_static/graphite-test.drawio.png)
+
 Bernal (AB) graphite has four atoms per cell. Its layers are held together
 almost entirely by dispersion. Plain PBE gives an interlayer spacing of
 4.40 Å and a binding energy of only 1 meV per carbon atom

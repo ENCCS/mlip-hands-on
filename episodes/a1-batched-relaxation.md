@@ -30,6 +30,8 @@ different random displacement and needs its own relaxation.
 :lineno-match:
 ```
 
+![Serial ASE relaxation versus one batched TorchSim call.](../_static/serial-vs-batched.drawio.png)
+
 ## Serial and batched runs
 
 Both routes use FIRE with a fixed cell and stop when the largest force falls
