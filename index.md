@@ -11,6 +11,9 @@ trajectory to many independent replicas with ALCHEMI Toolkit and LAMMPS
 ML-IAP/Kokkos, and shows how to read single-trajectory speed and aggregate
 throughput separately.
 
+The {doc}`episodes/00-background` page introduces MLIPs, foundation models,
+fine-tuning and GPU engines for readers new to the topic.
+
 Contributors: Wei Li (Part B) and Karim Elgammal (Part A).
 
 ![Lesson map: Part A screening and Part B molecular dynamics.](_static/lesson-map.drawio.png)
@@ -25,6 +28,14 @@ setup/arrhenius
 setup/jupiter
 setup/leonardo
 setup/notebook
+```
+
+## Background
+
+```{toctree}
+:maxdepth: 1
+
+episodes/00-background
 ```
 
 ## Part A: batched screening
@@ -64,4 +75,5 @@ episodes/08-scaling
 reference/environment
 reference/instructor
 reference/limits
+reference/reading
 ```
