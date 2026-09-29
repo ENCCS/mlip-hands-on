@@ -17,6 +17,14 @@ New to MLIPs? Start with {doc}`episodes/00-background`.
 
 ![Lesson map: Part A screening and Part B molecular dynamics.](_static/lesson-map.drawio.png)
 
+## Background
+
+```{toctree}
+:maxdepth: 1
+
+episodes/00-background
+```
+
 ## Setup
 
 ```{toctree}
@@ -27,14 +35,6 @@ setup/arrhenius
 setup/jupiter
 setup/leonardo
 setup/notebook
-```
-
-## Background
-
-```{toctree}
-:maxdepth: 1
-
-episodes/00-background
 ```
 
 ## Part A: batched screening
