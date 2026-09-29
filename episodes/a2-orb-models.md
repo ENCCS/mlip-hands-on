@@ -173,29 +173,7 @@ sbatch --account=<PROJECT> \
   scripts/test-leonardo-orb.sbatch
 ```
 
-This script has **not yet been qualified**.
-
-## Measured on Leonardo
-
-The Leonardo measurements will be added after the qualification run. Until
-then, the laptop table above is the result for this page.
-
-% Fill from graphite/graphite.json and screening/summary.json, then
-% uncomment and remove the paragraph above.
-%
-% One A100, float64, one run.
-%
-% | Variant | a (Å) | d from 3.34 Å start | d from 4.4 Å start | Steps (both starts) |
-% |---|---:|---:|---:|---:|
-% | MACE-MP-0b small | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING |
-% | Orb-v3 | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING |
-% | Orb-v3 + D3(BJ) | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING |
-% | PBE (Hazrati et al., 2014) | 2.47 | 4.40 | 4.40 | |
-% | Experiment (low T) | 2.46 | 3.34 | 3.34 | |
-%
-% | Screening, Orb-v3 | Structures | Serial, estimated (s) | Batched (s) | Estimated serial / batched |
-% |---|---:|---:|---:|---:|
-% | float64 | 64 | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING |
+This script has **not yet been qualified**. The laptop results above are the reference for this page.
 
 ## References
 
