@@ -6,13 +6,14 @@ once across the periodic table, then used directly or fine-tuned. On HPC, GPU in
 placement sets throughput.
 
 - Part A: relax many crystals in one batched TorchSim call versus
-  serial ASE, with MACE-MP and Orb-v3.
+  serial ASE, with MACE-MP, Orb-v3 and MatGL; then train and fine-tune
+  a potential.
 - Part B: silicon MD with MACE-MP in ALCHEMI Toolkit and LAMMPS, from
   one trajectory to many replicas and GPUs.
 - New to MLIPs? Start with {doc}`episodes/00-background`.
 - Source, scripts and job files: [GitHub](https://github.com/ENCCS/mlip-hands-on).
 
-![Lesson map: Part A screening and Part B molecular dynamics.](_static/lesson-map.drawio.png)
+![Lesson map: background, Part A screening and training, Part B molecular dynamics.](_static/lesson-map.drawio.png)
 
 ## Background
 
@@ -41,6 +42,7 @@ setup/notebook
 
 episodes/a1-batched-relaxation
 episodes/a2-orb-models
+episodes/a3-matgl-tutorials
 episodes/a4-training
 ```
 

@@ -10,29 +10,26 @@ kernelspec:
   name: python3
 ---
 
-# Training and fine-tuning with MatGL
+# Train and fine-tune a potential
 
 :::{objectives}
-- Train a small graph network that predicts formation energy.
-- Fine-tune a PBE foundation potential on a few hundred r2SCAN structures.
-- Compare zero-shot, fine-tuned and from-scratch errors on the same test set.
+- Train a small formation-energy model and read its learning curve.
+- Fine-tune a PBE foundation potential on r2SCAN data.
+- Compare zero-shot, fine-tuned and from-scratch errors on one test set.
 :::
 
-The previous pages use foundation potentials as they are (zero-shot). The
-{doc}`Background <00-background>` section *Pre-train, then fine-tune*
-explains when that is not enough: when you need numbers for one system, or
-a different level of theory, you fine-tune on a small targeted dataset.
-This page does both halves of that recipe with
-[MatGL](https://github.com/materialyzeai/matgl) 4.0.3 on one LUMI GPU
-(AMD MI250X, one GCD). The code re-implements the MatGL tutorials
-*Training a Formation Energy Model* and *Fine-Tuning a M3GNet Potential*.
+The earlier pages use foundation potentials zero-shot. The
+{doc}`Background <00-background>` section "Pre-train, then fine-tune" gives
+the recipe for when that is not enough: fine-tune on a small targeted set.
+This page runs both halves with [MatGL](https://github.com/materialyzeai/matgl)
+4.0.3 [[1](https://arxiv.org/abs/2503.03837)], following the MatGL tutorials
+on formation-energy training and potential fine-tuning.
 
-The example is a small package,
-`examples/training`:
+The example is a small package, `examples/training`:
 
 | File | Role |
 |---|---|
-| `prefetch.py` | downloads data and the pretrained model on a login node; writes small subsets |
+| `prefetch.py` | downloads data and the pretrained model (login node); writes subsets |
 | `eform.py` | formation-energy model (MEGNet or M3GNet) |
 | `finetune.py` | zero-shot, fine-tuned and from-scratch cases |
 | `potential.py` | loads, re-references and evaluates TensorNet potentials |
@@ -40,53 +37,109 @@ The example is a small package,
 
 ## Formation energy
 
-The data are the Materials Project 2018.6.1 formation energies used for
-MEGNet (69 239 crystals). The prefetch step keeps a random subset of 5000
-(fixed seed), split 80/10/10 into training, validation and test sets. The
-model is the MEGNet of the MatGL tutorial (4 Å graph cutoff, three blocks,
-set2set readout); `--model m3gnet` swaps in M3GNet. Targets are
-standardised with the training mean and standard deviation, and the
-checkpoint with the lowest validation loss is kept.
+- Data: Materials Project 2018.6.1 formation energies used for MEGNet
+  [[2](https://doi.org/10.1021/acs.chemmater.9b01294)]; a random subset of
+  5000 crystals (86 elements, seed 42), split 4000/500/500.
+- Model: MEGNet as in the MatGL tutorial (4 Å cutoff, three blocks, set2set
+  readout); `--model m3gnet` swaps in M3GNet
+  [[3](https://doi.org/10.1038/s43588-022-00349-3)].
+- Targets standardised with the training mean and standard deviation; the
+  checkpoint with the lowest validation loss is kept.
 
 ```bash
 python -m training eform --data <SCRATCH>/mlip-training/data \
   --outdir results/eform --epochs 200
 ```
 
+Result: one run on one MI250X GCD (LUMI), float32, 30 Sept 2026; 200 epochs,
+batch 64, learning rate 10⁻³, 460 s training.
+
+| Set | MAE (eV/atom) |
+|---|---|
+| training | 0.097 |
+| validation | 0.140 |
+| test | 0.137 |
+
+![MEGNet learning curve: training and validation MAE against epoch.](../_static/training-eform.png)
+
+- Validation error falls fast for about 50 epochs, then slowly from 0.16
+  to 0.14 eV/atom; the growing gap to the training error signals
+  overfitting on 4000 crystals.
+- The original MEGNet paper reports 0.028 eV/atom with all 69 239
+  crystals [[2](https://doi.org/10.1021/acs.chemmater.9b01294)]; 5000
+  crystals is a demonstration, not a converged model.
+
 ## Fine-tuning a foundation potential
 
-`TensorNet-PES-MatPES-PBE-2025.2` was trained on PBE energies, forces and
-stresses from the MatPES training split. The target here is r2SCAN, a
-more accurate meta-GGA functional. The data come from the MatPES r2SCAN
-*test* split, which the PBE model never saw: all structures that contain
-lithium and at most 64 atoms, up to 1500 of them, split 70/10/20. The test
-set is fixed for every case.
+![Fine-tuning cases: zero-shot, fine-tuned and from-scratch TensorNet, all evaluated on the same r2SCAN test set.](../_static/training-cases.drawio.png)
 
-| Case | Starting weights | Atom energies | Learning rate |
-|---|---|---|---|
-| zero-shot (PBE) | pretrained | PBE | none |
-| zero-shot, r2SCAN atom energies | pretrained | r2SCAN | none |
-| fine-tuned (10, 50, 100%) | pretrained | r2SCAN | 2 × 10⁻⁴ |
-| from scratch (10, 50, 100%) | random, same architecture | r2SCAN | 1 × 10⁻³ |
+- Start: `TensorNet-PES-MatPES-PBE-2025.2`
+  [[4](https://arxiv.org/abs/2306.06482)], trained on PBE energies, forces
+  and stresses from MatPES [[5](https://arxiv.org/abs/2503.04070)].
+- Target: r2SCAN [[6](https://doi.org/10.1021/acs.jpclett.0c02405)], a more
+  accurate meta-GGA. Data come from the MatPES r2SCAN test split, which the
+  PBE model never saw: all Li-containing structures with at most 64 atoms
+  (1200), split 840/120/240. The test set is fixed for every case.
+- Trained cases: 10, 50 and 100% of the training set (84, 420, 840
+  structures, nested); 150 epochs, batch 16, Huber loss on energy per atom,
+  forces and stress (weight 0.1), cosine decay, seed 42. Learning rate
+  2 × 10⁻⁴ for fine-tuning, 10⁻³ from scratch.
 
-Each trained case runs 150 epochs with a Huber loss on energy per atom,
-forces and stress (weight 0.1), a cosine learning-rate decay and seed 42.
-The 10% and 50% sets are nested in the full training set.
+Two details matter:
 
-Two details matter. First, MatGL adds per-element reference energies (the
-isolated-atom energies) to the network output. PBE and r2SCAN total
-energies differ by several eV/atom, so the second zero-shot row swaps in
-the r2SCAN atom energies without changing the network, and both trained
-cases use them. Second, the fine-tuned module must keep the pretrained
-scaling (`data_std`); the MatGL default of 1.0 silently rescales every
-prediction. MatPES stores stress in Voigt order (xx, yy, zz, yz, xz, xy)
-and kbar; the prefetch step writes full 3 × 3 tensors, which MatGL 4.0.3
-needs for its stress loss.
+- MatGL adds per-element reference energies to the network output. PBE and
+  r2SCAN total energies differ by several eV/atom, so the second zero-shot
+  case swaps in r2SCAN atom energies without touching the network; trained
+  cases use them too.
+- The fine-tuned module must keep the pretrained scaling (`data_std`); the
+  MatGL default of 1.0 silently rescales every prediction.
 
+:::{dropdown} finetune.py
 ```{literalinclude} ../examples/training/finetune.py
 :language: python
 :pyobject: train_case
+:lineno-match:
 ```
+:::
+
+:::{dropdown} potential.py
+```{literalinclude} ../examples/training/potential.py
+:language: python
+:start-at: def with_refs
+:end-before: def evaluate
+:lineno-match:
+```
+:::
+
+Result: one run on one MI250X GCD (LUMI), float64, 30 Sept 2026; test set
+of 240 structures, lower is better.
+
+| Case | Training structures | Energy (meV/atom) | Force (meV/Å) | Stress (GPa) | Training (s) |
+|---|---|---|---|---|---|
+| zero-shot (PBE) | 0 | 7949.7 | 148.2 | 1.19 | |
+| zero-shot, r2SCAN atom energies | 0 | 165.9 | 148.2 | 1.19 | |
+| fine-tuned | 84 | 60.4 | 127.8 | 0.75 | 117 |
+| from scratch | 84 | 512.7 | 427.0 | 2.97 | 117 |
+| fine-tuned | 420 | 82.7 | 120.1 | 0.70 | 425 |
+| from scratch | 420 | 282.9 | 406.4 | 2.63 | 428 |
+| fine-tuned | 840 | 51.8 | 112.0 | 0.63 | 798 |
+| from scratch | 840 | 222.5 | 339.6 | 2.37 | 805 |
+
+![Learning curve: energy and force MAE against training structures, fine-tuned and from scratch, with zero-shot lines.](../_static/training-finetune.png)
+
+- Re-referencing alone takes the zero-shot energy error from 7950 to
+  166 meV/atom; forces and stresses do not depend on atom energies. The raw
+  PBE row measures the functional gap, not the model.
+- Fine-tuning beats training from scratch at every size: energy 3 to 8
+  times lower, force about 3 times, stress about 4 times. With 84
+  structures, fine-tuning already beats scratch with 840.
+- Forces improve steadily with data (128, 120, 112 meV/Å). The 420-structure
+  energy (83) is worse than the 84-structure one (60): one seed and one
+  split, so this is noise, not a trend.
+- This matches the Background section qualitatively: a foundation model is
+  a data-efficient start, and fine-tuning moves it to a new level of theory.
+  The fine-tuned model is specialised to Li compounds at r2SCAN level; keep
+  the original for other chemistry.
 
 ## Run on LUMI
 
@@ -99,16 +152,23 @@ export MLIP_TRAINING_DIR=<SCRATCH>/mlip-training
 bash $MLIP_LESSON_ROOT/scripts/lumi-training-setup.sh
 ```
 
-Then submit one job that runs both examples on one GCD:
+Submit one job for both examples on one GCD (`MLIP_TASKS=finetune` runs one):
 
 ```bash
 sbatch --account=<PROJECT> --export=ALL \
   $MLIP_LESSON_ROOT/scripts/lumi-training.sbatch
 ```
 
-The job sets private MIOpen and temporary directories, disables user
-site-packages and runs offline. Results go to
-`$MLIP_TRAINING_DIR/results-<jobid>/{eform,finetune}` as JSON and PNG.
+Results go to `$MLIP_TRAINING_DIR/results-<jobid>/{eform,finetune}` as JSON
+and PNG. The fine-tuning job took 46 min.
+
+:::{note}
+On LUMI with `torch` 2.7.1+rocm6.2.4, `torch.det` and `Tensor.prod` fail in
+float32 (error 209); float64 works. The MatGL potential calls `torch.det`
+for the cell volume in its stress, so the job script sets
+`MLIP_FLOAT_BITS=64` (same as `--float-bits 64`). The MEGNet run did not
+hit them and ran in float32.
+:::
 
 To check the code on a laptop CPU first, use a few structures and two
 epochs:
@@ -122,57 +182,26 @@ uv run --with matgl==4.0.3 --with pandas --with matplotlib \
   --epochs 2 --fractions 0.5 1.0
 ```
 
-## Results
-
-:::{note}
-The LUMI results will be added here after the run. A two-epoch laptop
-check on 60 structures only tests the plumbing: it gave a zero-shot energy
-error of about 6000 meV/atom with PBE atom energies and 113 meV/atom with
-r2SCAN atom energies.
-:::
-
-## Reading the results
-
-- The raw zero-shot energy error measures the difference between the two
-  functionals' total energies, not the quality of the model. Compare
-  trained cases with the re-referenced zero-shot row.
-- Forces do not depend on atom energies, so both zero-shot rows share one
-  force error.
-- Fine-tuning starts from a good potential energy surface; with few
-  structures it should beat training from scratch by a wide margin. The gap
-  should shrink as the training set grows.
-- A single seed and a single split give one sample. Treat differences of a
-  few meV/atom as noise.
-- The fine-tuned model is specialised to lithium compounds at r2SCAN level.
-  Keep the original model for other chemistry.
+This tests the plumbing only.
 
 :::{keypoints}
-- A foundation potential is a strong starting point: fine-tuning on a few
-  hundred structures moves it to a new level of theory.
-- Change the per-element reference energies when the functional changes,
-  and keep the pretrained scaling.
-- Evaluate every case on the same held-out test set.
+- Fine-tuning a foundation potential on a few hundred structures beats
+  training from scratch several times over.
+- When the functional changes, change the atom reference energies and keep
+  the pretrained scaling.
+- Evaluate every case on the same held-out test set; one run is one sample.
 :::
 
 ## References
 
-- C. Chen, W. Ye, Y. Zuo, C. Zheng and S. P. Ong, *Graph networks as a
-  universal machine learning framework for molecules and crystals*,
-  [Chem. Mater. 31, 3564](https://doi.org/10.1021/acs.chemmater.9b01294)
-  (2019).
-- C. Chen and S. P. Ong, *A universal graph deep learning interatomic
-  potential for the periodic table*,
-  [Nat. Comput. Sci. 2, 718](https://doi.org/10.1038/s43588-022-00349-3)
-  (2022).
-- G. Simeon and G. De Fabritiis, *TensorNet: Cartesian tensor
-  representations for efficient learning of molecular potentials*,
-  [arXiv:2306.06482](https://arxiv.org/abs/2306.06482) (2023).
-- A. D. Kaplan et al., *A foundational potential energy surface dataset for
-  materials*, [arXiv:2503.04070](https://arxiv.org/abs/2503.04070) (2025).
-- T. W. Ko et al., *Materials Graph Library (MatGL), an open-source graph
-  deep learning library for materials science and chemistry*,
-  [arXiv:2503.03837](https://arxiv.org/abs/2503.03837) (2025).
-- J. W. Furness et al., *Accurate and numerically efficient r2SCAN
-  meta-generalized gradient approximation*,
-  [J. Phys. Chem. Lett. 11, 8208](https://doi.org/10.1021/acs.jpclett.0c02405)
-  (2020).
+1. T. W. Ko et al., Materials Graph Library (MatGL).
+   [arXiv:2503.03837](https://arxiv.org/abs/2503.03837)
+2. C. Chen et al., MEGNet, Chem. Mater. 31, 3564 (2019).
+   [doi:10.1021/acs.chemmater.9b01294](https://doi.org/10.1021/acs.chemmater.9b01294)
+3. C. Chen and S. P. Ong, M3GNet, Nat. Comput. Sci. 2, 718 (2022).
+   [doi:10.1038/s43588-022-00349-3](https://doi.org/10.1038/s43588-022-00349-3)
+4. G. Simeon and G. De Fabritiis, TensorNet.
+   [arXiv:2306.06482](https://arxiv.org/abs/2306.06482)
+5. A. D. Kaplan et al., MatPES. [arXiv:2503.04070](https://arxiv.org/abs/2503.04070)
+6. J. W. Furness et al., r2SCAN, J. Phys. Chem. Lett. 11, 8208 (2020).
+   [doi:10.1021/acs.jpclett.0c02405](https://doi.org/10.1021/acs.jpclett.0c02405)
