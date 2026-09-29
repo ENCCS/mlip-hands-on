@@ -55,12 +55,14 @@ The Orb loader returns a model and an atoms adapter. The same objects feed
 the ASE calculator for the serial baseline and the TorchSim wrapper for the
 batch:
 
+:::{dropdown} Code: models.py
 ```{literalinclude} ../examples/torchsim/models.py
 :language: python
 :start-at: def load_orb
 :end-before: def load_models
 :lineno-match:
 ```
+:::
 
 To repeat the laptop CPU check of the previous page with Orb, change
 only `--model`. The first run downloads the checkpoint, about 100 MB:
@@ -99,12 +101,14 @@ backend has been removed. The example uses
 `TensorNet-PES-MatPES-PBE-2025.2` (0.84 M parameters, 5 Å cutoff) through
 MatGL's ASE calculator:
 
+:::{dropdown} Code: models.py
 ```{literalinclude} ../examples/torchsim/models.py
 :language: python
 :start-at: def load_matgl
 :end-before: def load_models
 :lineno-match:
 ```
+:::
 
 TorchSim 0.6 has no MatGL model interface, so this model runs the serial
 ASE baseline only. The pretrained models also compute in float32. The
@@ -221,6 +225,7 @@ nodes have no internet), then download the Orb checkpoint next to the MACE
 one and check its SHA-256. Then submit the job, which runs the graphite
 study and the Orb screening batch:
 
+:::{dropdown} Commands
 ```bash
 cd "$MLIP_LESSON_ROOT/examples/torchsim"
 pixi install
@@ -235,6 +240,7 @@ sbatch --account=<PROJECT> \
   --export=ALL,MLIP_LESSON_ROOT,MLIP_TORCHSIM_CHECKPOINT,MLIP_ORB_CHECKPOINT,MLIP_RESULTS_DIR \
   scripts/test-leonardo-orb.sbatch
 ```
+:::
 
 This script has **not yet been qualified**. The laptop results above are
 the reference for this page.

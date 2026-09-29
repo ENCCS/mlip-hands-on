@@ -32,11 +32,13 @@ The workload is a toy screening set: rattled copies of four crystals
 (Cu fcc, Si diamond, Fe bcc and Al fcc, 8 to 32 atoms each). Each copy has a
 different random displacement and needs its own relaxation.
 
+:::{dropdown} Code: workload.py
 ```{literalinclude} ../examples/torchsim/workload.py
 :language: python
 :start-at: FAMILIES
 :lineno-match:
 ```
+:::
 
 ![Serial ASE relaxation versus one batched TorchSim call.](../_static/serial-vs-batched.drawio.png)
 
@@ -48,11 +50,13 @@ baseline relaxes only the first `--baseline-n` structures and extrapolates
 its per-structure time to the full set; a full serial run would use most
 of the allocation.
 
+:::{dropdown} Code: runners.py
 ```{literalinclude} ../examples/torchsim/runners.py
 :language: python
 :start-at: class SerialRelaxer
 :lineno-match:
 ```
+:::
 
 TorchSim takes the whole list of ASE `Atoms`, builds one batched state and
 advances every structure together. Converged structures leave the batch;
@@ -60,12 +64,14 @@ with `--autobatch` TorchSim also splits the set to fit GPU memory. Both
 routes use the same checkpoint. TorchSim needs the raw PyTorch model, so it
 is loaded with `return_raw_model=True`:
 
+:::{dropdown} Code: models.py
 ```{literalinclude} ../examples/torchsim/models.py
 :language: python
 :start-at: def load_mace
 :end-before: def load_models
 :lineno-match:
 ```
+:::
 
 After both runs, the example compares the ASE and TorchSim energies on the
 structures relaxed both ways and writes `summary.json` and
@@ -120,6 +126,7 @@ Compute nodes have no internet access. On a login node, install the pixi
 environment inside your lesson copy and download the checkpoint to a
 private location outside Git:
 
+:::{dropdown} Commands
 ```bash
 cd /leonardo_scratch/fast/<PROJECT>/<USER>/mlip-md-lesson/examples/torchsim
 pixi install
@@ -129,12 +136,14 @@ printf '%s  %s\n' \
   7e3a0abcaf41e03a80e69f778e1b11b29de1cca704783dc25917a736392f8cf0 \
   <SCRATCH>/models/mace-mp-0b-small.model | sha256sum -c -
 ```
+:::
 
 The job checks this SHA-256 before it starts and refuses any other file.
 
 Then submit the one-GPU job from the repository root. It refuses missing
 inputs and an existing output directory:
 
+:::{dropdown} Commands
 ```bash
 export MLIP_LESSON_ROOT=/leonardo_scratch/fast/<PROJECT>/<USER>/mlip-md-lesson
 export MLIP_TORCHSIM_CHECKPOINT=<SCRATCH>/models/mace-mp-0b-small.model
@@ -143,12 +152,15 @@ sbatch --account=<PROJECT> \
   --export=ALL,MLIP_LESSON_ROOT,MLIP_TORCHSIM_CHECKPOINT,MLIP_RESULTS_DIR \
   scripts/test-leonardo-torchsim.sbatch
 ```
+:::
 
+:::{dropdown} Code: test-leonardo-torchsim.sbatch
 ```{literalinclude} ../scripts/test-leonardo-torchsim.sbatch
 :language: bash
 :start-at: outdir=
 :lineno-match:
 ```
+:::
 
 This script has **not yet been qualified**. The float64 row below comes
 from an earlier script with the same workload and options as this job; the
