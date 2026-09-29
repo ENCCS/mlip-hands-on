@@ -35,3 +35,15 @@ run time. Nothing from them is copied into this repository.
 - [mace-torch](https://github.com/ACEsuit/mace) and the MACE-MP-0b checkpoint: MIT.
 - [orb-models](https://github.com/orbital-materials/orb-models) and the Orb-v3
   checkpoints: Apache-2.0.
+
+## MatGL tutorials (adapted workflows)
+
+The scripts in `examples/matgl/` follow the workflows of the
+[MatGL tutorials](https://github.com/materialsvirtuallab/matgl/tree/main/examples)
+(relaxation and MD with a universal potential, lattice-constant benchmark,
+relax-then-predict with property models, and potential training). MatGL and its
+tutorials are distributed under the
+[BSD 3-Clause licence](https://github.com/materialsvirtuallab/matgl/blob/main/LICENSE),
+Copyright (c) Materials Virtual Lab. The code here was rewritten as small
+modules with different systems, a generated Cu dataset and a float64 switch; the
+pretrained MatGL weights are downloaded at run time and not redistributed.

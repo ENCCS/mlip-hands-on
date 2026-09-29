@@ -1,0 +1,27 @@
+# Room-temperature experimental lattice constants (Angstrom) from the table in
+# "Lattice constant", Wikipedia (https://en.wikipedia.org/wiki/Lattice_constant),
+# the source used by the MatGL benchmarking tutorial; values checked on 2026-09-29.
+formula,prototype,species,a_expt
+Si,diamond,Si,5.4310
+Ge,diamond,Ge,5.658
+GaAs,zincblende,Ga As,5.653
+InP,zincblende,In P,5.869
+ZnS,zincblende,Zn S,5.420
+CdTe,zincblende,Cd Te,6.482
+BN,zincblende,B N,3.6150
+MgO,rocksalt,Mg O,4.212
+LiF,rocksalt,Li F,4.03
+NaCl,rocksalt,Na Cl,5.64
+PbTe,rocksalt,Pb Te,6.4620
+TiN,rocksalt,Ti N,4.249
+TiC,rocksalt,Ti C,4.328
+CsCl,cscl,Cs Cl,4.123
+Al,fcc,Al,4.046
+Cu,fcc,Cu,3.597
+Ni,fcc,Ni,3.499
+Pt,fcc,Pt,3.912
+Au,fcc,Au,4.065
+Fe,bcc,Fe,2.856
+W,bcc,W,3.155
+Nb,bcc,Nb,3.3008
+SrTiO3,perovskite,Sr Ti O,3.98805

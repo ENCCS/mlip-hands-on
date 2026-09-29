@@ -1,0 +1,106 @@
+{
+  "relaxer": "TensorNet-PES-MatPES-PBE-2025.2",
+  "eform_model": "M3GNet-Eform-MP-2019.4.1",
+  "gap_model": "MEGNet-BandGap-mfi-MP-2019.4.1",
+  "a_start_A": 4.5,
+  "timings": {
+    "total_s": 8.41
+  },
+  "crystals": {
+    "SrTiO3": {
+      "eform_expt_eV_atom": -3.47,
+      "gap_expt_eV": 3.25,
+      "a_relaxed_A": 3.9427,
+      "unrelaxed": {
+        "eform_eV_atom": -1.932,
+        "gap_PBE_eV": 0.02,
+        "gap_GLLB-SC_eV": 2.01,
+        "gap_HSE_eV": 0.01,
+        "gap_SCAN_eV": 0.36
+      },
+      "relaxed": {
+        "eform_eV_atom": -3.561,
+        "gap_PBE_eV": 1.83,
+        "gap_GLLB-SC_eV": 3.74,
+        "gap_HSE_eV": 3.52,
+        "gap_SCAN_eV": 2.29
+      }
+    },
+    "MgO": {
+      "eform_expt_eV_atom": -3.12,
+      "gap_expt_eV": 7.8,
+      "a_relaxed_A": 4.2474,
+      "unrelaxed": {
+        "eform_eV_atom": -2.664,
+        "gap_PBE_eV": 2.28,
+        "gap_GLLB-SC_eV": 6.95,
+        "gap_HSE_eV": 5.09,
+        "gap_SCAN_eV": 4.72
+      },
+      "relaxed": {
+        "eform_eV_atom": -3.072,
+        "gap_PBE_eV": 4.76,
+        "gap_GLLB-SC_eV": 8.23,
+        "gap_HSE_eV": 6.35,
+        "gap_SCAN_eV": 5.57
+      }
+    },
+    "NaCl": {
+      "eform_expt_eV_atom": -2.13,
+      "gap_expt_eV": 8.5,
+      "a_relaxed_A": 5.7227,
+      "unrelaxed": {
+        "eform_eV_atom": -1.111,
+        "gap_PBE_eV": 2.51,
+        "gap_GLLB-SC_eV": 8.49,
+        "gap_HSE_eV": 3.88,
+        "gap_SCAN_eV": 4.18
+      },
+      "relaxed": {
+        "eform_eV_atom": -2.095,
+        "gap_PBE_eV": 5.13,
+        "gap_GLLB-SC_eV": 9.73,
+        "gap_HSE_eV": 6.29,
+        "gap_SCAN_eV": 5.75
+      }
+    },
+    "GaAs": {
+      "eform_expt_eV_atom": -0.37,
+      "gap_expt_eV": 1.42,
+      "a_relaxed_A": 5.7502,
+      "unrelaxed": {
+        "eform_eV_atom": -0.896,
+        "gap_PBE_eV": 0.0,
+        "gap_GLLB-SC_eV": 0.37,
+        "gap_HSE_eV": 0.0,
+        "gap_SCAN_eV": 0.12
+      },
+      "relaxed": {
+        "eform_eV_atom": -0.338,
+        "gap_PBE_eV": 0.22,
+        "gap_GLLB-SC_eV": 0.45,
+        "gap_HSE_eV": 0.57,
+        "gap_SCAN_eV": 0.63
+      }
+    },
+    "Si": {
+      "eform_expt_eV_atom": 0.0,
+      "gap_expt_eV": 1.12,
+      "a_relaxed_A": 5.45,
+      "unrelaxed": {
+        "eform_eV_atom": -0.223,
+        "gap_PBE_eV": 0.44,
+        "gap_GLLB-SC_eV": 1.29,
+        "gap_HSE_eV": 0.62,
+        "gap_SCAN_eV": 1.02
+      },
+      "relaxed": {
+        "eform_eV_atom": -0.006,
+        "gap_PBE_eV": 0.5,
+        "gap_GLLB-SC_eV": 1.24,
+        "gap_HSE_eV": 1.11,
+        "gap_SCAN_eV": 0.73
+      }
+    }
+  }
+}

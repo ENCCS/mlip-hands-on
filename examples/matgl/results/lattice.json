@@ -1,0 +1,22 @@
+{
+  "a_start_A": 5.0,
+  "n_crystals": 23,
+  "models": {
+    "TensorNet": {
+      "name": "TensorNet-PES-MatPES-PBE-2025.2",
+      "mae_A": 0.0525,
+      "mean_signed_pct": 0.89,
+      "mape_pct": 1.11,
+      "max_abs_pct": 2.46,
+      "total_s": 28.9
+    },
+    "M3GNet": {
+      "name": "M3GNet-PES-MatPES-PBE-2025.2",
+      "mae_A": 0.0532,
+      "mean_signed_pct": 0.92,
+      "mape_pct": 1.11,
+      "max_abs_pct": 3.2,
+      "total_s": 106.49
+    }
+  }
+}

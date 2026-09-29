@@ -1,0 +1,27 @@
+[workspace]
+name = "mlip-matgl-tutorials"
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-arm64"]
+
+[dependencies]
+python = "3.12.*"
+pip = "*"
+
+[pypi-dependencies]
+torch = "==2.9.1"
+# 4.0.3 needs lightning<=2.6.1; pip resolves that from matgl's own metadata.
+matgl = "==4.0.3"
+ase = ">=3.25"
+pymatgen = ">=2025.1"
+pandas = ">=2.2"
+matplotlib = ">=3.9"
+
+[tasks]
+prefetch = { cmd = "python cli.py prefetch" }
+versions = { cmd = "python cli.py versions" }
+relax-md = { cmd = "python cli.py relax-md" }
+lattice = { cmd = "python cli.py lattice" }
+predict = { cmd = "python cli.py predict" }
+train = { cmd = "python cli.py train" }
+figures = { cmd = "python cli.py figures" }
+all = { depends-on = ["versions", "relax-md", "lattice", "predict", "train", "figures"] }
