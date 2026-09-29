@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail if tracked lesson text contains known private site values.
+"""Fail if tracked or untracked (non-ignored) lesson text contains known private site values.
 
 This is a guardrail, not a substitute for reviewing the rendered HTML.
 Only file names, line numbers, and finding categories are printed.
@@ -13,7 +13,10 @@ import sys
 
 TEXT_SUFFIXES = {".md", ".py", ".sh", ".toml", ".txt", ".def", ".yml", ".yaml"}
 PRIVATE_PATTERNS = {
-    "personal home path": re.compile(r"/(?:home/" + "wei|home/liwei|Users/liwei)/"),
+    "personal home path": re.compile(r"/(?:home/" + "wei|home/liwei|Users/liwei|Users/karim)/"),
+    "Leonardo scratch path": re.compile(r"/leonardo_" + r"(?:scratch|work)/[a-z]+/(?!<)[^/\s]+"),
+    "Cineca project code": re.compile(r"\bIscr" + r"[ABC]_[A-Za-z0-9]+"),
+    "Leonardo node hostname": re.compile(r"\b(?:login" + r"\d+(?:-ext)?\.leonardo|lrdn\d{4})\b"),
     "Arrhenius project identifier": re.compile(r"/nobackup/proj/disk/snic" + r"\d{4}-\d{2}-\d/"),
     "LUMI project identifier": re.compile(r"/flash/project_" + r"\d+/"),
     "JUPITER project identifier": re.compile(r"/e/project1/e-dev-" + r"\d{4}[a-z]\d{2}-\d+/"),
@@ -24,7 +27,11 @@ PRIVATE_PATTERNS = {
 
 
 def main() -> int:
-    names = subprocess.check_output(["git", "ls-files", "-z"]).split(b"\0")
+    # Tracked files plus untracked, non-ignored files, so new work is checked
+    # before it is committed.
+    names = subprocess.check_output(
+        ["git", "ls-files", "-z", "--cached", "--others", "--exclude-standard"]
+    ).split(b"\0")
     findings = 0
     for raw_name in names:
         if not raw_name:
@@ -60,7 +67,7 @@ def main() -> int:
     if findings:
         print(f"Found {findings} publication check finding(s)", file=sys.stderr)
         return 1
-    print("No known private site values in tracked lesson text")
+    print("No known private site values in lesson text")
     return 0
 
 

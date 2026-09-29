@@ -25,3 +25,13 @@ The site setup pages also include two resized photographs licensed under
 
 Only the image dimensions were changed. Their inclusion does not imply that
 the photographers or institutions endorse this lesson.
+
+## Runtime dependencies (not redistributed)
+
+The Part A pages install these packages and download these model weights at
+run time. Nothing from them is copied into this repository.
+
+- [TorchSim](https://github.com/TorchSim/torch-sim) (`torch-sim-atomistic`): MIT.
+- [mace-torch](https://github.com/ACEsuit/mace) and the MACE-MP-0b checkpoint: MIT.
+- [orb-models](https://github.com/orbital-materials/orb-models) and the Orb-v3
+  checkpoints: Apache-2.0.
