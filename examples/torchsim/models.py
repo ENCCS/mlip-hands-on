@@ -9,11 +9,12 @@ import torch
 MACE_MODELS = {"mace-small": "mace_mp_small", "mace-mpa": "mace_mpa_medium"}
 ORB_MODELS = {"orb-v3-conservative-inf-omat": "orb_v3_conservative_inf_omat"}
 ORB_PRECISION = {torch.float64: "float64", torch.float32: "float32-highest"}
+MATGL_MODELS = {"matgl-tensornet-pbe": "TensorNet-PES-MatPES-PBE-2025.2"}
 
 
 @dataclass
 class ModelPair:
-    make_torchsim: Callable
+    make_torchsim: Callable | None
     make_ase_calc: Callable
     checkpoint: str | None = None
 
@@ -94,12 +95,26 @@ def load_orb(name: str, device: torch.device, dtype: torch.dtype,
                      lambda: orb_ase_calc(orbff, adapter, device, dtype), checkpoint)
 
 
+def load_matgl(name: str, device: torch.device, dtype: torch.dtype) -> ModelPair:
+    """ASE only: TorchSim has no MatGL model, and MatGL runs in float32."""
+    import matgl
+    from matgl.ext.ase import PESCalculator
+
+    if dtype != torch.float32:
+        raise ValueError("MatGL models run in float32; pass --dtype float32")
+    with default_dtype():
+        potential = matgl.load_model(MATGL_MODELS[name]).to(device)
+    return ModelPair(None, lambda: PESCalculator(potential, stress_unit="eV/A3"))
+
+
 def load_models(name: str, device: torch.device, dtype: torch.dtype,
                 checkpoint: str | None = None, d3: bool = False) -> ModelPair:
     if d3 and name not in ORB_MODELS:
         raise ValueError("D3 is wired up for Orb models only")
     if name == "lj":
         return load_lj(device, dtype)
+    if name in MATGL_MODELS:
+        return load_matgl(name, device, dtype)
     if name in ORB_MODELS:
         return load_orb(name, device, dtype, checkpoint, d3)
     return load_mace(name, device, dtype, checkpoint)

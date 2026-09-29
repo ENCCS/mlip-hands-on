@@ -38,6 +38,14 @@ def summarise(config: dict, labels: list[str], serial: RelaxResult,
     }
 
 
+def summarise_serial(config: dict, labels: list[str], serial: RelaxResult) -> dict:
+    n_base = len(serial.energies)
+    return {**config, "n_structures": n_base, "baseline_n": n_base,
+            "n_atoms_total": sum(len(a) for a in serial.relaxed),
+            "baseline_wall_s": serial.wall_s,
+            "energies_eV": dict(zip(labels, serial.energies))}
+
+
 def print_summary(s: dict) -> None:
     n = s["n_structures"]
     print(f"{'':26}{'wall time':>12}{'s/structure':>14}")

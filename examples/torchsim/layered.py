@@ -18,7 +18,7 @@ from ase import Atoms
 from ase.filters import FrechetCellFilter
 from ase.optimize import FIRE
 
-from .models import ORB_MODELS, load_models
+from .models import MATGL_MODELS, ORB_MODELS, load_models
 from .report import sha256
 
 # Low-temperature experiment (Baskin and Meyer 1955) and plain PBE, both from
@@ -29,6 +29,7 @@ VARIANTS = {
     "mace-small": ("mace-small", False),
     "orb-v3": ("orb-v3-conservative-inf-omat", False),
     "orb-v3+d3": ("orb-v3-conservative-inf-omat", True),
+    "matgl-tensornet": ("matgl-tensornet-pbe", False),
 }
 
 
@@ -37,6 +38,7 @@ class LayerResult:
     variant: str
     model: str
     d3: bool
+    dtype: str
     start_d_A: float
     a_A: float
     c_A: float
@@ -68,13 +70,16 @@ def relax_one(calc, start_d: float, fmax: float, max_steps: int) -> tuple:
 def relax(variant: str, device: torch.device, dtype: torch.dtype, fmax: float,
           max_steps: int, checkpoints: dict, starts: list[float]) -> list[LayerResult]:
     name, d3 = VARIANTS[variant]
-    checkpoint = checkpoints["orb" if name in ORB_MODELS else "mace"]
+    if name in MATGL_MODELS:
+        dtype, checkpoint = torch.float32, None
+    else:
+        checkpoint = checkpoints["orb" if name in ORB_MODELS else "mace"]
     calc = load_models(name, device, dtype, checkpoint, d3).make_ase_calc()
     rows = []
     for d0 in starts:
         a, c, steps, converged, wall = relax_one(calc, d0, fmax, max_steps)
         error = 100 * (c / 2 - EXPERIMENT["d_A"]) / EXPERIMENT["d_A"]
-        rows.append(LayerResult(variant, name, d3, d0, a, c, c / 2, error,
+        rows.append(LayerResult(variant, name, d3, str(dtype).removeprefix("torch."), d0, a, c, c / 2, error,
                                 steps, converged, wall))
     return rows
 
@@ -93,7 +98,8 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--variants", nargs="+", choices=list(VARIANTS), default=list(VARIANTS))
     p.add_argument("--device", choices=["auto", "cuda", "cpu"], default="auto")
-    p.add_argument("--dtype", choices=["float64", "float32"], default="float64")
+    p.add_argument("--dtype", choices=["float64", "float32"], default="float64",
+                   help="MatGL always runs in float32")
     p.add_argument("--starts", nargs="+", type=float, default=[3.34, 4.4],
                    help="starting interlayer spacings, Angstrom")
     p.add_argument("--fmax", type=float, default=0.002, help="eV/Angstrom")
@@ -115,7 +121,7 @@ def main() -> None:
     rows = [row for v in args.variants for row in relax(
         v, device, dtype, args.fmax, args.max_steps, checkpoints, args.starts)]
     print_table(rows)
-    packages = {p: version(p) for p in ("torch", "ase", "mace-torch", "orb-models")}
+    packages = {p: version(p) for p in ("torch", "ase", "mace-torch", "orb-models", "matgl")}
     summary = {"device": str(device), "dtype": args.dtype, "fmax": args.fmax,
                "starts_A": args.starts,
                "max_steps": args.max_steps, "experiment": EXPERIMENT, "pbe": PBE,

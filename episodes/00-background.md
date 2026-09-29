@@ -152,40 +152,42 @@ scaling in this lesson, see {doc}`08-scaling`.
 (background-choosing)=
 ## Choosing and trusting a model
 
-Fast universal models (Matbench Discovery data, accessed 29 September 2026
-[13]):
+Fast universal models ([Matbench Discovery](https://matbench-discovery.materialsproject.org)
+data, accessed 29 September 2026 [13]):
 
 | Model | Params | F1 ↑ | κSRME ↓ | Licence | Use case |
 |---|---:|---:|---:|---|---|
-| Orb-v3 [8] | 26M | 0.905 | 0.21 | Apache-2.0 | fast; D3 variant for van der Waals |
-| SevenNet-Omni | 55M | 0.906 | 0.19 | MIT | D3 built in; LAMMPS and TorchSim |
-| NequIP-OAM-XL [12] | 32M | 0.906 | 0.13 | MIT / CC-BY | also runs on AMD GPUs (LUMI) |
-| MatRIS-10M-OAM | 10M | 0.921 | 0.22 | BSD-3 | best accuracy for its size |
-| MatterSim v1 5M | 4.5M | 0.862 | 0.57 | MIT | small and fast |
-| EquiformerV3-OAM | 30M | 0.931 | 0.12 | MIT | accuracy leader, slower |
+| [Orb-v3](https://github.com/orbital-materials/orb-models) [8] | 26M | 0.905 | 0.21 | Apache-2.0 | fast; D3 variant for van der Waals |
+| [SevenNet-Omni](https://github.com/MDIL-SNU/SevenNet) | 55M | 0.906 | 0.19 | MIT | D3 built in; LAMMPS and TorchSim |
+| [NequIP-OAM-XL](https://github.com/mir-group/nequip) [12] | 32M | 0.906 | 0.13 | MIT / CC-BY | also runs on AMD GPUs (LUMI) |
+| [MatRIS-10M-OAM](https://github.com/HPC-AI-Team/MatRIS) | 10M | 0.921 | 0.22 | BSD-3 | best accuracy for its size |
+| [MatterSim v1 5M](https://github.com/microsoft/mattersim) | 4.5M | 0.862 | 0.57 | MIT | small and fast |
+| [EquiformerV3-OAM](https://github.com/atomicarchitects/equiformer_v3) | 30M | 0.931 | 0.12 | MIT | accuracy leader, slower |
 
 F1 measures stable-crystal classification (higher is better); κSRME is the
 error in predicted thermal conductivity (lower is better). Most GPU
 speed-ups are NVIDIA-only, which suits Leonardo; on AMD GPUs such as LUMI,
-choose a pure-PyTorch model such as NequIP or MACE.
+choose a pure-PyTorch model such as [NequIP](https://github.com/mir-group/nequip)
+or [MACE](https://github.com/ACEsuit/mace).
 
-- Matbench Discovery ranks models on crystal stability; its headline score,
+- [Matbench Discovery](https://matbench-discovery.materialsproject.org) ranks models on crystal stability; its headline score,
   F1, runs from 0 to 1 [13].
 - The leaderboard moves within months: models trained on OMat24 and other
   data reach F1 of about 0.92 to 0.93. Choose by your task, not by the top
   row of the table.
 - A low energy error does not guarantee a stable MD trajectory. Benchmark the
   property class you study, compare several models, and check stability.
-- Use tools beyond one score: [MLIP Arena](https://arxiv.org/abs/2509.20630)
+- Use tools beyond one score: [MLIP Arena](https://github.com/atomind-ai/mlip-arena)
   [14] tests physical tasks such as equations of state, phonons, diffusion
   barriers and diatomic curves;
-  [mlipbenchmarks](https://doi.org/10.1021/acs.jctc.6c00130) [15] measures
+  [mlipbenchmarks](https://github.com/peastman/mlipbenchmarks) [15] measures
   accuracy, MD speed, GPU memory and simulation stability.
 - Use an ensemble: run several models and compare; disagreement flags low
   confidence.
 - Check speed and GPU memory for your system size, not only accuracy.
 - Most universal MLIPs are trained on PBE data, which misses dispersion.
-  Grimme's D3 correction adds it, and runs on the GPU in TorchSim and in
+  Grimme's [D3 correction](https://github.com/dftd3/simple-dftd3) adds it, and runs on the GPU in
+  [TorchSim](https://github.com/TorchSim/torch-sim) and in
   `orb-models` (used on the {doc}`a2-orb-models` page).
 
 ## Outlook

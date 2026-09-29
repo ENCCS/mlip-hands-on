@@ -22,14 +22,15 @@ class SerialRelaxer:
 
     def run(self, structures: list[Atoms]) -> RelaxResult:
         calc = self.make_calc()
-        energies = []
+        energies, relaxed = [], []
         start = time.perf_counter()
         for original in structures:
             atoms = original.copy()
             atoms.calc = calc
             FIRE(atoms, logfile=None).run(fmax=self.fmax, steps=self.max_steps)
             energies.append(float(atoms.get_potential_energy()))
-        return RelaxResult(time.perf_counter() - start, energies)
+            relaxed.append(atoms)
+        return RelaxResult(time.perf_counter() - start, energies, relaxed)
 
 
 class BatchedRelaxer:

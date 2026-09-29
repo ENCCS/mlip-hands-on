@@ -8,15 +8,15 @@ from pathlib import Path
 
 import torch
 
-from .models import MACE_MODELS, ORB_MODELS, load_models
-from .report import print_summary, summarise, write_outputs
+from .models import MACE_MODELS, MATGL_MODELS, ORB_MODELS, load_models
+from .report import print_summary, summarise, summarise_serial, write_outputs
 from .runners import BatchedRelaxer, SerialRelaxer
 from .workload import build_workload
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--model", choices=["lj", *MACE_MODELS, *ORB_MODELS], default="mace-small")
+    p.add_argument("--model", choices=["lj", *MACE_MODELS, *ORB_MODELS, *MATGL_MODELS], default="mace-small")
     p.add_argument("--checkpoint",
                    help="local weights file; replaces the download for --model")
     p.add_argument("--device", choices=["auto", "cuda", "cpu"], default="auto")
@@ -29,9 +29,21 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--outdir", default="torchsim_results")
     p.add_argument("--seed", type=int, default=42)
     args = p.parse_args()
-    if args.model == "lj" and args.checkpoint:
-        p.error("--checkpoint needs a MACE or Orb --model")
+    if args.checkpoint and args.model not in (*MACE_MODELS, *ORB_MODELS):
+        p.error("--checkpoint needs a MACE or Orb --model; MatGL reads MATGL_CACHE")
+    if args.model in MATGL_MODELS and args.dtype != "float32":
+        p.error("MatGL models run in float32; pass --dtype float32")
     return args
+
+
+def run_ase_only(out: Path, config: dict, labels: list[str], serial) -> None:
+    print(f"{config['model']} has no TorchSim interface; ran the ASE baseline only")
+    summary = summarise_serial(config, labels, serial)
+    n = summary["n_structures"]
+    print(f"serial, measured: {serial.wall_s:.1f} s, {serial.wall_s / n:.2f} s/structure "
+          f"({n} structures)")
+    write_outputs(out, summary, serial.relaxed)
+    print(f"wrote {out}/summary.json and {out}/relaxed.extxyz")
 
 
 def main() -> None:
@@ -48,15 +60,17 @@ def main() -> None:
 
     models = load_models(args.model, device, dtype, args.checkpoint)
     serial = SerialRelaxer(models.make_ase_calc, args.fmax, args.max_steps)
-    batched = BatchedRelaxer(models.make_torchsim(), args.fmax, args.max_steps, args.autobatch)
-    serial_result = serial.run(structures[:n_base])
-    batched_result = batched.run(structures)
-
     config = {"model": args.model, "device": str(device), "dtype": args.dtype,
               "checkpoint": Path(args.checkpoint).name if args.checkpoint else None,
               "n_atoms_total": sum(len(a) for a in structures),
               "autobatch": args.autobatch, "fmax": args.fmax,
               "max_steps": args.max_steps}
+    if models.make_torchsim is None:
+        run_ase_only(out, config, labels[:n_base], serial.run(structures[:n_base]))
+        return
+    batched = BatchedRelaxer(models.make_torchsim(), args.fmax, args.max_steps, args.autobatch)
+    serial_result = serial.run(structures[:n_base])
+    batched_result = batched.run(structures)
     summary = summarise(config, labels, serial_result, batched_result,
                         models.checkpoint)
     print_summary(summary)

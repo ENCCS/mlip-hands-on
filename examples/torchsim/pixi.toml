@@ -14,6 +14,8 @@ torch-sim-atomistic = { version = ">=0.6.0", extras = ["mace"] }
 # Pinned: PyPI also carries a stray 4.1.0 release that sorts above 0.7.0.
 orb-models = "==0.7.0"
 ase = ">=3.25"
+# ASE calculator only; TorchSim has no MatGL model. 4.0.3 needs lightning<=2.6.1.
+matgl = "==4.0.3"
 
 [tasks]
 smoke = { cmd = "python -m torchsim --model lj --n-variants 2 --baseline-n 2 --max-steps 30 --outdir torchsim_smoke", cwd = ".." }
