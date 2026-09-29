@@ -12,15 +12,15 @@ kernelspec:
 
 # Simulate silicon with MACE
 
-We start with a cubic diamond-Si cell repeated twice in each direction:
-64 atoms. The pinned MACE potential predicts energy and forces. This run
-uses NVE velocity Verlet, a 0.1 fs step, ten warmup steps, and 200 timed
-steps. Initial velocities correspond to 300 K but NVE has no thermostat;
-the temperature is not held at 300 K.
+- System: cubic diamond Si, 2 x 2 x 2 cells, 64 atoms.
+- Potential: pinned MACE model for energy and forces.
+- Run: NVE velocity Verlet, 0.1 fs step, 10 warmup and 200 timed steps.
+- Initial velocities: 300 K. NVE has no thermostat, so temperature is not held at 300 K.
 
-The ALCHEMI example constructs `AtomicData` for each system, assigns seeded
-velocities, and collects the systems into a `Batch`. With one replica the
-batch still contains just one physical simulation:
+![Single-trajectory run flow](../_static/04-silicon-md-run-flow.drawio.png)
+
+The ALCHEMI example builds `AtomicData` per system, assigns seeded velocities
+and collects the systems into a `Batch` (one replica: still one physical simulation):
 
 :::{dropdown} alchemi_si.py
 ```{literalinclude} ../examples/alchemi_si.py
@@ -31,10 +31,11 @@ batch still contains just one physical simulation:
 ```
 :::
 
-The integrator and neighbor-list hook are explicit. `--integrator nve`
-selects `NVE`; `--integrator langevin` selects an NVT Langevin method with
-temperature and friction set in the code. Those methods answer different
-physical questions and should not share one performance or trajectory claim.
+Explicit integrator and neighbour-list hook:
+
+- `--integrator nve`: `NVE`.
+- `--integrator langevin`: NVT Langevin, temperature and friction set in code.
+- Different physics: never share one performance or trajectory claim.
 
 :::{dropdown} alchemi_si.py
 ```{literalinclude} ../examples/alchemi_si.py
@@ -45,22 +46,20 @@ physical questions and should not share one performance or trajectory claim.
 ```
 :::
 
-The complete [ALCHEMI example](../examples/alchemi_si.py) also shows the
-seeded initial velocities and the timing code.
+Seeded velocities and timing code: full [ALCHEMI example](../examples/alchemi_si.py).
 
-With the Arrhenius environment selected and one GPU allocated, this cell
-runs the single trajectory. The helper script mounts the model and this
-lesson's Python file read-only into the SIF, so it runs the code shown above.
-From the repository root, the equivalent terminal command is:
+The cell below runs the single trajectory (Arrhenius environment, one GPU
+allocated). The helper mounts the model and this script read-only into the
+SIF, so it runs the code above. Terminal equivalent, from the repository root:
 
 ```bash
 bash scripts/run-alchemi.sh --replicas 1 --cells 2 \
   --integrator nve --warmup 10 --steps 200
 ```
 
-The command prints a structured result; the notebook formats a few fields
-as a table. Neither command submits a job. Both require an existing GPU
-allocation and the selected environment variables from the setup page.
+Output is structured; the notebook tabulates a few fields. Neither submits
+a job: both need an existing GPU allocation and the setup-page environment
+variables.
 
 ```{code-cell} ipython3
 :tags: [hide-input]
@@ -89,9 +88,10 @@ display(Markdown(
 ```
 
 :::{note}
-The whole-command clock includes SIF startup, model loading, warmup, and MD;
-the MD-only clock excludes those setup costs. Neither includes queue wait.
-One short timing does not predict sustained production speed or validate the
-model against reference science. PyTorch's peak allocation is not total
-GPU memory use.
+- Whole command: SIF startup, model loading, warmup and MD.
+- MD steps only: excludes those setup costs.
+- Neither includes queue wait.
+- One short timing does not predict sustained production speed or validate
+  the model against reference science.
+- PyTorch peak allocation is not total GPU memory use.
 :::

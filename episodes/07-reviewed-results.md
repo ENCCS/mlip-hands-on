@@ -15,22 +15,19 @@ kernelspec:
 
 # Read a completed shared-GPU benchmark
 
-Use completed, site-labelled measurements from **one GH200** on Arrhenius
-or JUPITER to compare ALCHEMI batching with eight native LAMMPS processes
-sharing that GPU. Each row advances eight **independent** silicon/MACE
-trajectories. This offline page reads checked-in CSVs; its cells do **not**
-run MD, request an allocation, or contact Slurm.
+ALCHEMI batching versus eight native LAMMPS processes sharing one GH200
+on Arrhenius or JUPITER.
 
-Each site has completed NVE matrices at 64 and 512 atoms per trajectory.
-The incomplete Arrhenius 4,096-atom matrix is excluded. These are recorded
-site runs, not timings from your notebook session. Do not compare the two
-sites as if their runtime and startup conditions were identical.
+- Each row: eight independent silicon/MACE trajectories, NVE, 64 or 512
+  atoms each. The incomplete Arrhenius 4,096-atom matrix is excluded.
+- Recorded site runs, not your session. Cells only read checked-in CSVs:
+  no MD, allocation or Slurm.
+- Sites differ in runtime and startup conditions; do not compare them as
+  if identical.
 
 ## Reference measurements
 
-The synchronized tabs show three easy-to-compare rows from each site's
-complete matrix. They select **displayed reference data only**, not a
-compute backend or a notebook kernel.
+Tabs select displayed reference data only, not a backend or kernel.
 
 ::::{tab-set}
 :sync-group: site
@@ -58,8 +55,8 @@ trajectories, in seconds:
 | 512 | 35.166 | 115.179 | 75.696 |
 
 [All 16 JUPITER comparison rows](reviewed-shared-gpu-nve-jupiter.csv).
-The private JUPITER matrix also retains a redundant ordinary-sharing
-one-client row at each size. The site MPS server was observed during the
+The private JUPITER matrix also keeps a redundant ordinary-sharing
+one-client row per size. The site MPS server was observed during the
 concurrent clients.
 :::
 
@@ -67,11 +64,11 @@ concurrent clients.
 
 ## Whole workflow or measured MD?
 
-The two clocks answer different questions. **Whole workflow** is the time
-from starting the ALCHEMI client process until it finishes all eight
-trajectories. **Measured MD** covers only the 200 steps after ten warmup
-steps, with the eight trajectories advanced together. It excludes Python
-startup, model loading, initial-force preparation, and warmup.
+![Whole-workflow and measured-MD clocks](../_static/07-reviewed-results-clocks.drawio.png)
+
+- Whole workflow: ALCHEMI client start until all eight finish.
+- Measured MD: the 200 steps after ten warmup steps, all eight together;
+  excludes Python startup, model loading, initial forces and warmup.
 
 | Site | Atoms/simulation | Whole workflow, all eight (s) | Measured MD, all eight (s) |
 | --- | ---: | ---: | ---: |
@@ -80,30 +77,26 @@ startup, model loading, initial-force preparation, and warmup.
 | JUPITER | 64 | 76.380 | 4.571 |
 | JUPITER | 512 | 35.166 | 13.232 |
 
-These are **one completed run per case**, not medians. The two sites used
-different runtime packaging, and JUPITER ran the 64-atom case first in its
-job. Its long first whole-workflow time is therefore not evidence that its
-GPU advances MD more slowly: the measured MD intervals are similar. The
-records locate the difference in startup and setup, but do not identify a
-single cause such as import time, filesystem caching, or GPU power policy.
-For a site-performance claim, repeat cases in varied order and report
-medians and ranges for *both* clocks.
+- One run per case, not medians; sites used different runtime packaging.
+- JUPITER ran 64 atoms first in its job. Its long whole-workflow time is
+  startup and setup, not slower MD (measured MD is similar); the cause
+  (imports, filesystem caching, GPU power policy) is not isolated.
+- For a site-performance claim, repeat cases in varied order and report
+  medians and ranges for *both* clocks.
 
-The read-only cell below renders one full reviewed CSV as a table in both
-the published handout and the live notebook. Change `site` in the cell to
-inspect the other site; choosing a tab does not silently change a notebook
-variable. Re-running the cell does not run MD or change reference data.
+The read-only cell below renders one full CSV. Change `site` to see the
+other site (tabs do not change notebook variables); re-running changes no
+data and runs no MD.
 
-Each row completes eight simulations, each with 10 warmup and 200 measured
-steps at 0.1 fs. `processes` is the number of LAMMPS client processes; the
-ALCHEMI batch is one process with eight replicas. The two engines used NVE
-velocity-Verlet, but initial velocities were independent, not atom-by-atom
-matched. **Time to finish all eight** is the measured group wall time: it
-includes client startup, model loading, warmup, and MD; it
-excludes queue wait, native archive extraction, and MPS controller startup.
-The secondary aggregate rate counts completed MD steps across all eight
-simulations per second: `8 × 200 / group wall seconds`. It is not the speed
-of one trajectory or a standard MD performance unit.
+- `processes`: LAMMPS client processes; ALCHEMI is one process, eight replicas.
+- Each row: eight simulations, each 10 warmup and 200 measured steps.
+- Both engines: NVE velocity-Verlet, 0.1 fs; initial velocities independent,
+  not atom-by-atom matched.
+- Time to finish all eight = group wall time: client startup, model loading,
+  warmup and MD; excludes queue wait, native archive extraction and MPS
+  controller startup.
+- Aggregate rate = `8 × 200 / group wall seconds`: MD steps across all
+  eight per second, not one trajectory's speed nor a standard MD unit.
 
 ```{code-cell} ipython3
 :tags: [hide-input]
@@ -134,11 +127,9 @@ display(Markdown(
 
 ## Generate a comparison figure
 
-The chart shows the time to finish all eight simulations; **shorter is
-better** for this fixed amount of work. The table above retains every tested
-client count. To keep the comparison readable, the chart shows ALCHEMI and
-the two eight-process LAMMPS modes, with ordinary sharing and CUDA MPS kept
-separate. These are complete-workflow timings, not force-kernel speedups.
+Time to finish all eight; shorter is better for this fixed work. Shows ALCHEMI and the two
+eight-process LAMMPS modes (ordinary, CUDA MPS); the table keeps every
+client count. Whole-workflow timings, not force-kernel speedups.
 
 ```{code-cell} ipython3
 :tags: [hide-input]
@@ -164,27 +155,27 @@ plt.show()
 
 ## Interpret the measurement
 
-On Arrhenius, at 64 atoms per simulation, ALCHEMI finished all eight in 18.745 s;
-the fastest tested LAMMPS mode took 88.336 s, about 4.71 times as long.
-At 512 atoms, the corresponding times were 26.599 s and 90.782 s,
-about 3.41 times as long. This is not a repeated-run
-estimate, intrinsic kernel speedup, trajectory-equivalence result, or GPU
-memory limit. The 4,096-atom matrix timed out before its eighth row; do not
-fill that gap by extrapolation.
+Arrhenius:
 
-On JUPITER, the 64-atom ALCHEMI group took 76.380 s while its 512-atom
-group took 35.166 s. The larger case is **not** intrinsically faster: the
-measured MD intervals above show that startup and setup dominate the
-first whole-workflow result; their precise cause remains unisolated.
-Eight LAMMPS MPS clients took 73.033 s at
-64 atoms and 75.696 s at 512 atoms, compared with 95.733 s and 115.179 s
-under ordinary sharing. These completed cases support showing both modes,
-not a general MPS or cross-site speedup claim.
+- ALCHEMI versus fastest LAMMPS: 18.745 s vs 88.336 s at 64 atoms (about
+  4.71x); 26.599 s vs 90.782 s at 512 atoms (about 3.41x).
+- Not a repeated-run estimate, kernel speedup, trajectory-equivalence result
+  or GPU memory limit.
+- The 4,096-atom matrix timed out before its eighth row; do not extrapolate.
 
-For a new comparison, record model and software hashes, GPU occupancy,
-initial positions and velocities, and the exact warmup and timed-step counts.
-Run each case repeatedly without another workload on the GPU; report median
-and range for time to finish all eight. To compare scientific
-results, inspect energies and forces at matched states separately from timing.
-At 64 atoms, setup and model loading can occupy more of the total time than
-at a much larger atom count.
+JUPITER:
+
+- ALCHEMI 76.380 s (64) vs 35.166 s (512): the larger case is not
+  intrinsically faster; startup and setup dominate the first whole-workflow
+  result (measured MD above); the precise cause is not isolated.
+- LAMMPS MPS 73.033 s and 75.696 s vs ordinary 95.733 s and 115.179 s.
+- Supports showing both modes, not a general MPS or cross-site speedup claim.
+
+For a new comparison:
+
+- Record model and software hashes, GPU occupancy, initial positions and
+  velocities, warmup and timed-step counts.
+- Repeat each case on an otherwise idle GPU; report median and range for
+  time to finish all eight.
+- Compare energies and forces at matched states separately from timing.
+- At 64 atoms, setup and model loading weigh more than at large atom counts.

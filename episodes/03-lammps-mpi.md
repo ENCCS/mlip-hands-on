@@ -12,16 +12,16 @@ kernelspec:
 
 # Build native LAMMPS with ML-IAP, Kokkos, and MPI
 
-The native path uses a separately prepared CPython 3.12 archive with Torch,
-MACE, and CuPy. ML-IAP embeds Python, so the build also needs matching
-`Python.h` and `libpython3.12.so`. The notebook venv is not a substitute
-for that development installation. The pinned source and Python archives
-are private build inputs, **not** part of the lesson checkout; obtain and
-verify them before attempting the build.
+- ML-IAP embeds Python: needs a prepared CPython 3.12 archive (Torch, MACE,
+  CuPy) with matching `Python.h` and `libpython3.12.so`. The notebook venv
+  will not do.
+- Pinned source and Python archives are private inputs, not in the lesson
+  checkout; obtain and verify them first.
 
-The supplied Arrhenius build job takes a pinned LAMMPS source archive and a
-prepared native Python archive. It checks their identities, then loads the
-current reviewed GCC/CUDA environment:
+![Native LAMMPS build pipeline](../_static/03-lammps-mpi-build.drawio.png)
+
+The Arrhenius job checks both archive identities, then loads the reviewed GCC/CUDA
+environment:
 
 :::{dropdown} build-lammps-mpi.sbatch
 ```{literalinclude} ../scripts/build-lammps-mpi.sbatch
@@ -32,12 +32,11 @@ current reviewed GCC/CUDA environment:
 ```
 :::
 
-This Arrhenius build targets its GH200 nodes: an Arm Grace CPU and Hopper GPU.
-The CMake configuration enables MPI, ML-IAP, Kokkos, Python, and the explicit
-`Kokkos_ARCH_ARMV9_GRACE` and `Kokkos_ARCH_HOPPER90` targets. `mpicc` and
-`mpicxx` must come from the same site MPI stack used when running the
-executable. JUPITER needs its own GH200 build against its compiler/MPI stack;
-the Arrhenius executable is not a portable binary.
+- Target: Arrhenius GH200 (Grace CPU, Hopper GPU); CMake enables MPI,
+  ML-IAP, Kokkos, Python, `Kokkos_ARCH_ARMV9_GRACE`, `Kokkos_ARCH_HOPPER90`.
+- `mpicc`/`mpicxx` must match the MPI stack used at run time.
+- Not portable: JUPITER needs its own GH200 build against its compiler/MPI
+  stack.
 
 :::{dropdown} build-lammps-mpi.sbatch
 ```{literalinclude} ../scripts/build-lammps-mpi.sbatch
@@ -48,20 +47,19 @@ the Arrhenius executable is not a portable binary.
 ```
 :::
 
-The script runs in a separately reviewed Slurm build allocation and writes
-an MPI runtime candidate archive. It does not overwrite an existing LAMMPS
-installation, submit itself, or prove that multi-GPU MD is scientifically
-correct. Read the complete [build job](../scripts/build-lammps-mpi.sbatch):
-the excerpts omit identity checks, private output paths, and build
-validation. A one-rank smoke precedes the optional 1/2/4-GPU scaling
-episode.
+- Runs in a reviewed Slurm build allocation; writes an MPI runtime
+  candidate archive.
+- Does not overwrite an existing LAMMPS, submit itself, or prove multi-GPU
+  MD correct.
+- Excerpts omit identity checks, private paths and validation; see the full
+  [build job](../scripts/build-lammps-mpi.sbatch).
+- One-rank smoke first, then the optional 1/2/4-GPU scaling episode.
 
 ## Use the tested GPU path
 
 The [MACE ML-IAP guide](https://mace-docs.readthedocs.io/en/latest/guide/lammps_mliap.html)
-recommends the unified ML-IAP interface with CUDA Kokkos, Newton on, and
-half neighbor lists. Our runnable Python example uses those settings through
-the LAMMPS library rather than a separate `lmp` command:
+recommends unified ML-IAP, CUDA Kokkos, Newton on, half neighbour lists.
+Our example sets these via the LAMMPS library, not `lmp`:
 
 :::{dropdown} lammps_si.py
 ```{literalinclude} ../examples/lammps_si.py
@@ -72,20 +70,18 @@ the LAMMPS library rather than a separate `lmp` command:
 ```
 :::
 
-The later `mliap/kk unified` pair style applies the exported MACE model.
-See the [complete example](../examples/lammps_si.py) for atom creation,
-integrator, timing, and cleanup. These tested settings are the **baseline**
-for the comparisons in this lesson. Enabling Kokkos is not by itself evidence
-that every optional cuEquivariance kernel is installed or active; do not
-attribute a measured speedup to such a kernel without checking the actual
-runtime and export.
+- `mliap/kk unified` then applies the exported model; the
+  [complete example](../examples/lammps_si.py) adds atoms, integrator,
+  timing and cleanup.
+- These settings are the baseline for all comparisons here.
+- Kokkos does not imply active cuEquivariance kernels; check runtime and
+  export before crediting them with a speedup.
 
 ## Export the same checkpoint for ML-IAP
 
-The ALCHEMI run reads the original MACE file; LAMMPS reads an ML-IAP export.
-After selecting the native Python environment with MACE installed, use a
-fresh output path outside Git. The small exporter checks the original model
-hash, requires one visible GPU, and refuses to replace an existing export:
+ALCHEMI reads the MACE file; LAMMPS reads an ML-IAP export. In the native
+Python environment, export to a fresh path outside Git. The exporter checks
+the model hash, needs one visible GPU and will not overwrite:
 
 ```bash
 export MLIP_MLIAP_MODEL=/path/outside/git/mace-mp-0a-small-mliap.pt
@@ -93,21 +89,20 @@ python examples/export_mace_mliap.py \
   --model "$MLIP_MODEL" --output "$MLIP_MLIAP_MODEL"
 ```
 
-Record the printed export hash with the runtime identity. For the pinned
-Arrhenius build it should match the value in `reference/model.toml`. A fresh
-export did match that value and completed a short one-rank LAMMPS run. On
-another site, check the export and one-rank run again; a matching hash alone
-is not a force or trajectory validation.
-The complete [exporter source](../examples/export_mace_mliap.py) is included
-so you can inspect its model check and refusal to overwrite an export.
+- Record the printed export hash with the runtime identity; on Arrhenius it should
+  match `reference/model.toml` (a fresh export did, and passed a short
+  one-rank run).
+- Elsewhere, recheck export and one-rank run; a matching hash is not a
+  force or trajectory validation.
+- [Exporter source](../examples/export_mace_mliap.py): model check and
+  overwrite refusal.
 
-On Arrhenius, the tested multi-rank runner uses site MPICH with PMI2/CXI,
-`gpu/aware on`, and peer-visible GPUs. Hiding every other GPU from a rank
-caused an earlier ML-IAP ghost-exchange failure. These are implementation
-details of this site profile, not portable defaults. On another cluster,
-recheck the compiler/MPI ABI, device assignment, network transport, and
-Slurm options. [JUPITER's native setup](../setup/jupiter.md) is separate;
-a future Leonardo profile should be separate too.
+Arrhenius multi-rank profile (site specific, not portable):
 
-NCCL matters to ALCHEMI's separate distributed `DomainParallel` path; it
-is not a replacement for the MPI configuration of this LAMMPS build.
+- Site MPICH, PMI2/CXI, `gpu/aware on`, peer-visible GPUs; hiding other
+  GPUs from a rank caused an ML-IAP ghost-exchange failure.
+- Elsewhere, recheck compiler/MPI ABI, device assignment, transport and Slurm
+  options. [JUPITER's native setup](../setup/jupiter.md) is separate; a
+  future Leonardo profile should be too.
+- NCCL is for ALCHEMI's `DomainParallel` path, not a replacement for this
+  build's MPI.

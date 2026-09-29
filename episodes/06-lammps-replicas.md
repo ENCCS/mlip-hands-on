@@ -12,12 +12,10 @@ kernelspec:
 
 # Run the same silicon case with LAMMPS
 
-LAMMPS loads the validated ML-IAP export of the MACE checkpoint. ML-IAP
-connects the potential to LAMMPS, while `/kk` styles use Kokkos for the
-supported GPU work. The validated path uses the LAMMPS Python library for
-ML-IAP model activation; it is not yet a standalone `.in`-file recipe.
-The relevant input is visible below; the
-[complete source](../examples/lammps_si.py) is supplied with the lesson.
+- LAMMPS loads the validated ML-IAP export of the MACE checkpoint; ML-IAP
+  connects the potential and `/kk` styles run supported GPU work with Kokkos.
+- Activation uses the LAMMPS Python library, not yet a standalone `.in` recipe.
+- Input below; [complete source](../examples/lammps_si.py) supplied.
 
 :::{dropdown} lammps_si.py
 ```{literalinclude} ../examples/lammps_si.py
@@ -28,17 +26,15 @@ The relevant input is visible below; the
 ```
 :::
 
-With the MPI-enabled native runtime extracted and selected as
-`MLIP_NATIVE_PREFIX`, the first cell runs one 64-atom NVE trajectory on one
-GPU. It is a one-rank run of an MPI-capable binary, not an MPI scaling test.
-
-From the lesson checkout, the equivalent terminal command is:
+With the MPI-enabled native runtime extracted and set as `MLIP_NATIVE_PREFIX`,
+the first cell runs one 64-atom NVE trajectory on one GPU (one rank, not an
+MPI scaling test). Terminal equivalent, from the lesson checkout:
 
 ```bash
 bash scripts/run-lammps.sh --replicas 1 --cells 2 --integrator nve --warmup 10 --steps 200
 ```
 
-As with ALCHEMI, the notebook times the complete command. The runner's
+As with ALCHEMI, the notebook times the complete command; the runner's
 MD-only time is shown separately.
 
 ```{code-cell} ipython3
@@ -65,32 +61,24 @@ display(Markdown(
 ))
 ```
 
-For eight independent simulations on one GPU, there are three distinct
-workloads:
+Eight independent simulations on one GPU, three workloads:
 
-1. Run eight LAMMPS trajectories **sequentially**. This is a useful simple
-   baseline, but it does not share the GPU concurrently.
-2. Run eight independent LAMMPS processes **at once** on the same GPU.
-   Ordinary CUDA context sharing lets them take turns using GPU resources.
-3. Start a job-local CUDA Multi-Process Service (MPS) controller, then run
-   the eight processes. MPS can reduce some context-scheduling overhead but
-   is not a guarantee of speedup. It must be confined to the allocation and
-   stopped afterwards.
+![Eight one-replica LAMMPS clients run sequential, plain or MPS on one GPU](../_static/06-lammps-replicas-modes.drawio.png)
 
-ALCHEMI's single-process `Batch` is none of these LAMMPS modes. Compare
-the **time to finish all eight simulations** for the same number of
-replicas, atoms, steps, model, and GPU. The
-[reviewed-results episode](07-reviewed-results.md) keeps ordinary sharing
-and MPS in separate rows.
+1. `sequential`: one client after another. Baseline; no concurrent sharing.
+2. `plain`: all eight at once; ordinary CUDA context sharing.
+3. `mps`: job-local CUDA Multi-Process Service (MPS) controller with private
+   pipe and log directories, confined to the allocation and stopped on exit.
+   May cut context-scheduling overhead; no guaranteed speedup.
 
-The supplied group runner starts eight independent one-replica clients.
-`sequential` waits for each client before starting the next; `plain` uses
-ordinary GPU sharing. `mps` starts a controller with private,
-job-local pipe and log directories and stops it on exit. These are optional
-longer cells; run either once in a suitably long allocation, not alongside
-another GPU exercise.
+- ALCHEMI's single-process `Batch` is none of these modes.
+- Metric: time to finish all eight, with the same replicas, atoms, steps, model and GPU.
+- The [reviewed-results episode](07-reviewed-results.md) keeps plain and MPS
+  in separate rows.
+- Optional, longer cells: run each once in a suitably long allocation, not
+  alongside another GPU exercise.
 
-Equivalent terminal commands, run individually from the lesson checkout:
+Terminal equivalents, run individually from the lesson checkout:
 
 ```bash
 bash scripts/run-lammps-group.sh sequential --cells 2 --integrator nve --warmup 10 --steps 200
@@ -98,9 +86,9 @@ bash scripts/run-lammps-group.sh plain --cells 2 --integrator nve --warmup 10 --
 bash scripts/run-lammps-group.sh mps --cells 2 --integrator nve --warmup 10 --steps 200
 ```
 
-Each notebook cell measures its complete command, including wrapper startup.
-The runner's own `group_wall_seconds` starts later and is not substituted
-for this live comparison.
+Each cell times its complete command, including wrapper startup. The
+runner's `group_wall_seconds` starts later and is not used for this
+comparison.
 
 ```{code-cell} ipython3
 :tags: [hide-input]

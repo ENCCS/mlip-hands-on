@@ -12,24 +12,22 @@ kernelspec:
 
 # Batch independent trajectories on one GPU
 
-Eight copies of the same 64-atom cell receive different seeded velocities.
-They remain **eight independent simulations**, not one coupled 512-atom
-cell. `Batch.from_data_list` gathers their atomic data so one ALCHEMI run
-can advance all replicas together.
+Eight copies of a 64-atom cell with different seeded velocities stay eight
+independent simulations, not one coupled 512-atom cell. `Batch.from_data_list`
+lets one ALCHEMI run advance them together.
 
-The first cell measures one trajectory. The second measures eight. They run
-sequentially on the same allocated GPU; do not execute another GPU notebook
-at the same time.
+![Eight replicas batched into one ALCHEMI run on one GPU](../_static/05-batched-md-batch.drawio.png)
 
-From the lesson checkout, the equivalent terminal commands are:
+The cells below time one trajectory, then eight, on the same GPU. Do not run
+another GPU notebook meanwhile. Terminal equivalent, from the lesson checkout:
 
 ```bash
 bash scripts/run-alchemi.sh --replicas 1 --cells 2 --integrator nve --warmup 10 --steps 200
 bash scripts/run-alchemi.sh --replicas 8 --cells 2 --integrator nve --warmup 10 --steps 200
 ```
 
-The notebook times each complete command, including setup and model loading.
-The runner also reports MD-only time; those are different timing windows.
+The notebook times each whole command, including setup and model loading.
+The runner's MD-only time is a different timing window.
 
 ```{code-cell} ipython3
 :tags: [hide-input]
@@ -75,19 +73,17 @@ display(Markdown(
 ))
 ```
 
-The two rows do different amounts of work, so their wall times alone are not
-a speedup ratio. To compare methods completing the *same eight simulations*,
-use the [reviewed benchmark](07-reviewed-results.md). If an aggregate rate is
-useful, calculate it as `simulations × measured steps / time to finish all`
-(completed MD steps across all simulations per second); it does not describe
-the speed of any single trajectory. These short live runs are illustrations,
-not the reviewed benchmark. Larger systems may already fill the GPU, leaving
-less benefit from batching.
+- The rows do different work, so their times are not a speedup ratio.
+- For methods on the *same eight simulations*, see the
+  [reviewed benchmark](07-reviewed-results.md); these short live runs only
+  illustrate.
+- Aggregate rate: `simulations × measured steps / time to finish all`
+  (MD steps per second across all simulations, not per trajectory).
+- Larger systems may already fill the GPU, so batching gains less.
 
 :::{note}
-To run NVT instead, change `--integrator nve` to `langevin` in both cells.
-The ALCHEMI code uses `NVTLangevin`; native LAMMPS can use `langevin` with
-`nve/kk` or a Nose–Hoover `nvt/kk` fix. The controls and discretizations
-are not interchangeable merely because they share a target temperature.
-Keep NVE and NVT results in separate tables.
+For NVT, change `--integrator nve` to `langevin` in both cells. ALCHEMI uses
+`NVTLangevin`; native LAMMPS can use `langevin` with `nve/kk` or a Nose–Hoover
+`nvt/kk` fix. Same target temperature does not make these interchangeable;
+keep NVE and NVT results in separate tables.
 :::
