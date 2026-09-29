@@ -19,13 +19,14 @@ kernelspec:
   reference.
 :::
 
-Two questions follow from the previous page: does the workflow depend on
+Two questions follow from batched screening: does the workflow depend on
 one model, and what do models trained on PBE data miss? PBE contains no
 dispersion (see {ref}`background-foundation`), and layered materials are
-held together by it. The Part A workflow is not specific to MACE. This page runs the same
-screening with an Orb-v3 model and a MatGL TensorNet model, then uses
-graphite, a layered crystal, to show what a universal MLIP trained on PBE
-data misses: the van der Waals (dispersion) attraction between layers.
+held together by it. The Part A workflow is not specific to MACE. This
+page runs the same screening with an Orb-v3 model and a MatGL TensorNet
+model, then uses graphite, a layered crystal, to show what a universal MLIP
+trained on PBE data misses: the van der Waals (dispersion) attraction
+between layers.
 
 ## Orb-v3
 
@@ -242,8 +243,8 @@ the reference for this page.
 
 Changing the model needs only the `--model` option (and float32 for
 TensorNet). For graphite, no model without D3 reproduces the experimental
-spacing: plain Orb-v3 stays near the PBE value of 4.40 Å, and TensorNet has no interlayer minimum
-within its 5 Å cutoff. With D3, Orb-v3 lands within about 3 % of
+spacing: plain Orb-v3 stays near the PBE value of 4.40 Å, and TensorNet,
+with its 5 Å cutoff, has no interlayer minimum at all. With D3, Orb-v3 lands within about 3 % of
 experiment, so judge an uncorrected model against PBE, not experiment.
 
 :::{keypoints}
