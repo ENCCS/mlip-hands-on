@@ -15,3 +15,6 @@ html_theme_options = {
     "light_logo": "ENCCS_logo_light.png",
     "dark_logo": "ENCCS_logo_dark.png",
 }
+
+# sphinx-evita
+evita_eu_funding_badge = "co-funded"
