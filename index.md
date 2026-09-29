@@ -1,21 +1,15 @@
 # Universal MLIPs on HPC: hands-on
 
-Machine-learned interatomic potentials (MLIPs) learn energies and forces
-from quantum-mechanical data and then run at a small fraction of the cost of
-density functional theory. Universal, or foundation, MLIPs are trained once on
-large datasets that span the periodic table, and are used directly or
-fine-tuned for one system. On HPC systems most of their cost is GPU inference,
-so the way work is placed on the GPU sets the throughput.
+Machine-learned interatomic potentials (MLIPs) give near-DFT energies and
+forces at a fraction of the cost. On HPC, GPU inference dominates, so GPU
+placement sets throughput.
 
-This lesson shows two cases. **Part A** relaxes many small crystals in one
-batched TorchSim call and compares it with one-at-a-time relaxation in ASE,
-using MACE-MP and Orb-v3. **Part B** runs molecular dynamics of silicon with
-MACE-MP in ALCHEMI Toolkit and LAMMPS, from one trajectory to many replicas and
-many GPUs.
-
-New to MLIPs? Start with {doc}`episodes/00-background`.
-
-The source, scripts and job files are on [GitHub](https://github.com/ENCCS/mlip-hands-on).
+- **Part A**: relax many crystals in one batched TorchSim call versus
+  serial ASE, with MACE-MP and Orb-v3.
+- **Part B**: silicon MD with MACE-MP in ALCHEMI Toolkit and LAMMPS, from
+  one trajectory to many replicas and GPUs.
+- New to MLIPs? Start with {doc}`episodes/00-background`.
+- Source, scripts and job files: [GitHub](https://github.com/ENCCS/mlip-hands-on).
 
 ![Lesson map: Part A screening and Part B molecular dynamics.](_static/lesson-map.drawio.png)
 

@@ -13,24 +13,19 @@ kernelspec:
 # Batched relaxation for screening
 
 :::{objectives}
-- Explain why screening benefits from batched relaxation on a GPU.
-- Relax one set of structures serially with ASE and in one TorchSim batch.
-- Compare the two routes for wall time and energy agreement.
+- Explain why batched GPU relaxation speeds up screening.
+- Relax one set serially with ASE and in one TorchSim batch.
+- Compare wall time and energy agreement.
 :::
 
-Screening compares candidate structures after each has been relaxed to its
-nearest energy minimum. With a GPU MLIP, relaxing small structures one at a
-time leaves most of the GPU idle; batched engines relax many at once (see
-{ref}`background-engines`). This page relaxes one set twice with the same
-MACE-MP foundation model: serially with ASE, then in one batched
-[TorchSim](https://github.com/TorchSim/torch-sim) call on one GPU.
+Serial relaxation leaves the GPU idle; batching fills it
+({ref}`background-engines`).
 
-Part A has its own pixi environment and uses MACE-MP-0b small, not the
-MACE-MP-0a checkpoint pinned for Part B.
-
-The workload is a toy screening set: rattled copies of four crystals
-(Cu fcc, Si diamond, Fe bcc and Al fcc, 8 to 32 atoms each). Each copy has a
-different random displacement and needs its own relaxation.
+- One MACE-MP model, two routes: serial ASE and one batched
+  [TorchSim](https://github.com/TorchSim/torch-sim) call.
+- Part A: own pixi environment, MACE-MP-0b small (not Part B's MACE-MP-0a).
+- Workload: randomly rattled Cu fcc, Si diamond, Fe bcc and Al fcc (8 to 32
+  atoms).
 
 :::{dropdown} Code: workload.py
 ```{literalinclude} ../examples/torchsim/workload.py
@@ -44,11 +39,11 @@ different random displacement and needs its own relaxation.
 
 ## Serial and batched runs
 
-Both routes use FIRE with a fixed cell and stop when the largest force falls
-below `--fmax` (0.05 eV/Å by default) or after `--max-steps`. The serial
-baseline relaxes only the first `--baseline-n` structures and extrapolates
-its per-structure time to the full set; a full serial run would use most
-of the allocation.
+Both routes use FIRE with a fixed cell.
+
+- Stop at `--fmax` (default 0.05 eV/Å) or `--max-steps`.
+- Serial relaxes only the first `--baseline-n` structures and extrapolates
+  to the full set; a full serial run would use most of the allocation.
 
 :::{dropdown} Code: runners.py
 ```{literalinclude} ../examples/torchsim/runners.py
@@ -58,11 +53,11 @@ of the allocation.
 ```
 :::
 
-TorchSim takes the whole list of ASE `Atoms`, builds one batched state and
-advances every structure together. Converged structures leave the batch;
-with `--autobatch` TorchSim also splits the set to fit GPU memory. Both
-routes use the same checkpoint. TorchSim needs the raw PyTorch model, so it
-is loaded with `return_raw_model=True`:
+- TorchSim advances all ASE `Atoms` as one batched state; converged
+  structures leave the batch.
+- `--autobatch` splits the set to fit GPU memory.
+- Same checkpoint for both; TorchSim needs the raw model
+  (`return_raw_model=True`):
 
 :::{dropdown} Code: models.py
 ```{literalinclude} ../examples/torchsim/models.py
@@ -73,27 +68,25 @@ is loaded with `return_raw_model=True`:
 ```
 :::
 
-After both runs, the example compares the ASE and TorchSim energies on the
-structures relaxed both ways and writes `summary.json` and
-`relaxed.extxyz`. When `--checkpoint` names a local file, the summary also
-records its SHA-256.
+Outputs: ASE versus TorchSim energies on the shared structures,
+`summary.json` and `relaxed.extxyz`. A local `--checkpoint` file also gets
+its SHA-256 recorded.
 
 ## Laptop run
 
-The example is a Python package in `examples/torchsim/` with its own
-[pixi](https://pixi.sh) environment; its entry point is
-[`examples/torchsim/__main__.py`](../examples/torchsim/__main__.py). The
-`smoke` task uses a toy Lennard-Jones potential. It needs no download and
-finishes in seconds; its timings and energies have no physical meaning.
+- Package `examples/torchsim/` with its own [pixi](https://pixi.sh)
+  environment; entry point
+  [`examples/torchsim/__main__.py`](../examples/torchsim/__main__.py).
+- `smoke` uses a toy Lennard-Jones potential: no download, seconds to run,
+  no physical meaning.
 
 ```bash
 cd examples/torchsim
 pixi run smoke
 ```
 
-The task writes to `examples/torchsim_smoke/`. The example refuses to
-overwrite an existing output directory, so remove it or pass a new
-`--outdir` before running again.
+Output goes to `examples/torchsim_smoke/`. Existing output directories are
+never overwritten: remove it or pass a new `--outdir`.
 
 Expected output (numbers vary):
 
@@ -107,14 +100,14 @@ estimated serial / batched: 0.04
 max |E_ASE - E_TorchSim| on the serial subset: 2.03e-01 eV
 ```
 
-On a CPU with a cheap potential, batching is slower because there is no
-GPU parallelism. The energy difference arises because ASE and TorchSim use
-different cutoff and energy-shift conventions for Lennard-Jones, so the two
-toy potentials differ. Only the MACE run is a consistency check (a few meV).
+- Batching is slower on a CPU with a cheap potential: no GPU parallelism.
+- The energy gap comes from different Lennard-Jones cutoff and shift
+  conventions in ASE and TorchSim. Only the MACE run is a consistency check
+  (a few meV).
 
-To run the MACE model on a CPU, use the `cpu` task. It relaxes four
-structures for at most 20 steps and writes to `examples/torchsim_cpu/`. The
-first run downloads the MACE-MP-0b small checkpoint, about 68 MB:
+MACE on a CPU: the `cpu` task relaxes four structures for at most 20 steps
+into `examples/torchsim_cpu/`. First run downloads MACE-MP-0b small (about
+68 MB):
 
 ```bash
 pixi run cpu
@@ -122,9 +115,8 @@ pixi run cpu
 
 ## Leonardo run (one A100)
 
-Compute nodes have no internet access. On a login node, install the pixi
-environment inside your lesson copy and download the checkpoint to a
-private location outside Git:
+Compute nodes have no internet. On a login node, install pixi and download
+the checkpoint to a private location outside Git:
 
 :::{dropdown} Commands
 ```bash
@@ -138,10 +130,8 @@ printf '%s  %s\n' \
 ```
 :::
 
-The job checks this SHA-256 before it starts and refuses any other file.
-
-Then submit the one-GPU job from the repository root. It refuses missing
-inputs and an existing output directory:
+The job checks this SHA-256 and refuses any other file. Submit from the
+repository root; missing inputs or an existing output directory abort it:
 
 :::{dropdown} Commands
 ```bash
@@ -162,15 +152,14 @@ sbatch --account=<PROJECT> \
 ```
 :::
 
-This script has **not yet been qualified**. The float64 row below comes
-from an earlier script with the same workload and options as this job; the
-float32 row comes from a separate tuned run with the options listed below
-the table. Neither was produced by this script.
+This script has **not yet been qualified**. Neither result row below comes
+from it: float64 is from an earlier script with the same workload and
+options; float32 is from a separate tuned run (options under the table).
 
 ## Leonardo results
 
-One A100, June 2026, MACE-MP-0b small, no cuEquivariance kernels. The serial column
-measured 8 structures; the estimate scales that time to the full set.
+One A100, June 2026, MACE-MP-0b small, no cuEquivariance. Serial measured
+8 structures, scaled to the full set.
 
 | Precision and batching | Structures | Serial, 8 measured (s) | Serial, estimated (s) | Batched (s) | Estimated serial / batched |
 |---|---:|---:|---:|---:|---:|
@@ -180,22 +169,20 @@ measured 8 structures; the estimate scales that time to the full set.
 The float32 run used `--dtype float32 --n-variants 32 --autobatch`.
 
 :::{warning}
-These are single examples, not a benchmark.
+Single examples, not a benchmark.
 
-- Each row is **one run**. There are no repeats, medians or ranges.
-- The serial time for the full set is **extrapolated** from 8 structures,
-  not measured.
-- The model is **MACE-MP-0b small**. It is not the MACE-MP-0a checkpoint
-  pinned for Part B, so the energies and costs are not interchangeable.
-- The runs used no cuEquivariance kernels; they would change the timings.
-- This is **relaxation, not molecular dynamics**. Do not compare these
-  times with the Part B MD timings.
+- **One run** per row: no repeats, medians or ranges.
+- Full-set serial time is **extrapolated** from 8 structures.
+- **MACE-MP-0b small**, not Part B's MACE-MP-0a: energies and costs are not
+  interchangeable.
+- No cuEquivariance kernels; they would change the timings.
+- **Relaxation, not MD**: do not compare with Part B timings.
 :::
 
 ## LUMI (AMD MI250X) check
 
-MACE also runs on AMD GPUs through ROCm PyTorch (the CSC `pytorch` module on
-LUMI). A separate ASE script, without TorchSim batching, on one MI250X GCD:
+MACE runs on AMD via ROCm PyTorch (CSC `pytorch` module). Separate ASE
+script, no TorchSim batching, one MI250X GCD:
 
 | Step | System | Time (s) |
 |---|---|---:|
@@ -203,22 +190,19 @@ LUMI). A separate ASE script, without TorchSim batching, on one MI250X GCD:
 | FIRE relaxation, serial | 6 structures (Cu, Al, Fe, Si) | 17.0 |
 | MD, 600 K | 200 steps, 32 atoms | 3.9 |
 
-One run, float64, MACE-MP-0a small, 29 September 2026. It shows that the model
-runs on AMD hardware; it is not a speed comparison with the A100 table above.
-The CUDA-only kernels (cuEquivariance, ALCHEMI) are not available on AMD.
+- One run, float64, MACE-MP-0a small, 29 September 2026.
+- Shows the model runs on AMD; not a speed comparison with the A100 table.
+- CUDA-only kernels (cuEquivariance, ALCHEMI) are not available on AMD.
 
 ## Reading the results
 
-On one A100, the batched run was about 5 times faster than the estimated
-serial time in float64 and about 7 times faster in float32 with
-`--autobatch`. On a CPU with the toy potential, batching was slower, so the
-gain comes from GPU parallelism. Each row is one run with an extrapolated
-serial time, so treat the ratios as indicative.
+- One A100: batched about 5 times faster than serial estimate (float64),
+  about 7 times (float32, `--autobatch`).
+- CPU with the toy potential: batching slower; the gain is GPU parallelism.
+- One run each, extrapolated serial time: ratios are indicative.
 
 :::{keypoints}
-- Batching advances many independent relaxations in one GPU call;
-  converged structures leave the batch.
-- On one A100, batching was 5 to 7 times faster than the serial estimate.
+- Batching runs many relaxations in one GPU call; 5 to 7 times faster on an A100.
 - On a CPU, batching gives no gain.
-- Check that serial and batched energies agree before comparing timings.
+- Check serial and batched energies agree before comparing timings.
 :::

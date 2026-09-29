@@ -13,46 +13,30 @@ kernelspec:
 # Background: universal MLIPs
 
 :::{objectives}
-- Explain what a foundation MLIP is and what data it is trained on.
-- Recognise why most materials models miss dispersion.
-- Choose a model and a GPU engine for a task, and check the model first.
+- Define a foundation MLIP and its training data.
+- Explain why most materials models miss dispersion.
+- Choose and check a model and a GPU engine.
 :::
 
-This page summarises the concepts behind the hands-on parts. Numbered
-references are listed at the end; review articles are collected in
-{doc}`../reference/reading`.
+Core concepts for the hands-on parts. Numbered references are at the end;
+reviews are in {doc}`../reference/reading`.
 
 ## Interatomic potentials and MLIPs
 
-An interatomic potential gives the energy of a system as a function of the
-atomic positions, the potential energy surface. Its gradient gives the
-forces that drive molecular dynamics (MD) and structure relaxation.
+![Accuracy versus cost: classical force fields, MLIPs and DFT.](../_static/bg-accuracy-cost.drawio.png)
 
-- Classical force fields use a fixed, hand-crafted functional form. They are
-  fast, but accuracy and transferability are limited.
-- Quantum methods such as density functional theory (DFT) compute the energy
-  from the electronic structure. They are accurate, but the cost grows
-  steeply with system size.
-
-A machine-learned interatomic potential (MLIP) replaces the hand-crafted form
-with a flexible model trained on quantum reference data (structures with
-their energies and forces). The aim is DFT-quality energies and forces at a
-cost close to that of a force field. The idea dates from the
-high-dimensional neural-network potentials of 2007 [1].
+- A potential gives energy from atomic positions; its gradient gives the
+  forces for molecular dynamics (MD) and relaxation.
+- An MLIP is trained on quantum (DFT) energies and forces: near-DFT
+  accuracy at near force-field cost. The idea dates from 2007 [1].
 
 ## MLIPs among AI methods for materials
 
-MLIPs are one of six families of methods, which differ in what the model
-learns or does:
+![Six families of AI methods for materials, with interatomic potentials highlighted.](../_static/bg-ai-families.drawio.png)
 
-- **Electronic structure**: neural wavefunctions and learned functionals.
-- **Interatomic potentials**: energies and forces learned from DFT data; the
-  topic of this lesson.
-- **Generative models**: propose new structures, for example diffusion models
-  for crystals.
-- **Structure to property**: map a structure directly to one property.
-- **LLMs and agents**: read, plan and run simulation tools.
-- **Autonomous labs and open data**: predict, make and measure.
+- Six families: electronic structure, interatomic potentials, generative
+  models, structure to property, LLMs and agents, autonomous labs.
+- This lesson covers interatomic potentials only.
 
 (background-foundation)=
 ## From bespoke to foundation models
@@ -62,21 +46,16 @@ learns or does:
 *MLIP milestones, from one model per material to one model reused
 everywhere. Own diagram; logos identify the developing organisations.*
 
-A system-specific MLIP is trained for one material and refitted for the next.
-Equivariant graph neural networks such as NequIP [2] and MACE [3] learn from
-far less data (see below). A universal, or foundation, MLIP is pre-trained
-across most of the periodic table and reused without retraining. MACE-MP-0 [4]
-was among the first; UMA [7] and Orb-v3 [8] followed in 2025.
+- System-specific MLIP: trained for one material, refitted for the next.
+- Equivariant graph networks, NequIP [2] and MACE [3], need far less data.
+- Foundation MLIP: pre-trained across the periodic table, reused without
+  retraining. MACE-MP-0 [4] came first; UMA [7] and Orb-v3 [8] in 2025.
+- Coverage follows the data: common elements appear in hundreds of
+  thousands of structures, rare ones (noble gases) in a handful (MPtrj
+  counts in [4]). Check your elements and short-range repulsion before
+  screening arbitrary crystals.
 
-"Universal" coverage follows the training data. Common elements appear in
-hundreds of thousands of training structures, rare ones such as the noble
-gases in only a handful (see the MPtrj element counts in [4]). Check how well
-your elements are represented, and check physically sensible behaviour, such
-as repulsion at short interatomic distances for every element, before you
-trust a screen of arbitrary crystals.
-
-Training data grew by more than a hundredfold in a few years. The reference
-level of theory differs between datasets:
+Training data grew over a hundredfold in a few years:
 
 | Dataset | Scale | Reference level |
 |---|---|---|
@@ -87,78 +66,72 @@ level of theory differs between datasets:
 | OMol25 [9] | more than 100 million molecular calculations | ωB97M-V/def2-TZVPD |
 | UMA training [7] | about 500 million structures | mixed |
 
-Materials models are therefore trained on PBE, which misses dispersion; this
-is why {doc}`a2-orb-models` adds a D3 correction. Molecular models trained on
-OMol25 use a different reference level.
+Materials models learn PBE, which misses dispersion, so {doc}`a2-orb-models`
+adds D3. OMol25 models use a different reference level.
 
 ## How the models are built
 
-Early MLIPs used hand-designed descriptors of each atom's environment. Most
-current models learn these features instead: each atom exchanges information
-with its neighbours in several rounds, a scheme called message passing in a
-graph neural network (GNN). A model is *equivariant* when its prediction
-rotates correctly when the structure is rotated; NequIP showed that building
-this in lets a model learn from up to about 1000 times less data [2].
-Transformers, the model family behind large language models, scale the same
-idea to the largest datasets. Equivariance was the historical route to
-accuracy, but by 2026 simpler designs compete closely: data and scale now
-matter more than any one architecture.
+- Message passing: in a graph neural network (GNN), atoms exchange
+  information with neighbours over several rounds; features are learnt,
+  not hand-designed.
+- Equivariant: predictions rotate with the structure. NequIP needs up to
+  about 1000 times less data [2].
+- Transformers scale the idea to the largest datasets. By 2026, simpler
+  designs compete closely: data and scale matter more than architecture.
 
 ## Pre-train, then fine-tune
 
-A practical recipe [10]:
+![Pre-train on a large dataset, use zero-shot, then fine-tune on a small targeted set.](../_static/bg-pretrain-finetune.drawio.png)
 
-1. Start zero-shot: use the foundation model as it is. This is often good
-   enough for screening and exploration.
-2. Fine-tune when you need numbers: add a small, targeted dataset for your
-   system and the property you care about.
-3. Select data wisely: uncertainty-aware (active-learning) sampling adds the
-   configurations the model is least sure about.
-4. Validate the property that matters, not only the energy.
+- Recipe [10]: zero-shot for screening; fine-tune on a small targeted set
+  when you need numbers; add data by uncertainty (active learning);
+  validate the property, not only the energy.
+- Fine-tuning can cause catastrophic forgetting on other systems [16];
+  keep the original model for general use.
 
-Errors are often quoted in meV/atom: the energy error per atom against the
-DFT reference; smaller is better. Fine-tuning is data-efficient [10]:
+Fine-tuning is data-efficient [10] (errors in meV/atom against DFT; lower
+is better):
 
-- For a high-entropy alloy, a fine-tuned model reached 13.8 meV/atom,
-  compared with 16.4 meV/atom (MACE) and 24.1 meV/atom (ACE) trained from
-  scratch.
-- For molybdenum (MACE-MP-0b3), the error in the elastic constant $C_{11}$
-  fell from 45.9% zero-shot to 2.6% after fine-tuning.
-- For silicon (MACE-MP-0b), errors fell from 19-53% zero-shot to 0.6-5.2%
-  after fine-tuning.
-
-Mechanical properties are a known weak spot of zero-shot models. Fine-tuning
-can also cause catastrophic forgetting, where the specialised model loses
-accuracy on other systems [16], so keep the original model for general use.
+- High-entropy alloy: fine-tuned 13.8 meV/atom; from scratch 16.4 (MACE)
+  and 24.1 (ACE).
+- Molybdenum (MACE-MP-0b3): $C_{11}$ error 45.9% zero-shot, 2.6%
+  fine-tuned.
+- Silicon (MACE-MP-0b): 19-53% zero-shot, 0.6-5.2% fine-tuned.
+- Mechanical properties are a known zero-shot weak spot.
 
 (background-engines)=
 ## GPU engines
 
-ASE and LAMMPS were designed to run one system at a time, and their GPU
-acceleration targets classical force fields. Neural-network potentials
-benefit from batched inference on a GPU. TorchSim (PyTorch), kUPS (JAX) and
-NVIDIA ALCHEMI Toolkit (PyTorch and Warp) batch many systems into one GPU
-call [11]. Part A uses TorchSim for this; Part B uses ALCHEMI Toolkit.
-ALCHEMI also supplies CUDA-only building blocks (neighbour lists, D3, Ewald)
-used under UMA, Orb, PET and TorchSim; the D3 correction on the
-{doc}`a2-orb-models` page is one of them. These run on Leonardo, not on LUMI.
+- ASE and LAMMPS run one system at a time; their GPU support targets
+  classical force fields.
+- TorchSim (PyTorch), kUPS (JAX) and NVIDIA ALCHEMI Toolkit (PyTorch and
+  Warp) batch many systems into one GPU call [11]. Part A uses TorchSim;
+  Part B uses ALCHEMI Toolkit.
+- ALCHEMI also supplies CUDA-only kernels (neighbour lists, D3, Ewald) used
+  under UMA, Orb, PET and TorchSim, including the D3 on
+  {doc}`a2-orb-models`. They run on Leonardo, not on LUMI.
 
 ![Engine building blocks: a potential, an integrator and a thermostat combine into different simulation types.](../_static/engine-building-blocks.drawio.png)
 
 *Engines are built from swappable blocks. Own diagram, after the kUPS
 design.*
 
-Leonardo has NVIDIA GPUs, where CUDA-only kernels such as cuEquivariance
-and ALCHEMI run. On AMD GPUs such as LUMI's
-MI250X, ROCm PyTorch runs MACE, but the CUDA-only kernels do not. NequIP and
-Allegro foundation models run LAMMPS ML-IAP/Kokkos MD on both GPU types:
-up to 102.5 million atoms on 256 GPUs, about 44 000 atoms per A100 and
-22 000 per MI250X GCD. NequIP-OAM-XL matches eSEN-30M-OAM on Matbench
-Discovery at about ten times the speed [12]. For measured multi-GPU MACE
-scaling in this lesson, see {doc}`08-scaling`.
+- Leonardo (NVIDIA): CUDA-only kernels such as cuEquivariance and ALCHEMI
+  run.
+- LUMI (AMD MI250X): ROCm PyTorch runs MACE; CUDA-only kernels do not.
+- NequIP and Allegro foundation models run LAMMPS ML-IAP/Kokkos MD on
+  both: up to 102.5 million atoms on 256 GPUs, about 44 000 atoms per A100
+  and 22 000 per MI250X GCD. NequIP-OAM-XL matches eSEN-30M-OAM on
+  Matbench Discovery at about ten times the speed [12].
+- Measured multi-GPU MACE scaling: {doc}`08-scaling`.
 
 (background-choosing)=
 ## Choosing and trusting a model
+
+![Choosing a model: task, hardware, benchmark, validation.](../_static/bg-choose-model.drawio.png)
+
+- Choose by task and hardware, not by the top leaderboard row.
+- Validate the property you study; compare several models.
 
 Fast universal models ([Matbench Discovery](https://matbench-discovery.materialsproject.org)
 data, accessed 29 September 2026 [13]):
@@ -172,49 +145,38 @@ data, accessed 29 September 2026 [13]):
 | [MatterSim v1 5M](https://github.com/microsoft/mattersim) | 4.5M | 0.862 | 0.57 | MIT | small and fast |
 | [EquiformerV3-OAM](https://github.com/atomicarchitects/equiformer_v3) | 30M | 0.931 | 0.12 | MIT | accuracy leader, slower |
 
-F1 measures stable-crystal classification (higher is better); κSRME is the
-error in predicted thermal conductivity (lower is better). Most GPU
-speed-ups are NVIDIA-only, which suits Leonardo; on AMD GPUs such as LUMI,
-choose a pure-PyTorch model such as [NequIP](https://github.com/mir-group/nequip)
-or [MACE](https://github.com/ACEsuit/mace).
-
-- [Matbench Discovery](https://matbench-discovery.materialsproject.org) ranks models on crystal stability; its headline score,
-  F1, runs from 0 to 1 [13].
-- The leaderboard moves within months: models trained on OMat24 and other
-  data reach F1 of about 0.92 to 0.93. Choose by your task, not by the top
-  row of the table.
-- A low energy error does not guarantee a stable MD trajectory. Benchmark the
-  property class you study, compare several models, and check stability.
-- Use tools beyond one score: [MLIP Arena](https://github.com/atomind-ai/mlip-arena)
-  [14] tests physical tasks such as equations of state, phonons, diffusion
-  barriers and diatomic curves;
-  [mlipbenchmarks](https://github.com/peastman/mlipbenchmarks) [15] measures
-  accuracy, MD speed, GPU memory and simulation stability.
-- Use an ensemble: run several models and compare; disagreement flags low
-  confidence.
-- Check speed and GPU memory for your system size, not only accuracy.
-- Most universal MLIPs are trained on PBE data, which misses dispersion.
-  Grimme's [D3 correction](https://github.com/dftd3/simple-dftd3) adds it, and runs on the GPU in
-  [TorchSim](https://github.com/TorchSim/torch-sim) and in
-  `orb-models` (used on the {doc}`a2-orb-models` page).
+- F1 (0 to 1, higher is better): stable-crystal classification on
+  [Matbench Discovery](https://matbench-discovery.materialsproject.org) [13].
+  κSRME (lower is better): thermal-conductivity error.
+- The leaderboard moves within months; OMat24-trained models reach F1 of
+  about 0.92 to 0.93.
+- Most GPU speed-ups are NVIDIA-only (Leonardo). On AMD (LUMI), choose a
+  pure-PyTorch model such as [NequIP](https://github.com/mir-group/nequip)
+  or [MACE](https://github.com/ACEsuit/mace).
+- A low energy error does not guarantee stable MD. Benchmark your property
+  class and check stability.
+- Beyond one score: [MLIP Arena](https://github.com/atomind-ai/mlip-arena)
+  [14] tests equations of state, phonons, diffusion barriers and diatomic
+  curves; [mlipbenchmarks](https://github.com/peastman/mlipbenchmarks) [15]
+  measures accuracy, MD speed, GPU memory and stability.
+- Ensemble: run several models; disagreement flags low confidence.
+- Check speed and GPU memory at your system size.
+- PBE-trained models miss dispersion. The
+  [D3 correction](https://github.com/dftd3/simple-dftd3) adds it on the GPU
+  in [TorchSim](https://github.com/TorchSim/torch-sim) and `orb-models`
+  (used on {doc}`a2-orb-models`).
 
 ## Outlook
 
-Current directions include long-range electrostatics learned without charge
-labels, learned DFT functionals that provide better reference data,
-generative models whose candidates are screened with MLIPs, and early
-language-model agents that drive simulation codes. In every case,
-validate the property you care about.
+- Directions: long-range electrostatics without charge labels, learned DFT
+  functionals for better reference data, generative models screened with
+  MLIPs, language-model agents driving simulation codes.
+- In every case, validate the property you care about.
 
 :::{keypoints}
-- An MLIP learns energies and forces from quantum reference data and aims
-  at DFT quality at a cost close to that of a force field.
-- Foundation MLIPs are used zero-shot for screening and fine-tuned when
-  quantitative accuracy is needed.
-- Most materials models are trained on PBE data and miss dispersion unless
-  a correction such as D3 is added.
-- Batched GPU engines run many systems in one call; choose a model by your
-  task and validate the property you study.
+- MLIPs learn DFT energies and forces at near force-field cost.
+- Use foundation models zero-shot; fine-tune for quantitative accuracy.
+- PBE-trained models miss dispersion without D3; validate your property.
 :::
 
 ## References
