@@ -26,6 +26,14 @@ setup/leonardo
 setup/notebook
 ```
 
+## Part A: batched screening
+
+```{toctree}
+:maxdepth: 1
+
+episodes/a1-batched-relaxation
+```
+
 ## Part B: molecular dynamics
 
 Run the examples in order, or use the setup pages to prepare artifacts in
