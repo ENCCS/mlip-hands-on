@@ -23,7 +23,32 @@ Does the included source appear below?
 The published page and notebook read the same Markdown source.
 :::
 
-```{literalinclude} ../examples/alchemi_si.py
+```{literalinclude} ../examples/alchemi_si_one_cell.py
 :language: python
 :lines: 1-5
+:lineno-match:
 ```
+
+::::{tab-set}
+:sync-group: site
+:::{tab-item} Arrhenius
+:sync: arrhenius
+First site.
+:::
+:::{tab-item} JUPITER
+:sync: jupiter
+Second site.
+:::
+::::
+
+::::{tab-set}
+:sync-group: site
+:::{tab-item} Arrhenius
+:sync: arrhenius
+First route.
+:::
+:::{tab-item} JUPITER
+:sync: jupiter
+Second route.
+:::
+::::

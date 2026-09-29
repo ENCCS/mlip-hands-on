@@ -23,7 +23,6 @@ First run one process on an allocated GPU:
 ```{code-cell} ipython3
 %%bash
 cd ../..
-source "scripts/${MLIP_SITE}-lammps-env.sh"
 time bash scripts/run-lammps.sh "$PWD" "$MLIP_LMP" "$MLIP_MLIAP_MODEL" 2 2000
 ```
 
@@ -34,7 +33,6 @@ separate logs, then waits for every exit status:
 ```{code-cell} ipython3
 %%bash
 cd ../..
-source "scripts/${MLIP_SITE}-lammps-env.sh"
 time bash scripts/run-lammps-replicas.sh "$PWD" "$MLIP_LMP" \
   "$MLIP_MLIAP_MODEL" 8 "$MLIP_ARTIFACT_ROOT/replicas-${SLURM_JOB_ID}" 2000
 ```

@@ -61,18 +61,18 @@ python jupyterlab-enccs/check_rendering.py \
   --geckodriver /path/to/geckodriver
 ```
 
-The September 2026 ASUS browser check passed all 17 current pages, including
-the JUPITER and Leonardo setup pages, in an isolated JupyterLab workspace. The Arrhenius
+The September 2026 ASUS browser check of the earlier main-branch layout
+passed its then-current pages, including JUPITER and Leonardo setup, in an
+isolated JupyterLab workspace. The Arrhenius
 private installation reported both `jupyterlab-myst` and `jupyterlab-jupytext`
 healthy. The upstream source's two unit suites passed (7 tests). This does
 not establish general Sphinx-directive compatibility or screen-reader
 acceptance; an instructor should still inspect the live notebook on their
 target browser before class.
 
-The lesson's setup hub now has two synchronized site tab sets. Its 2026-09-28
-ASUS browser check selected JUPITER in the first set and observed JUPITER in
-the second in both the published Sphinx HTML and the patched MyST notebook.
-The HTML build requires `sphinx-design==0.7.0`; the notebook uses the patched
-renderer in the private JupyterLab environment. This does not establish
-cross-page tab synchronization or make site-specific GPU commands portable.
+The earlier main-branch setup hub had two synchronized site tab sets, tested
+in both published HTML and the patched notebook. This branch uses separate
+Arrhenius and JUPITER setup pages instead. `check_rendering.py` now targets
+the `content/` layout and its current fixture; its browser check still needs
+to be rerun for this branch before claiming notebook-rendering acceptance.
 The SIF build excerpt tests matching original line numbers in both views.

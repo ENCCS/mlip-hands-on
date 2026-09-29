@@ -32,7 +32,6 @@ Then run a LAMMPS minimization of the first structure:
 ```{code-cell} ipython3
 %%bash
 cd ../..
-source "scripts/${MLIP_SITE}-lammps-env.sh"
 bash scripts/run-lammps-relax.sh "$PWD" "$MLIP_LMP" "$MLIP_MLIAP_MODEL" \
   "$PWD/examples/starts/si-relax-01.data"
 ```

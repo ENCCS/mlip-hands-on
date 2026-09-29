@@ -28,9 +28,10 @@ bash scripts/build-lammps-mpi.sh \
 `MLIP_LAMMPS_SOURCE_ARCHIVE` and `MLIP_NATIVE_PYTHON` are build inputs,
 not needed to run ALCHEMI. The site setup pages explain how the native
 runtime is selected after installation. Arrhenius's previously qualified
-runtime is packaged with `python/` and `mpi-prefix/` under one root; the
-script above writes an ordinary installed prefix, so set `MLIP_LMP` to its
-`bin/lmp` directly unless you package the paired runtime in that layout.
+archive contains `python/` and `mpi-prefix/` under one root. For that archive,
+set `MLIP_NATIVE_PYTHON` and `MLIP_NATIVE_PREFIX` to those subdirectories.
+The short build script writes an ordinary install prefix: use that prefix
+as `MLIP_NATIVE_PREFIX` and keep the matching Python environment separate.
 
 After building, `MLIP_LMP` names the `lmp` executable. Check that its
 help output lists ML-IAP and KOKKOS, and that the pinned export loads in

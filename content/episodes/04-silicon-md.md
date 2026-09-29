@@ -36,7 +36,6 @@ The LAMMPS calculation uses its CLI and `.in` file:
 ```{code-cell} ipython3
 %%bash
 cd ../..
-source "scripts/${MLIP_SITE}-lammps-env.sh"
 bash scripts/run-lammps.sh "$PWD" "$MLIP_LMP" "$MLIP_MLIAP_MODEL" 2 200
 ```
 

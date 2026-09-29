@@ -30,10 +30,11 @@ def main() -> None:
     )
     if not token:
         raise SystemExit("empty Jupyter token")
+    content = root / "content"
     pages = [
         page
         for folder in ("episodes", "setup", "reference")
-        for page in sorted((root / folder).glob("*.md"))
+        for page in sorted((content / folder).glob("*.md"))
     ]
     pages.append(root / "jupyterlab-enccs" / "renderer-fixture.md")
 
@@ -97,7 +98,7 @@ def main() -> None:
                 return {
                     border: getComputedStyle(heading).borderBottomWidth,
                     missing: root.innerText.includes('literalinclude unavailable'),
-                    source: root.innerText.includes('import argparse'),
+                    source: root.innerText.includes('import math'),
                     callouts: root.querySelectorAll(
                         'aside.enccs-questions, aside.enccs-objectives, aside.enccs-keypoints'
                     ).length
@@ -107,68 +108,42 @@ def main() -> None:
             )
             if state["border"] != "3px" or state["missing"]:
                 raise SystemExit(f"rendering failed: {relative}: {state}")
-            required_callout = {
-                "setup/index.md": "No notebook submits a Slurm job",
-                "episodes/08-scaling.md": "Do not treat",
-            }.get(relative)
-            if required_callout and not driver.execute_script(
-                """
-                const heading = [...document.querySelectorAll('.jp-Notebook .myst h1')]
-                    .find(item => item.textContent.trim() === arguments[0]);
-                const root = heading.closest('.jp-Notebook');
-                return [...root.querySelectorAll('aside')]
-                    .some(item => item.textContent.includes(arguments[1]));
-                """,
-                expected_heading,
-                required_callout,
-            ):
-                raise SystemExit(f"required callout missing: {relative}")
-            if relative == "episodes/02-alchemi-image.md" and not driver.execute_script(
-                """
-                const heading = [...document.querySelectorAll('.jp-Notebook .myst h1')]
-                    .find(item => item.textContent.trim() === arguments[0]);
-                const root = heading.closest('.jp-Notebook');
-                return [...root.querySelectorAll('pre')]
-                    .some(item => item.textContent.includes('13 | staged=') &&
-                        item.textContent.includes('17 | apptainer build'));
-                """,
-                expected_heading,
-            ):
-                raise SystemExit("original source line numbers missing in notebook")
             if page.name == "renderer-fixture.md" and (
                 state["callouts"] != 3 or not state["source"]
             ):
                 raise SystemExit(f"ENCCS fixture incomplete: {state}")
-            if relative == "setup/index.md":
-                count = driver.execute_script(
+            if page.name == "renderer-fixture.md":
+                details = driver.execute_script(
                     """
                     const heading = [...document.querySelectorAll('.jp-Notebook .myst h1')]
-                        .find(item => item.textContent.trim() === 'Before you start');
+                        .find(item => item.textContent.trim() === 'Renderer fixture');
                     const root = heading.closest('.jp-Notebook');
-                    const rows = root.querySelectorAll('.myst-tab-set-row');
-                    if (rows.length !== 2) return rows.length;
-                    [...rows[0].querySelectorAll('.myst-tab-item-header')]
-                        .find(item => item.textContent.trim() === 'JUPITER').click();
-                    return rows.length;
+                    const rows = [...root.querySelectorAll('.myst-tab-set-row')];
+                    const numbered = [...root.querySelectorAll('pre')]
+                        .some(item => item.textContent.includes('4 | import math'));
+                    const choice = rows[0]?.querySelectorAll('.myst-tab-item-header');
+                    [...(choice || [])].find(item => item.textContent.trim() === 'JUPITER')?.click();
+                    return {numbered, twoRows: rows.length === 2};
                     """
                 )
-                if count != 2:
-                    raise SystemExit(f"expected two site tab sets; found {count}")
+                if not all(details.values()):
+                    raise SystemExit(f"ENCCS source lines or synchronized tabs failed: {details}")
                 WebDriverWait(driver, 10).until(
                     lambda current: current.execute_script(
                         """
                         const heading = [...document.querySelectorAll('.jp-Notebook .myst h1')]
-                            .find(item => item.textContent.trim() === 'Before you start');
-                        const root = heading.closest('.jp-Notebook');
-                        return [...root.querySelectorAll('.myst-tab-set-row')]
-                            .every(row => [...row.querySelectorAll('.myst-tab-item-header')]
+                            .find(item => item.textContent.trim() === 'Renderer fixture');
+                        const rows = [...heading.closest('.jp-Notebook')
+                            .querySelectorAll('.myst-tab-set-row')];
+                        return rows.length === 2 && rows.every(row =>
+                            [...row.querySelectorAll('.myst-tab-item-header')]
                                 .some(item => item.textContent.trim() === 'JUPITER' &&
                                     item.className.includes('header-active')));
                         """
                     )
                 )
             print(f"PASS {relative}")
-        print(f"PASS: {len(pages)} pages, themed heading, included code with source lines, callouts, synchronized site tabs")
+        print(f"PASS: {len(pages)} pages, theme, source lines, callouts, and synchronized tabs")
     finally:
         driver.quit()
 

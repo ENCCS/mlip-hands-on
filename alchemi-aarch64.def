@@ -18,6 +18,8 @@ From: docker.io/library/python@sha256:519591d6871b7bc437060736b9f7456b8731f1499a
         --require-hashes -r /opt/mlip/requirements.lock
 
 %test
+    export HOME=/tmp
+    export WARP_CACHE_PATH=/tmp/warp-cache
     python -c 'import platform; assert platform.machine() == "aarch64"'
     python -c 'import torch,nvalchemi,mace; assert torch.version.cuda == "12.6"'
     python -c 'from nvalchemi.data import AtomicData, Batch; from nvalchemi.dynamics import NVTLangevin, FIRE'

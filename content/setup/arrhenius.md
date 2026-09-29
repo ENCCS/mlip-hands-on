@@ -20,9 +20,12 @@ wrappers. The [build episode](../episodes/03-lammps-mpi.md) shows the
 participant-facing CMake command. Older guarded build jobs remain in the
 `main` branch's Git history and target its old layout. Select a verified MPI-enabled
 ML-IAP/Kokkos `lmp` as `MLIP_LMP`.
-After extracting the native runtime, set `MLIP_NATIVE_PREFIX` and run
-`source scripts/arrhenius-lammps-env.sh` in the allocated shell. This loads
-the site compiler/CUDA module and the matching Python and library paths.
+Set `MLIP_NATIVE_PREFIX` to the installed LAMMPS prefix and
+`MLIP_NATIVE_PYTHON` to its matching MACE Python environment, then run
+`source scripts/arrhenius-lammps-env.sh` in the allocated shell. For an older
+archive containing `python/` and `mpi-prefix/`, use those two subdirectories
+as the respective values. The helper loads the site compiler/CUDA module
+and the matching Python and library paths.
 
 Inside a one-GPU allocation, run:
 
@@ -35,5 +38,6 @@ The MPI episode gives the separate launch pattern for one coupled trajectory
 on multiple GPUs. The previous qualified native MPI build used the site's
 MPICH and Slingshot provider (`FI_PROVIDER=cxi`, GPU-memory support enabled),
 with `srun --mpi=pmi2`; `scripts/arrhenius-lammps-env.sh` sets that runtime
-environment. For a multi-rank allocation, request the site's single-node
-VNI setting if required. This lesson does not use `mpprun`.
+environment. The tested route requests `#SBATCH --network=single_node_vni`
+even for a one-rank GPU check; omitting it caused an OFI domain failure in
+a fresh build check. This lesson does not use `mpprun`.

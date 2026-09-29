@@ -8,6 +8,10 @@ model=$4
 cells=${5:-4}
 steps=${6:-100}
 case "$ranks" in 1|2|4) ;; *) echo 'use one, two, or four ranks' >&2; exit 2;; esac
+if [[ "${SLURM_JOB_NUM_NODES:-1}" != 1 ]]; then
+    echo 'this launcher is qualified for one node only' >&2
+    exit 2
+fi
 # Kokkos -k g is GPUs per node, not GPUs per MPI rank. Each local rank
 # selects its device from this common visible set.
 : "${CUDA_VISIBLE_DEVICES:?allocation must expose GPUs}"

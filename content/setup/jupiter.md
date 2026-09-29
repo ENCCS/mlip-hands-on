@@ -5,7 +5,12 @@ differs from Arrhenius.
 
 The same hash-verified ARM/GH200 ALCHEMI SIF has passed bounded one-GPU
 single-trajectory, eight-trajectory, and relaxation checks on both sites.
-Stage the image and original checkpoint in private project storage and run:
+JUPITER production compute nodes have no external internet access, according
+to the [site environment guide](https://apps.fz-juelich.de/jsc/hps/jupiter/environment.html).
+Do not run the Docker-backed image build there unless its OCI and Python
+inputs have been staged for offline use. Build on a permitted networked
+ARM64 builder, then stage the image and original checkpoint in private
+project storage and run:
 
 ```bash
 bash scripts/run-alchemi.sh "$PWD" "$MLIP_ALCHEMI_SIF" "$MLIP_MODEL" 1 200

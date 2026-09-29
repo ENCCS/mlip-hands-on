@@ -19,4 +19,6 @@ One exact existing ARM/GH200 image was hash-verified and ran the short
 single, batched, and relaxation examples on Arrhenius and JUPITER. The
 current definition file keeps the same locked packages but omits an old
 bundled example; rebuilding it produces a different image identity and
-requires its own test. The native JUPITER environment is a separate fallback.
+requires its own test. JUPITER compute nodes cannot fetch the Docker base
+image directly; build on a permitted networked ARM64 host and copy the SIF
+to JUPITER. The native JUPITER environment is a separate fallback.

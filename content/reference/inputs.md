@@ -8,8 +8,8 @@ allocation. No account, model weight, SIF, executable or token belongs in Git.
 | `MLIP_MODEL` | Original trusted MACE checkpoint for ALCHEMI |
 | `MLIP_MLIAP_MODEL` | ML-IAP export of that checkpoint for LAMMPS |
 | `MLIP_ALCHEMI_SIF` | ARM/GH200 ALCHEMI image |
-| `MLIP_NATIVE_PREFIX` | Site-native LAMMPS runtime or install prefix |
-| `MLIP_NATIVE_PYTHON` | Matching MACE Python environment on JUPITER only |
+| `MLIP_NATIVE_PREFIX` | Site-native LAMMPS install prefix containing `bin/lmp` |
+| `MLIP_NATIVE_PYTHON` | Matching MACE Python environment on either site |
 | `MLIP_LMP` | LAMMPS executable, set by the site environment script |
 
 The scripts take the lesson root as their first argument. From that root,

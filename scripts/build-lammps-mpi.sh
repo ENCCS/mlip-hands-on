@@ -9,6 +9,16 @@ python=$4
 wrapper=$source_dir/lib/kokkos/bin/nvcc_wrapper
 python_include=$("$python" -c 'import sysconfig; print(sysconfig.get_config_var("INCLUDEPY"))')
 python_library=$("$python" -c 'import os,sysconfig; print(os.path.join(sysconfig.get_config_var("LIBDIR"),sysconfig.get_config_var("LDLIBRARY")))')
+python_root=$(cd "$(dirname "$python")/.." && pwd -P)
+python_version=$("$python" -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+# A relocatable Python archive can retain sysconfig paths from its original
+# build location; prefer headers and libpython beside that extracted Python.
+if [[ -f "$python_root/include/python$python_version/Python.h" ]]; then
+    python_include="$python_root/include/python$python_version"
+fi
+if [[ -f "$python_root/lib/libpython$python_version.so" ]]; then
+    python_library="$python_root/lib/libpython$python_version.so"
+fi
 
 cmake -S "$source_dir/cmake" -B "$build_dir" -G 'Unix Makefiles' \
     -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX="$prefix" \
