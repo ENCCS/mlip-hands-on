@@ -5,9 +5,9 @@ forces at a fraction of the cost. Universal (foundation) MLIPs are trained
 once across the periodic table, then used directly or fine-tuned. On HPC, GPU inference dominates, so GPU
 placement sets throughput.
 
-- **Part A**: relax many crystals in one batched TorchSim call versus
+- Part A: relax many crystals in one batched TorchSim call versus
   serial ASE, with MACE-MP and Orb-v3.
-- **Part B**: silicon MD with MACE-MP in ALCHEMI Toolkit and LAMMPS, from
+- Part B: silicon MD with MACE-MP in ALCHEMI Toolkit and LAMMPS, from
   one trajectory to many replicas and GPUs.
 - New to MLIPs? Start with {doc}`episodes/00-background`.
 - Source, scripts and job files: [GitHub](https://github.com/ENCCS/mlip-hands-on).

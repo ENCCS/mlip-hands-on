@@ -233,7 +233,7 @@ sbatch --account=<PROJECT> \
 ```
 :::
 
-This script has **not yet been qualified**. The laptop results above are
+This script has not yet been qualified. The laptop results above are
 the reference.
 
 ## Reading the results

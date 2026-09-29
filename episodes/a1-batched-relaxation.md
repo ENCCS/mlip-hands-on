@@ -152,7 +152,7 @@ sbatch --account=<PROJECT> \
 ```
 :::
 
-This script has **not yet been qualified**. Neither result row below comes
+This script has not yet been qualified. Neither result row below comes
 from it: float64 is from an earlier script with the same workload and
 options; float32 is from a separate tuned run (options under the table).
 
@@ -171,12 +171,12 @@ The float32 run used `--dtype float32 --n-variants 32 --autobatch`.
 :::{warning}
 Single examples, not a benchmark.
 
-- **One run** per row: no repeats, medians or ranges.
-- Full-set serial time is **extrapolated** from 8 structures.
-- **MACE-MP-0b small**, not Part B's MACE-MP-0a: energies and costs are not
+- One run per row: no repeats, medians or ranges.
+- Full-set serial time is extrapolated from 8 structures.
+- MACE-MP-0b small, not Part B's MACE-MP-0a: energies and costs are not
   interchangeable.
 - No cuEquivariance kernels; they would change the timings.
-- **Relaxation, not MD**: do not compare with Part B timings.
+- Relaxation, not MD: do not compare with Part B timings.
 :::
 
 ## LUMI (AMD MI250X) check
