@@ -24,7 +24,9 @@ family of universal potentials from Orbital Materials, released under the
 Apache-2.0 licence in the
 [`orb-models`](https://github.com/orbital-materials/orb-models) package.
 Unlike MACE, it is not equivariant by construction; the authors report
-accurate physical properties at much lower latency and memory use. The model names encode three choices:
+accurate physical properties at much lower latency and memory use. For
+where Orb-v3 sits among other fast universal models, see
+{ref}`background-choosing`. The model names encode three choices:
 
 | Part of the name | Options | Meaning |
 |---|---|---|

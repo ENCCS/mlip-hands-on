@@ -12,7 +12,11 @@ ML-IAP/Kokkos, and shows how to read single-trajectory speed and aggregate
 throughput separately.
 
 The {doc}`episodes/00-background` page introduces MLIPs, foundation models,
-fine-tuning and GPU engines for readers new to the topic.
+fine-tuning and GPU engines for readers new to the topic. It condenses the
+ENCCS and Sweden AI Factory webinar *Universal Machine Learning Interatomic
+Potentials on HPC* (30 September 2026); the webinar slides are shared
+through the [ENCCS events page](https://enccs.se/events), and the webinar
+demo is Part A of this lesson.
 
 Contributors: Wei Li (Part B) and Karim Elgammal (Part A).
 

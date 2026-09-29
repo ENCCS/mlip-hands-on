@@ -149,7 +149,7 @@ the table. Neither was produced by this script.
 
 ## Leonardo results
 
-One A100, MACE-MP-0b small, no cuEquivariance kernels. The serial column
+One A100, June 2026, MACE-MP-0b small, no cuEquivariance kernels. The serial column
 measured 8 structures; the estimate scales that time to the full set.
 
 | Precision and batching | Structures | Serial, 8 measured (s) | Serial, estimated (s) | Batched (s) | Estimated serial / batched |
