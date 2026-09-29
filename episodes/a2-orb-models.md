@@ -10,12 +10,12 @@ kernelspec:
   name: python3
 ---
 
-# Orb-v3 and dispersion
+# Orb-v3, MatGL and dispersion
 
 The Part A workflow is not specific to MACE. This page runs the same
-screening with an Orb-v3 model, then uses graphite, a layered crystal, to
-show what a universal MLIP trained on PBE data misses: the van der Waals
-(dispersion) attraction between layers.
+screening with an Orb-v3 model and a MatGL TensorNet model, then uses
+graphite, a layered crystal, to show what a universal MLIP trained on PBE
+data misses: the van der Waals (dispersion) attraction between layers.
 
 ## Orb-v3
 
@@ -78,9 +78,49 @@ float32 positions. The example also turns off `torch.compile`
 (`compile=False`), which the loader otherwise applies on the first call
 and so adds a one-off cost to the timed serial baseline.
 
+## MatGL
+
+[MatGL](https://github.com/materialyzeai/matgl) (BSD-3-Clause) provides
+TensorNet, CHGNet, M3GNet, QET and other graph models, with pretrained
+potentials trained on MatPES (PBE or r2SCAN) and distributed through
+Hugging Face. Since version 4.0 it runs on PyTorch Geometric only; the DGL
+backend has been removed. The example uses
+`TensorNet-PES-MatPES-PBE-2025.2` (0.84 M parameters, 5 Å cutoff) through
+MatGL's ASE calculator:
+
+```{literalinclude} ../examples/torchsim/models.py
+:language: python
+:start-at: def load_matgl
+:end-before: def load_models
+:lineno-match:
+```
+
+TorchSim 0.6 has no MatGL model interface, so this model runs the serial
+ASE baseline only. The pretrained models also compute in float32. The
+first run downloads the model to the MatGL cache (`MATGL_CACHE`):
+
+```bash
+cd examples
+pixi run --manifest-path torchsim/pixi.toml \
+  python -m torchsim --model matgl-tensornet-pbe --device cpu --dtype float32 \
+  --n-variants 1 --baseline-n 1 --max-steps 20 --outdir matgl_cpu
+```
+
+Output on a laptop CPU (`matgl` 4.0.3, `torch` 2.9.1):
+
+```text
+model=matgl-tensornet-pbe device=cpu dtype=float32 structures=4 serial subset=1
+matgl-tensornet-pbe has no TorchSim interface; ran the ASE baseline only
+serial, measured: 0.9 s, 0.86 s/structure (1 structures)
+```
+
+The relaxed 32-atom copper cell has an energy of −119.344 eV. Set
+`stress_unit="eV/A3"` on `PESCalculator`, as the loader does: its default
+is GPa, whereas ASE expects eV/Å³.
+
 ## Graphite interlayer spacing
 
-![Graphite test: three model variants, cell relaxation, comparison with PBE and experiment.](../_static/graphite-test.drawio.png)
+![Graphite test: model variants, cell relaxation, comparison with PBE and experiment.](../_static/graphite-test.drawio.png)
 
 Bernal (AB) graphite has four atoms per cell. Its layers are held together
 almost entirely by dispersion. Plain PBE gives an interlayer spacing of
@@ -94,8 +134,9 @@ such as D3.
 
 [`examples/torchsim/layered.py`](../examples/torchsim/layered.py) relaxes the
 cell and positions with ASE (`FrechetCellFilter` and FIRE, 0.002 eV/Å) for
-three variants: MACE-MP-0b small, Orb-v3, and Orb-v3 plus Grimme's D3(BJ)
-correction with PBE parameters. The D3 term comes from `orb-models` itself:
+three variants by default: MACE-MP-0b small, Orb-v3, and Orb-v3 plus
+Grimme's D3(BJ) correction with PBE parameters. `--variants tensornet` adds
+the MatGL model, in float32. The D3 term comes from `orb-models` itself:
 
 ```python
 orbff = D3SumModel(orbff, AlchemiDFTD3(functional="PBE", damping="BJ"))
@@ -126,6 +167,8 @@ orb-v3          3.34   2.468   4.310   29.0%    526  True
 orb-v3          4.40   2.468   4.365   30.7%    135  True
 orb-v3+d3       3.34   2.466   3.443    3.1%    103  True
 orb-v3+d3       4.40   2.466   3.448    3.2%    229  True
+tensornet       3.34   2.464   4.884   46.2%    588  True
+tensornet       4.40   2.464   4.883   46.2%    429  True
 PBE                    2.470   4.400
 experiment             2.460   3.340
 ```
@@ -144,6 +187,12 @@ both starts agree to 0.005 Å. With the looser threshold of 0.01 eV/Å, the
 D3 starts differed by about 0.04 Å, so check convergence before quoting a
 spacing. Step counts on this flat surface can change by a few between
 runs; the spacings do not.
+
+The TensorNet row (`--variants tensornet`, `matgl` 4.0.3, float32) shows
+the effect of a short cutoff. Its energy falls monotonically as the layers
+separate, by 36 meV per atom from 3.34 to 4.88 Å, and is constant beyond
+about 5 Å, the model cutoff. Both starts therefore stop at 4.88 Å, where
+the interlayer force vanishes; the model has no interlayer minimum at all.
 
 :::{note}
 The experimental value is a low-temperature measurement; the relaxations

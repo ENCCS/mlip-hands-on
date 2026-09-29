@@ -29,8 +29,9 @@ VARIANTS = {
     "mace-small": ("mace-small", False),
     "orb-v3": ("orb-v3-conservative-inf-omat", False),
     "orb-v3+d3": ("orb-v3-conservative-inf-omat", True),
-    "matgl-tensornet": ("matgl-tensornet-pbe", False),
+    "tensornet": ("matgl-tensornet-pbe", False),
 }
+DEFAULT_VARIANTS = ["mace-small", "orb-v3", "orb-v3+d3"]
 
 
 @dataclass
@@ -79,8 +80,8 @@ def relax(variant: str, device: torch.device, dtype: torch.dtype, fmax: float,
     for d0 in starts:
         a, c, steps, converged, wall = relax_one(calc, d0, fmax, max_steps)
         error = 100 * (c / 2 - EXPERIMENT["d_A"]) / EXPERIMENT["d_A"]
-        rows.append(LayerResult(variant, name, d3, str(dtype).removeprefix("torch."), d0, a, c, c / 2, error,
-                                steps, converged, wall))
+        rows.append(LayerResult(variant, name, d3, str(dtype).removeprefix("torch."),
+                                d0, a, c, c / 2, error, steps, converged, wall))
     return rows
 
 
@@ -96,7 +97,8 @@ def print_table(rows: list[LayerResult]) -> None:
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--variants", nargs="+", choices=list(VARIANTS), default=list(VARIANTS))
+    p.add_argument("--variants", nargs="+", choices=list(VARIANTS),
+                   default=DEFAULT_VARIANTS)
     p.add_argument("--device", choices=["auto", "cuda", "cpu"], default="auto")
     p.add_argument("--dtype", choices=["float64", "float32"], default="float64",
                    help="MatGL always runs in float32")
