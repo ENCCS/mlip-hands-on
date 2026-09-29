@@ -8,7 +8,7 @@ from pathlib import Path
 
 import torch
 
-from .models import MACE_MODELS, load_models
+from .models import MACE_MODELS, ORB_MODELS, load_models
 from .report import print_summary, summarise, write_outputs
 from .runners import BatchedRelaxer, SerialRelaxer
 from .workload import build_workload
@@ -16,9 +16,9 @@ from .workload import build_workload
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--model", choices=["lj", *MACE_MODELS], default="mace-small")
+    p.add_argument("--model", choices=["lj", *MACE_MODELS, *ORB_MODELS], default="mace-small")
     p.add_argument("--checkpoint",
-                   help="local MACE file; replaces the weights of --model")
+                   help="local weights file; replaces the download for --model")
     p.add_argument("--device", choices=["auto", "cuda", "cpu"], default="auto")
     p.add_argument("--dtype", choices=["float64", "float32"], default="float64")
     p.add_argument("--n-variants", type=int, default=16, help="per crystal family")
@@ -30,7 +30,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--seed", type=int, default=42)
     args = p.parse_args()
     if args.model == "lj" and args.checkpoint:
-        p.error("--checkpoint needs a MACE --model")
+        p.error("--checkpoint needs a MACE or Orb --model")
     return args
 
 

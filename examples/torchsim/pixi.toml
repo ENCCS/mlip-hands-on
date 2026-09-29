@@ -11,9 +11,13 @@ pip = "*"
 # PyPI wheel with bundled CUDA 12; known to work with Leonardo's A100 driver.
 torch = "==2.9.1"
 torch-sim-atomistic = { version = ">=0.6.0", extras = ["mace"] }
-ase = ">=3.23"
+# Pinned: PyPI also carries a stray 4.1.0 release that sorts above 0.7.0.
+orb-models = "==0.7.0"
+ase = ">=3.25"
 
 [tasks]
 smoke = { cmd = "python -m torchsim --model lj --n-variants 2 --baseline-n 2 --max-steps 30 --outdir torchsim_smoke", cwd = ".." }
 cpu = { cmd = "python -m torchsim --device cpu --n-variants 1 --baseline-n 1 --max-steps 20 --outdir torchsim_cpu", cwd = ".." }
 demo = { cmd = "python -m torchsim --device cuda --n-variants 16 --baseline-n 8", cwd = ".." }
+graphite-cpu = { cmd = "python -m torchsim.layered --device cpu --outdir graphite_cpu", cwd = ".." }
+graphite = { cmd = "python -m torchsim.layered --device cuda", cwd = ".." }
