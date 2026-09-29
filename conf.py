@@ -16,5 +16,9 @@ html_theme_options = {
     "dark_logo": "ENCCS_logo_dark.png",
 }
 
-# sphinx-evita
+# sphinx-evita: ENCCS lessons use only the EU funding badge, not the EVITA branding
+import logging
+
 evita_eu_funding_badge = "co-funded"
+logging.getLogger("sphinx.sphinx_evita").addFilter(
+    lambda record: "not detected as an EVITA project" not in record.getMessage())
