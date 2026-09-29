@@ -8,6 +8,7 @@
 #SBATCH --mem=60G
 #SBATCH --time=02:00:00
 # Submit with: sbatch --account=<PROJECT> --export=ALL,MLIP_LESSON_ROOT=...,MLIP_TRAINING_DIR=... this file
+# Optional: MLIP_TASKS="finetune" runs one example only.
 set -euo pipefail
 : "${SLURM_JOB_ID:?submit through Slurm}"
 : "${MLIP_LESSON_ROOT:?path to the lesson checkout}"
@@ -29,6 +30,8 @@ export MIOPEN_CUSTOM_CACHE_DIR="$MIOPEN_USER_DB_PATH"
 export TMPDIR="/tmp/${USER}-tmp-${SLURM_JOB_ID}"
 export MPLCONFIGDIR="$TMPDIR/matplotlib"
 export HIP_FORCE_DEV_KERNARG=1
+# torch.det and Tensor.prod fail in float32 on this ROCm build (CUDA driver error 209); float64 works.
+export MLIP_FLOAT_BITS=64
 export OMP_NUM_THREADS="$SLURM_CPUS_PER_TASK"
 mkdir -p "$MIOPEN_USER_DB_PATH" "$MPLCONFIGDIR"
 trap 'rm -rf "$MIOPEN_USER_DB_PATH" "$TMPDIR"' EXIT
@@ -37,6 +40,7 @@ outdir="$MLIP_TRAINING_DIR/results-$SLURM_JOB_ID"
 cd "$MLIP_LESSON_ROOT/examples"
 run() { srun --ntasks=1 --gpus=1 --cpu-bind=cores python "$@"; }
 run -c "import torch; assert torch.cuda.is_available(); print(torch.cuda.get_device_name(0))"
-run -m training eform --data "$data" --outdir "$outdir/eform" --accelerator gpu
-run -m training finetune --data "$data" --outdir "$outdir/finetune" --accelerator gpu
+for task in ${MLIP_TASKS:-eform finetune}; do
+  run -m training "$task" --data "$data" --outdir "$outdir/$task" --accelerator gpu
+done
 printf 'Results: %s\n' "$outdir"

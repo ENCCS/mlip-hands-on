@@ -23,6 +23,7 @@ def fit(module, train_loader, val_loader, *, epochs: int, outdir: Path, name: st
     best = ModelCheckpoint(dirpath=outdir / "checkpoints" / name, monitor="val_Total_Loss", save_top_k=1)
     trainer = L.Trainer(
         max_epochs=epochs, accelerator=accelerator, devices=1, logger=logger, callbacks=[best],
+        precision="64-true" if torch.get_default_dtype() == torch.float64 else "32-true",
         inference_mode=False, enable_progress_bar=False, enable_model_summary=False, log_every_n_steps=1,
     )
     trainer.fit(module, train_loader, val_loader)

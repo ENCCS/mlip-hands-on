@@ -1,7 +1,10 @@
 """Command line: python -m training {prefetch,eform,finetune} [options]."""
 
 import argparse
+import os
 from pathlib import Path
+
+import matgl
 
 from . import eform, finetune, prefetch
 
@@ -21,6 +24,8 @@ def parser() -> argparse.ArgumentParser:
     common.add_argument("--data", type=Path, default=Path("training_data"))
     common.add_argument("--seed", type=int, default=42)
     common.add_argument("--element", default="Li", help="r2SCAN subset: structures containing this element")
+    common.add_argument("--float-bits", type=int, choices=(32, 64), default=int(os.environ.get("MLIP_FLOAT_BITS", 32)),
+                        help="floating-point width; 64 on LUMI, where some float32 kernels fail")
 
     pre = sub.add_parser("prefetch", parents=[common], help="download data and model (login node)")
     pre.add_argument("--n-eform", type=int, default=5000)
@@ -48,6 +53,7 @@ def parser() -> argparse.ArgumentParser:
 
 def main() -> None:
     args = parser().parse_args()
+    matgl.set_default_dtype("float", args.float_bits)
     args.func(args)
 
 

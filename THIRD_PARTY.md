@@ -38,10 +38,11 @@ run time. Nothing from them is copied into this repository.
 
 ## MatGL tutorials (adapted workflows)
 
-The scripts in `examples/matgl/` follow the workflows of the
+The scripts in `examples/matgl/` and `examples/training/` follow the workflows of the
 [MatGL tutorials](https://github.com/materialsvirtuallab/matgl/tree/main/examples)
 (relaxation and MD with a universal potential, lattice-constant benchmark,
-relax-then-predict with property models, and potential training). MatGL and its
+relax-then-predict with property models, formation-energy training and potential
+fine-tuning). MatGL and its
 tutorials are distributed under the
 [BSD 3-Clause licence](https://github.com/materialsvirtuallab/matgl/blob/main/LICENSE),
 Copyright (c) Materials Virtual Lab. The code here was rewritten as small

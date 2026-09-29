@@ -9,7 +9,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
-from matplotlib.ticker import NullFormatter, ScalarFormatter  # noqa: E402
+from matplotlib.ticker import LogLocator, NullFormatter, ScalarFormatter  # noqa: E402
 
 BLUE, ORANGE, GREY = "#2a78d6", "#eb6834", "#52514e"
 
@@ -18,7 +18,8 @@ def environment() -> dict[str, str]:
     import torch
 
     device = torch.cuda.get_device_name(0) if torch.cuda.is_available() else platform.processor() or "cpu"
-    return {"device": device, **{p: version(p) for p in ("matgl", "torch", "lightning", "torch_geometric")}}
+    versions = {p: version(p) for p in ("matgl", "torch", "lightning", "torch_geometric")}
+    return {"device": device, "dtype": str(torch.get_default_dtype()).removeprefix("torch."), **versions}
 
 
 def write_json(path: Path, record: dict) -> None:
@@ -30,7 +31,7 @@ def eform_figure(curve: dict, path: Path) -> None:
     for key, colour, label in (("train_MAE", BLUE, "training"), ("val_MAE", ORANGE, "validation")):
         ax.plot(range(1, len(curve[key]) + 1), curve[key], color=colour, lw=2, label=label)
     ax.set(xlabel="epoch", ylabel="MAE (eV/atom)", yscale="log")
-    _plain(ax.yaxis)
+    _plain(ax.yaxis, log=True)
     _finish(fig, ax, path)
 
 
@@ -46,11 +47,13 @@ def finetune_figure(cases: list[dict], path: Path) -> None:
         ax.set(xlabel="training structures", ylabel=label, xscale="log", yscale="log")
         ax.set_xticks(sorted({c["n_train"] for c in cases if c["n_train"]}))
         _plain(ax.xaxis)
-        _plain(ax.yaxis)
+        _plain(ax.yaxis, log=True)
     _finish(fig, axes[1], path)
 
 
-def _plain(axis) -> None:
+def _plain(axis, log: bool = False) -> None:
+    if log:
+        axis.set_major_locator(LogLocator(subs=(1.0, 2.0, 5.0)))
     axis.set_major_formatter(ScalarFormatter())
     axis.set_minor_formatter(NullFormatter())
 

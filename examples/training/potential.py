@@ -12,7 +12,7 @@ from . import config
 
 
 def pretrained(data: Path) -> Potential:
-    return matgl.load_model(str(config.model_dir(data)))
+    return matgl.load_model(str(config.model_dir(data))).to(torch.get_default_dtype())
 
 
 def atom_refs(data: Path, element_types) -> np.ndarray:
@@ -28,7 +28,7 @@ def with_refs(base: Potential, refs: np.ndarray) -> Potential:
 
 def fresh_model(base: Potential) -> torch.nn.Module:
     """Same architecture and hyperparameters, random weights."""
-    return type(base.model)(**base.model._init_args)
+    return type(base.model)(**base.model._init_args).to(torch.get_default_dtype())
 
 
 def evaluate(potential: Potential, loader, device: str) -> dict[str, float]:
