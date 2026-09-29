@@ -27,11 +27,11 @@ what PBE-trained models miss.
 
 ## Orb-v3
 
-- [Orb-v3](https://arxiv.org/abs/2504.06231) (2025): universal potentials
+- [Orb-v3](https://arxiv.org/abs/2504.06231) (Rhodes et al., 2025): universal potentials
   from Orbital Materials, Apache-2.0, in
   [`orb-models`](https://github.com/orbital-materials/orb-models).
 - Not equivariant by construction; its developers report accurate
-  properties at much lower latency and memory than MACE.
+  properties at much lower latency and memory use.
 - Comparison with other fast models: {ref}`background-choosing`.
 
 Model names encode three choices:
@@ -131,16 +131,18 @@ serial, measured: 0.9 s, 0.86 s/structure (1 structures)
 
 - Bernal (AB) graphite, four atoms per cell; layers bound almost entirely
   by dispersion.
-- Plain PBE: 4.40 Å spacing, 1 meV per carbon binding
-  ([2014](https://doi.org/10.1103/PhysRevB.90.155448)); experiment 3.34 Å
-  ([1955](https://doi.org/10.1103/PhysRev.100.544), as tabulated in the
-  2014 study).
+- Plain PBE: 4.40 Å spacing, binding energy only 1 meV per carbon atom
+  ([Hazrati et al., 2014](https://doi.org/10.1103/PhysRevB.90.155448));
+  experiment 3.34 Å
+  ([Baskin and Meyer, 1955](https://doi.org/10.1103/PhysRev.100.544), as
+  tabulated by Hazrati et al.).
 - A PBE-trained model inherits this error whatever its cutoff; dispersion
   must come from an added term such as D3.
 
 [`examples/torchsim/layered.py`](../examples/torchsim/layered.py) relaxes
 cell and positions with ASE (`FrechetCellFilter`, FIRE, 0.002 eV/Å) for
-MACE-MP-0b small, Orb-v3, and Orb-v3 plus D3(BJ) with PBE parameters.
+MACE-MP-0b small, Orb-v3, and Orb-v3 plus Grimme's D3(BJ) with PBE
+parameters (default variants).
 `--variants tensornet` runs MatGL instead, in float32. D3 comes from
 `orb-models`:
 

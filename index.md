@@ -1,7 +1,8 @@
 # Universal MLIPs on HPC: hands-on
 
 Machine-learned interatomic potentials (MLIPs) give near-DFT energies and
-forces at a fraction of the cost. On HPC, GPU inference dominates, so GPU
+forces at a fraction of the cost. Universal (foundation) MLIPs are trained
+once across the periodic table, then used directly or fine-tuned. On HPC, GPU inference dominates, so GPU
 placement sets throughput.
 
 - **Part A**: relax many crystals in one batched TorchSim call versus

@@ -27,6 +27,9 @@ reviews are in {doc}`../reference/reading`.
 
 - A potential gives energy from atomic positions; its gradient gives the
   forces for molecular dynamics (MD) and relaxation.
+- Classical force fields: fixed functional form, fast, limited
+  transferability. Density functional theory (DFT): accurate, cost grows
+  steeply with system size.
 - An MLIP is trained on quantum (DFT) energies and forces: near-DFT
   accuracy at near force-field cost. The idea dates from 2007 [1].
 
@@ -35,7 +38,7 @@ reviews are in {doc}`../reference/reading`.
 ![Six families of AI methods for materials, with interatomic potentials highlighted.](../_static/bg-ai-families.drawio.png)
 
 - Six families: electronic structure, interatomic potentials, generative
-  models, structure to property, LLMs and agents, autonomous labs.
+  models, structure to property, LLM agents, autonomous labs and open data.
 - This lesson covers interatomic potentials only.
 
 (background-foundation)=
@@ -128,7 +131,7 @@ design.*
 (background-choosing)=
 ## Choosing and trusting a model
 
-![Choosing a model: task, hardware, benchmark, validation.](../_static/bg-choose-model.drawio.png)
+![Choosing a model and engine: GPU type, dispersion, fine-tuning, batching.](../_static/bg-choose-model.drawio.png)
 
 - Choose by task and hardware, not by the top leaderboard row.
 - Validate the property you study; compare several models.
@@ -161,7 +164,7 @@ data, accessed 29 September 2026 [13]):
   measures accuracy, MD speed, GPU memory and stability.
 - Ensemble: run several models; disagreement flags low confidence.
 - Check speed and GPU memory at your system size.
-- PBE-trained models miss dispersion. The
+- PBE-trained models miss dispersion. Grimme's
   [D3 correction](https://github.com/dftd3/simple-dftd3) adds it on the GPU
   in [TorchSim](https://github.com/TorchSim/torch-sim) and `orb-models`
   (used on {doc}`a2-orb-models`).
@@ -176,7 +179,9 @@ data, accessed 29 September 2026 [13]):
 :::{keypoints}
 - MLIPs learn DFT energies and forces at near force-field cost.
 - Use foundation models zero-shot; fine-tune for quantitative accuracy.
-- PBE-trained models miss dispersion without D3; validate your property.
+- PBE-trained models miss dispersion without D3.
+- Batched GPU engines run many systems in one call; choose a model by task
+  and validate the property you study.
 :::
 
 ## References

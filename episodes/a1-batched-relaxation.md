@@ -22,10 +22,10 @@ Serial relaxation leaves the GPU idle; batching fills it
 ({ref}`background-engines`).
 
 - One MACE-MP model, two routes: serial ASE and one batched
-  [TorchSim](https://github.com/TorchSim/torch-sim) call.
+  [TorchSim](https://github.com/TorchSim/torch-sim) call on one GPU.
 - Part A: own pixi environment, MACE-MP-0b small (not Part B's MACE-MP-0a).
-- Workload: randomly rattled Cu fcc, Si diamond, Fe bcc and Al fcc (8 to 32
-  atoms).
+- Workload: rattled copies of Cu fcc, Si diamond, Fe bcc and Al fcc (8 to
+  32 atoms); each copy needs its own relaxation.
 
 :::{dropdown} Code: workload.py
 ```{literalinclude} ../examples/torchsim/workload.py
@@ -115,7 +115,7 @@ pixi run cpu
 
 ## Leonardo run (one A100)
 
-Compute nodes have no internet. On a login node, install pixi and download
+Compute nodes have no internet. On a login node, install the pixi environment in your lesson copy and download
 the checkpoint to a private location outside Git:
 
 :::{dropdown} Commands
