@@ -1,4 +1,4 @@
-# Universal MLIPs on HPC: hands-on
+# Universal MLIPs on HPC: batched screening with TorchSim and molecular dynamics with ALCHEMI and LAMMPS
 
 This lesson runs universal machine-learned interatomic potentials (MLIPs)
 from the MACE-MP family on GPU nodes of HPC systems. It has two parts that

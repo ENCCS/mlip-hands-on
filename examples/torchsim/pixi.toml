@@ -15,4 +15,5 @@ ase = ">=3.23"
 
 [tasks]
 smoke = { cmd = "python -m torchsim --model lj --n-variants 2 --baseline-n 2 --max-steps 30 --outdir torchsim_smoke", cwd = ".." }
+cpu = { cmd = "python -m torchsim --device cpu --n-variants 1 --baseline-n 1 --max-steps 20 --outdir torchsim_cpu", cwd = ".." }
 demo = { cmd = "python -m torchsim --device cuda --n-variants 16 --baseline-n 8", cwd = ".." }

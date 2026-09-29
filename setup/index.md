@@ -31,11 +31,12 @@ The commands in later pages assume your shell starts in the repository root
 session, start the server with that same repository as its file root so its
 `.md` pages and included source files are visible.
 
-The examples use one pinned MACE checkpoint but separate software environments:
+Part B examples use one pinned MACE checkpoint but separate software environments:
 JupyterLab for the notebooks, an ALCHEMI SIF on Arrhenius (or a private native
 environment on JUPITER), and native Python/LAMMPS for ML-IAP/Kokkos. Keeping
 them separate avoids loading two incompatible CUDA or MPI stacks into one
-notebook kernel.
+notebook kernel. Part A uses its own pixi environment and model; see its
+page.
 
 The core exercises need one GPU and prepared artifacts. Building a SIF and
 LAMMPS is covered in the first episodes, but can be done before the GPU session.

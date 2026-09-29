@@ -1,6 +1,7 @@
 """Published pages do not execute GPU workloads."""
 
-project = "Universal MLIPs on HPC: hands-on"
+project = "Universal MLIPs on HPC: batched screening with TorchSim and molecular dynamics with ALCHEMI and LAMMPS"
+html_title = project
 author = "ENCCS contributors"
 extensions = ["sphinx_lesson", "sphinx_evita", "myst_nb", "sphinx_design"]
 master_doc = "index"

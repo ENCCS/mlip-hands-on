@@ -4,6 +4,7 @@ Run from the examples directory:  python -m torchsim --model lj --n-variants 2
 """
 
 import argparse
+from pathlib import Path
 
 import torch
 
@@ -16,7 +17,8 @@ from .workload import build_workload
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--model", choices=["lj", *MACE_MODELS], default="mace-small")
-    p.add_argument("--checkpoint", help="local MACE file instead of a download")
+    p.add_argument("--checkpoint",
+                   help="local MACE file; replaces the weights of --model")
     p.add_argument("--device", choices=["auto", "cuda", "cpu"], default="auto")
     p.add_argument("--dtype", choices=["float64", "float32"], default="float64")
     p.add_argument("--n-variants", type=int, default=16, help="per crystal family")
@@ -26,11 +28,16 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--autobatch", action="store_true")
     p.add_argument("--outdir", default="torchsim_results")
     p.add_argument("--seed", type=int, default=42)
-    return p.parse_args()
+    args = p.parse_args()
+    if args.model == "lj" and args.checkpoint:
+        p.error("--checkpoint needs a MACE --model")
+    return args
 
 
 def main() -> None:
     args = parse_args()
+    out = Path(args.outdir)
+    out.mkdir(parents=True, exist_ok=False)
     auto = "cuda" if torch.cuda.is_available() else "cpu"
     device = torch.device(auto if args.device == "auto" else args.device)
     dtype = getattr(torch, args.dtype)
@@ -46,12 +53,14 @@ def main() -> None:
     batched_result = batched.run(structures)
 
     config = {"model": args.model, "device": str(device), "dtype": args.dtype,
+              "checkpoint": Path(args.checkpoint).name if args.checkpoint else None,
+              "n_atoms_total": sum(len(a) for a in structures),
               "autobatch": args.autobatch, "fmax": args.fmax,
               "max_steps": args.max_steps}
     summary = summarise(config, labels, serial_result, batched_result,
                         models.checkpoint)
     print_summary(summary)
-    out = write_outputs(args.outdir, summary, batched_result.relaxed)
+    write_outputs(out, summary, batched_result.relaxed)
     print(f"wrote {out}/summary.json and {out}/relaxed.extxyz")
 
 

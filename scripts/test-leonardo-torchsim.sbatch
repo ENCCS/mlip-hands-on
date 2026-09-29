@@ -13,10 +13,11 @@ umask 077
 : "${MLIP_LESSON_ROOT:?stage the lesson outside the allocation}"
 : "${MLIP_TORCHSIM_CHECKPOINT:?set the MACE-MP-0b small checkpoint outside Git}"
 : "${MLIP_RESULTS_DIR:?set a private, existing results directory}"
-command -v pixi >/dev/null
+command -v pixi jq >/dev/null
 manifest="$MLIP_LESSON_ROOT/examples/torchsim/pixi.toml"
 test -f "$manifest"
 test -f "$MLIP_TORCHSIM_CHECKPOINT"
+printf '%s  %s\n' 7e3a0abcaf41e03a80e69f778e1b11b29de1cca704783dc25917a736392f8cf0 "$MLIP_TORCHSIM_CHECKPOINT" | sha256sum -c - >/dev/null
 test -d "$MLIP_RESULTS_DIR"
 export PYTHONNOUSERSITE=1
 outdir="$MLIP_RESULTS_DIR/leonardo-torchsim-${SLURM_JOB_ID}"

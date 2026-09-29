@@ -52,9 +52,6 @@ def print_summary(s: dict) -> None:
           f"{s['max_abs_energy_diff_eV']:.2e} eV")
 
 
-def write_outputs(outdir: str, summary: dict, relaxed: list) -> Path:
-    out = Path(outdir)
-    out.mkdir(parents=True, exist_ok=False)
+def write_outputs(out: Path, summary: dict, relaxed: list) -> None:
     write(out / "relaxed.extxyz", relaxed)
     (out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
-    return out
