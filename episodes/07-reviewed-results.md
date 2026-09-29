@@ -65,6 +65,30 @@ concurrent clients.
 
 ::::
 
+## Whole workflow or measured MD?
+
+The two clocks answer different questions. **Whole workflow** is the time
+from starting the ALCHEMI client process until it finishes all eight
+trajectories. **Measured MD** covers only the 200 steps after ten warmup
+steps, with the eight trajectories advanced together. It excludes Python
+startup, model loading, initial-force preparation, and warmup.
+
+| Site | Atoms/simulation | Whole workflow, all eight (s) | Measured MD, all eight (s) |
+| --- | ---: | ---: | ---: |
+| Arrhenius | 64 | 18.745 | 5.595 |
+| Arrhenius | 512 | 26.599 | 13.373 |
+| JUPITER | 64 | 76.380 | 4.571 |
+| JUPITER | 512 | 35.166 | 13.232 |
+
+These are **one completed run per case**, not medians. The two sites used
+different runtime packaging, and JUPITER ran the 64-atom case first in its
+job. Its long first whole-workflow time is therefore not evidence that its
+GPU advances MD more slowly: the measured MD intervals are similar. The
+records locate the difference in startup and setup, but do not identify a
+single cause such as import time, filesystem caching, or GPU power policy.
+For a site-performance claim, repeat cases in varied order and report
+medians and ranges for *both* clocks.
+
 The read-only cell below renders one full reviewed CSV as a table in both
 the published handout and the live notebook. Change `site` in the cell to
 inspect the other site; choosing a tab does not silently change a notebook
@@ -147,9 +171,10 @@ memory limit. The 4,096-atom matrix timed out before its eighth row; do not
 fill that gap by extrapolation.
 
 On JUPITER, the 64-atom ALCHEMI group took 76.380 s while its 512-atom
-group took 35.166 s. The larger case is **not** intrinsically faster:
-startup and cache effects may dominate this one-run end-to-end measure, and
-their cause was not isolated. Eight LAMMPS MPS clients took 73.033 s at
+group took 35.166 s. The larger case is **not** intrinsically faster: the
+measured MD intervals above show that startup and setup dominate the
+first whole-workflow result; their precise cause remains unisolated.
+Eight LAMMPS MPS clients took 73.033 s at
 64 atoms and 75.696 s at 512 atoms, compared with 95.733 s and 115.179 s
 under ordinary sharing. These completed cases support showing both modes,
 not a general MPS or cross-site speedup claim.
