@@ -141,9 +141,9 @@ sbatch --account=<PROJECT> \
 ```
 
 This script has **not yet been qualified**. The float64 row below comes
-from an earlier script with the same workload and options; the float32 row
-comes from a separate tuned run with the options listed below the table.
-Neither was produced by this script.
+from an earlier script with the same workload and options as this job; the
+float32 row comes from a separate tuned run with the options listed below
+the table. Neither was produced by this script.
 
 ## Leonardo results
 
