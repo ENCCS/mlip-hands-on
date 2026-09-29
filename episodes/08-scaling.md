@@ -15,56 +15,106 @@ kernelspec:
 How many GPUs should you request for one large molecular-dynamics (MD)
 simulation? The useful questions are whether the system fits, how long the
 run takes, and whether adding GPUs saves enough time to justify using them.
-This page uses measured LAMMPS/MACE results from one Arrhenius GH200 node.
+This page uses measured LAMMPS/MACE results from one GH200 node on
+Arrhenius or JUPITER.
 It is different from [running eight independent simulations on one GPU](05-batched-md.md).
 
 ## Start with one GPU
 
-The size of your system changes the time needed for each MD step. A separate
-one-GH200 LAMMPS/MACE size sweep gave these preliminary results after ten
-warmup steps. Each row is **one** run of 100 measured steps, not a median:
+The size of your system changes the time needed for each MD step. Separate
+one-GH200 LAMMPS/MACE size sweeps gave these preliminary results after ten
+warmup steps. Each row is **one** run of 100 measured steps, not a median.
+The tabs select displayed site evidence; they do not change a notebook kernel.
 
-| Silicon atoms | Approximate time for 100 measured MD steps |
+::::{tab-set}
+:sync-group: site
+
+:::{tab-item} Arrhenius
+:sync: arrhenius
+| Silicon atoms | Time for 100 measured MD steps |
 | ---: | ---: |
 | 512 | 35.4 s |
 | 8,000 | 43.7 s |
 | 32,768 | 117.1 s |
+:::
 
-In a separate short capacity probe with the pinned model, one GH200
-completed a 39,304-atom silicon run; the next tested cubic size, 46,656
-atoms, failed with a CUDA out-of-memory error. Both capacity probes used
-only ten measured MD steps. This brackets **that tested workload**, not
-the maximum size for every model or trajectory. The one-GPU size and
-capacity probes used a separate native runner from the MPI scaling jobs
-below; do not combine their times into one speedup calculation. None of
-these probes establishes the largest system four GPUs can run together.
+:::{tab-item} JUPITER
+:sync: jupiter
+| Silicon atoms | Time for 100 measured MD steps |
+| ---: | ---: |
+| 512 | 30.6 s |
+| 8,000 | 43.4 s |
+| 32,768 | 120.2 s |
+
+JUPITER allocated a full four-GH200 Booster node for this diagnostic,
+although this sweep used one GPU. These are not controlled cross-site
+comparisons of the machines.
+:::
+
+::::
+
+In separate short capacity probes with the pinned model, one GH200 completed
+a 39,304-atom silicon run on **each site**. The next tested cubic size,
+46,656 atoms, failed with a CUDA out-of-memory error on each site. The
+JUPITER failure occurred during the two-step warmup; it was not a completed
+MD run. Both successful capacity probes used only ten measured MD steps.
+This brackets **the tested workload on each site**, not the maximum size for
+every model or trajectory. The one-GPU size and capacity probes used a
+separate native runner from the MPI scaling jobs below; do not combine their
+times into one speedup calculation. None of these probes establishes the
+largest system four GPUs can run together.
 
 ## Does adding GPUs finish the same system sooner?
 
 **Strong scaling** keeps the number of atoms fixed and gives the *same
 coupled system* more GPUs. Here LAMMPS divided one 32,768-atom silicon system
 among one, two, or four GH200s in the same node. Each configuration ran 100
-cold MD steps at a 0.1-fs timestep with the same MACE model. The table gives
-the median of three distinct completed jobs per GPU count.
+cold MD steps at a 0.1-fs timestep with the same MACE model. Each site table
+gives the median of three completed repetitions per GPU count. Both site
+series keep the 32,768-atom coupled system fixed.
 
+::::{tab-set}
+:sync-group: site
+
+:::{tab-item} Arrhenius
+:sync: arrhenius
 | GH200 GPUs | Median MD time for 100 steps | Speedup over one GPU |
 | ---: | ---: | ---: |
 | 1 | 119.8 s | 1.00× |
 | 2 | 78.4 s | 1.53× |
 | 4 | 50.8 s | 2.36× |
+:::
 
-Four GPUs finished this short workload sooner, but not four times sooner.
-Using four GPUs for 50.8 seconds also occupies about 203 GPU-seconds,
-compared with about 120 GPU-seconds on one GPU. Choose according to whether
+:::{tab-item} JUPITER
+:sync: jupiter
+| GH200 GPUs | Median MD time for 100 steps | Speedup over one GPU |
+| ---: | ---: | ---: |
+| 1 | 122.6 s | 1.00× |
+| 2 | 73.4 s | 1.67× |
+| 4 | 47.7 s | 2.57× |
+
+All three JUPITER GPU counts allocated a full Booster node. Each MPI rank
+observed its own single visible GPU; the measured duration is the slowest
+rank's duration for that repetition.
+:::
+
+::::
+
+Four GPUs finished this short workload sooner on both sites, but not four
+times sooner. On Arrhenius, four GPUs for 50.8 seconds occupy about 203
+GPU-seconds, compared with about 120 GPU-seconds on one GPU. Choose according to whether
 shorter waiting time or lower GPU use matters more for your research. These
 numbers are application timings, not a prediction of scheduler charges.
 
-The measured interval includes LAMMPS `run 0` and the 100 steps, but excludes
+The Arrhenius measured interval includes LAMMPS `run 0` and the 100 steps,
+but excludes
 queue wait, process startup, and extraction of the native runtime archive.
 The runs use different rank counts and Langevin random streams; their timing
 results do **not** establish identical trajectories or scientific agreement.
-Three short samples show limited run-to-run variation, not the sustained
-rate of a long production trajectory.
+Three short samples on each site show limited run-to-run variation, not the
+sustained rate of a long production trajectory. These are separate
+measurements with different runtime stacks; do not infer an Arrhenius-versus-
+JUPITER hardware ranking from the nearby numbers.
 
 The MPI-enabled example below is the reviewed *job template* for this
 32,768-atom case. Check its account, partition, time, memory, and GPU request
@@ -108,9 +158,9 @@ rank-count energy difference, so this page does not use those numbers for
 a cross-engine scaling claim.
 
 JUPITER has a separate [per-rank GPU binding and native MPI setup](../setup/jupiter.md).
-One-, two-, and four-GPU one-node runs and an eight-GPU two-node run have
-passed short functional checks there. Ten measured steps on 512 atoms are
-not a scaling study; do not plot those elapsed times as speedups.
+An eight-GPU two-node run passed a short functional check there. Ten measured
+steps on 512 atoms are not a multi-node scaling study; do not plot those
+elapsed times as speedups.
 
 For many small *independent* runs instead of one coupled system, use the
 [batched-MD chapter](05-batched-md.md) and the
