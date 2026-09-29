@@ -32,6 +32,7 @@ setup/notebook
 :maxdepth: 1
 
 episodes/a1-batched-relaxation
+episodes/a2-orb-models
 ```
 
 ## Part B: molecular dynamics

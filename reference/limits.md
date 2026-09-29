@@ -61,6 +61,10 @@ cuEquivariance kernels were used, and the lesson's
 illustrate batched screening throughput; they are not a benchmark and are
 not comparable with the MD timings.
 
+The Orb-v3 graphite spacings on the Part A pages are single static
+relaxations from two starting spacings, compared with a low-temperature
+experiment. `scripts/test-leonardo-orb.sbatch` has not yet been qualified.
+
 Treat the plotted numbers as reviewed *examples* and label the configuration
 and repetitions behind every performance statement. For a fresh benchmark,
 predeclare the atom-count and replica matrix, repeat completed jobs, report
