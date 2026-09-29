@@ -1,0 +1,18 @@
+[workspace]
+name = "mlip-torchsim-screening"
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-arm64"]
+
+[dependencies]
+python = "3.12.*"
+pip = "*"
+
+[pypi-dependencies]
+# PyPI wheel with bundled CUDA 12; known to work with Leonardo's A100 driver.
+torch = "==2.9.1"
+torch-sim-atomistic = { version = ">=0.6.0", extras = ["mace"] }
+ase = ">=3.23"
+
+[tasks]
+smoke = { cmd = "python -m torchsim --model lj --n-variants 2 --baseline-n 2 --max-steps 30 --outdir torchsim_smoke", cwd = ".." }
+demo = { cmd = "python -m torchsim --device cuda --n-variants 16 --baseline-n 8", cwd = ".." }

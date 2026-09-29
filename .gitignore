@@ -8,3 +8,6 @@ _build/
 __pycache__/
 artifacts/
 results/
+.pixi/
+torchsim_results/
+torchsim_smoke/
