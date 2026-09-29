@@ -11,3 +11,6 @@ results/
 .pixi/
 torchsim_results/
 torchsim_smoke/
+graphite_results/
+graphite_cpu/
+orb_cpu/
