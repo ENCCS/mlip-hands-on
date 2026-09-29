@@ -15,6 +15,9 @@ html_favicon = "_static/favicon.ico"
 html_theme_options = {
     "light_logo": "ENCCS_logo_light.png",
     "dark_logo": "ENCCS_logo_dark.png",
+    "source_repository": "https://github.com/ENCCS/mlip-hands-on/",
+    "source_branch": "main",
+    "source_directory": "",
 }
 
 # sphinx-evita: ENCCS lessons use only the EU funding badge, not the EVITA branding

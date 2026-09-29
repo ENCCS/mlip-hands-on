@@ -15,6 +15,8 @@ many GPUs.
 
 New to MLIPs? Start with {doc}`episodes/00-background`.
 
+The source, scripts and job files are on [GitHub](https://github.com/ENCCS/mlip-hands-on).
+
 ![Lesson map: Part A screening and Part B molecular dynamics.](_static/lesson-map.drawio.png)
 
 ## Background
