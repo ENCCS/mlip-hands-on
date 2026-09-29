@@ -45,6 +45,20 @@ results page works without a GPU and is safe to inspect before class.
 The software-build and multi-GPU episodes are optional; give learners
 prepared artifacts when build or queue time would dominate the session.
 
+## Short live demo (webinar)
+
+For a short live demo of Part A, book a one-GPU interactive allocation well
+before the session; queue wait is the main risk. Install the pixi
+environment and download the checkpoint on a login node beforehand, since
+compute nodes are offline. Set `PS1='$ '` so the prompt shows no user,
+host or path. After the run, show `summary.json` rather than scrolling the
+log. If the allocation or run fails, show the last saved `summary.json`
+from a rehearsal and say that it is a saved result. Serve the lesson pages
+locally with `make livehtml`, which binds to `127.0.0.1`, rather than
+sharing a remote session.
+
+## Publication
+
 Before publication, perform a privacy review of Markdown, scripts, notebook
 outputs, metadata, and rendered HTML. Do not publish usernames, personal
 hostnames, project/account numbers, tokens, site-private paths, scheduler

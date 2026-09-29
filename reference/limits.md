@@ -53,6 +53,14 @@ Metatomic model passed a one-GPU check, but its file hash differed from an
 earlier export; record and verify each export separately. These checks add a
 working path, not a speed comparison with ML-IAP or ALCHEMI.
 
+The Part A batched-relaxation numbers are single runs on one Leonardo A100
+with MACE-MP-0b small, not the MACE-MP-0a checkpoint pinned for Part B. The
+serial totals are extrapolated from eight relaxed structures, no
+cuEquivariance kernels were used, and the lesson's
+`scripts/test-leonardo-torchsim.sbatch` has not yet been qualified. They
+illustrate batched screening throughput; they are not a benchmark and are
+not comparable with the MD timings.
+
 Treat the plotted numbers as reviewed *examples* and label the configuration
 and repetitions behind every performance statement. For a fresh benchmark,
 predeclare the atom-count and replica matrix, repeat completed jobs, report
