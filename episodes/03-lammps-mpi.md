@@ -52,6 +52,28 @@ the excerpts omit identity checks, private output paths, and build
 validation. A one-rank smoke precedes the optional 1/2/4-GPU scaling
 episode.
 
+## Use the tested GPU path
+
+The [MACE ML-IAP guide](https://mace-docs.readthedocs.io/en/latest/guide/lammps_mliap.html)
+recommends the unified ML-IAP interface with CUDA Kokkos, Newton on, and
+half neighbor lists. Our runnable Python example uses those settings through
+the LAMMPS library rather than a separate `lmp` command:
+
+```{literalinclude} ../examples/lammps_si.py
+:language: python
+:lines: 23-34
+:lineno-match:
+:emphasize-lines: 2,11-12
+```
+
+The later `mliap/kk unified` pair style applies the exported MACE model.
+See the [complete example](../examples/lammps_si.py) for atom creation,
+integrator, timing, and cleanup. These tested settings are the **baseline**
+for the comparisons in this lesson. Enabling Kokkos is not by itself evidence
+that every optional cuEquivariance kernel is installed or active; do not
+attribute a measured speedup to such a kernel without checking the actual
+runtime and export.
+
 ## Export the same checkpoint for ML-IAP
 
 The ALCHEMI run reads the original MACE file; LAMMPS reads an ML-IAP export.
