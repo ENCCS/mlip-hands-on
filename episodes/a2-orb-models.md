@@ -146,8 +146,8 @@ such as D3.
 [`examples/torchsim/layered.py`](../examples/torchsim/layered.py) relaxes the
 cell and positions with ASE (`FrechetCellFilter` and FIRE, 0.002 eV/Å) for
 three variants by default: MACE-MP-0b small, Orb-v3, and Orb-v3 plus
-Grimme's D3(BJ) correction with PBE parameters. `--variants tensornet` adds
-the MatGL model, in float32. The D3 term comes from `orb-models` itself:
+Grimme's D3(BJ) correction with PBE parameters. `--variants tensornet` runs
+the MatGL model instead, in float32. The D3 term comes from `orb-models` itself:
 
 ```python
 orbff = D3SumModel(orbff, AlchemiDFTD3(functional="PBE", damping="BJ"))
@@ -244,8 +244,9 @@ the reference for this page.
 Changing the model needs only the `--model` option (and float32 for
 TensorNet). For graphite, no model without D3 reproduces the experimental
 spacing: plain Orb-v3 stays near the PBE value of 4.40 Å, and TensorNet,
-with its 5 Å cutoff, has no interlayer minimum at all. With D3, Orb-v3 lands within about 3 % of
-experiment, so judge an uncorrected model against PBE, not experiment.
+with its 5 Å cutoff, has no interlayer minimum at all. With D3, Orb-v3
+lands within about 3 % of experiment, so judge an uncorrected model
+against PBE, not experiment.
 
 :::{keypoints}
 - The batched workflow accepts other universal models; TensorNet runs the
