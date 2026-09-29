@@ -21,10 +21,11 @@ show what a universal MLIP trained on PBE data misses: the van der Waals
 
 [Orb-v3](https://arxiv.org/abs/2504.06231) (Rhodes et al., 2025) is a
 family of universal potentials from Orbital Materials, released under the
-Apache-2.0 licence in the [`orb-models`](https://github.com/orbital-materials/orb-models)
-package. Unlike MACE, it is not built to be equivariant; the authors report
-that it still models physical properties accurately, with much lower
-latency and memory use. The model names encode three choices:
+Apache-2.0 licence in the
+[`orb-models`](https://github.com/orbital-materials/orb-models) package.
+Unlike MACE, it is not built to be equivariant; the authors report that it
+still models physical properties accurately, with much lower latency and
+memory use. The model names encode three choices:
 
 | Part of the name | Options | Meaning |
 |---|---|---|
@@ -32,9 +33,9 @@ latency and memory use. The model names encode three choices:
 | `inf` / `20` | up to 120 neighbours, or at most 20 | the cap of 20 makes the energy surface discontinuous |
 | `omat` / `mpa` | trained on OMat24, or on MPtrj and Alexandria | the Orb authors advise `omat` unless a benchmark needs `mpa` |
 
-The example uses `orb-v3-conservative-inf-omat`. It sees neighbours within
-a 6 Å cutoff, and the training data are PBE and PBE+U calculations
-without a dispersion correction.
+The example uses `orb-v3-conservative-inf-omat`. Its training data are PBE
+and PBE+U calculations without a dispersion correction, so the model has
+learnt no dispersion, whatever its 6 Å cutoff.
 
 ## Switch the model
 
@@ -60,22 +61,33 @@ pixi run --manifest-path torchsim/pixi.toml \
 ```
 
 On a laptop CPU, the ASE and TorchSim energies of the shared structure
-agreed to 4 × 10⁻⁴ eV.
+differed by 4 × 10⁻⁴ eV after at most 20 relaxation steps. This reflects
+the two optimiser paths, not the model: a single-point energy of the same
+structure agrees to about 10⁻¹² eV.
 
-Two details matter for accuracy. Set the precision through the loader
+Three details matter for accuracy. Set the precision through the loader
 (`precision="float32-highest"` or `"float64"`), not with
 `torch.set_float32_matmul_precision` beforehand: the loader resets it.
 The Orb and MACE loaders also change torch's global default dtype, so the
-example restores it after each load (`keep_default_dtype`); otherwise the
-results can depend on the order in which models are loaded.
+example restores it after each load; otherwise the results can depend on
+the order in which models are loaded. Finally, the Orb ASE calculator
+builds its input graph in that global default dtype, so the example sets
+the requested dtype for each call; without this, a float64 model receives
+float32 positions. The example also turns off `torch.compile`
+(`compile=False`), which the loader otherwise applies on the first call
+and so adds a one-off cost to the timed serial baseline.
 
 ## Graphite: the interlayer test
 
 Bernal (AB) graphite has four atoms per cell. Its layers are held together
-almost entirely by dispersion. Plain PBE predicts an interlayer spacing near
-4.4 Å and almost no binding, against 3.34 Å in experiment
-([Hazrati et al., 2014](https://doi.org/10.1103/PhysRevB.90.155448)). A model trained on PBE data should inherit this
-error, and a 6 Å cutoff cannot capture the long-range tail on its own.
+almost entirely by dispersion. Plain PBE gives an interlayer spacing of
+4.40 Å and a binding energy of only 1 meV per carbon atom
+([Hazrati et al., 2014](https://doi.org/10.1103/PhysRevB.90.155448)),
+against 3.34 Å in experiment
+([Baskin and Meyer, 1955](https://doi.org/10.1103/PhysRev.100.544), as
+tabulated by Hazrati et al.). A model trained on PBE data inherits this
+error, whatever its cutoff; the dispersion must come from an added term
+such as D3.
 
 [`examples/torchsim/layered.py`](../examples/torchsim/layered.py) relaxes the
 cell and positions with ASE (`FrechetCellFilter` and FIRE, 0.002 eV/Å) for
@@ -107,37 +119,49 @@ Output on a laptop CPU (one run, float64, `orb-models` 0.7.0):
 variant      start d   a (A)   d (A)   d err  steps  converged
 mace-small      3.34   2.467   4.101   22.8%     58  True
 mace-small      4.40   2.467   4.099   22.7%     34  True
-orb-v3          3.34   2.468   4.311   29.1%    522  True
-orb-v3          4.40   2.468   4.365   30.7%    128  True
-orb-v3+d3       3.34   2.466   3.443    3.1%     74  True
+orb-v3          3.34   2.468   4.310   29.0%    526  True
+orb-v3          4.40   2.468   4.365   30.7%    135  True
+orb-v3+d3       3.34   2.466   3.443    3.1%    103  True
 orb-v3+d3       4.40   2.466   3.448    3.2%    229  True
+PBE                    2.470   4.400
 experiment             2.460   3.340
 ```
 
-Here `d = c/2` is the interlayer spacing. Both models give the in-plane
-lattice constant `a` within 0.4 % of experiment. Without D3 both overestimate
-`d` by more than 20 %. Plain Orb-v3 is also poorly defined: the two starts
-end 0.05 Å apart after up to 522 steps, a sign of a nearly flat interlayer
-energy surface. With D3, Orb-v3 has a clear minimum within about 3 % of
-experiment, and both starts agree to 0.005 Å. With the looser threshold of
-0.01 eV/Å, the D3 starts differed by about 0.04 Å, so check convergence before
-quoting a spacing.
+Here `d = c/2` is the interlayer spacing and `d err` is measured against
+experiment. Both models give the in-plane lattice constant `a` within
+0.4 % of experiment. Without D3 the target is PBE, not experiment: plain
+Orb-v3 (4.31 to 4.37 Å) is close to the PBE value of 4.40 Å, while MACE
+stops shorter, at 4.10 Å. The smaller error for MACE therefore does not
+mean that MACE describes the interlayer binding better; on an almost
+unbound surface, small fitting differences move the spacing a long way.
+Plain Orb-v3 is also poorly defined: the two starts end 0.05 Å apart after
+more than 500 steps, a sign of a nearly flat interlayer energy surface.
+With D3, Orb-v3 has a clear minimum within about 3 % of experiment, and
+both starts agree to 0.005 Å. With the looser threshold of 0.01 eV/Å, the
+D3 starts differed by about 0.04 Å, so check convergence before quoting a
+spacing. Step counts on this flat surface can change by a few between
+runs; the spacings do not.
 
 :::{note}
 The experimental value is a low-temperature measurement; the relaxations
-are static and include no zero-point motion or temperature. In `orb-models` 0.7.0 the D3 neighbour list assumes atoms
-inside the cell; the graphite cell is built that way and the atoms do not
+are static and include no zero-point motion or temperature. In
+`orb-models` 0.7.0 the D3 neighbour list assumes atoms inside the cell; the graphite cell is built that way and the atoms do not
 move out of it. A fix for unwrapped positions exists only on the main
 branch.
 :::
 
 ## Run it on Leonardo (one A100)
 
-On a login node, download the Orb checkpoint next to the MACE one and check
-its SHA-256. Then submit the job, which runs the graphite study and the
-Orb screening batch:
+Set the variables of the previous page. On a login node, update the pixi
+environment of your lesson copy (this page adds `orb-models`, and compute
+nodes have no internet), then download the Orb checkpoint next to the MACE
+one and check its SHA-256. Finally, submit the job, which runs the graphite
+study and the Orb screening batch:
 
 ```bash
+cd "$MLIP_LESSON_ROOT/examples/torchsim"
+pixi install
+cd "$MLIP_LESSON_ROOT"
 curl -L -o <SCRATCH>/models/orb-v3-conservative-inf-omat.ckpt \
   https://orbitalmaterials-public-models.s3.us-west-1.amazonaws.com/forcefields/orb-v3/orb-v3-conservative-inf-omat-20250404.ckpt
 printf '%s  %s\n' \
@@ -149,24 +173,29 @@ sbatch --account=<PROJECT> \
   scripts/test-leonardo-orb.sbatch
 ```
 
-The other variables are set as on the previous page. This script has **not
-yet been qualified**.
+This script has **not yet been qualified**.
 
 ## Measured on Leonardo
 
-One A100, float64, one run. Values marked RESULT_PENDING are to be filled
-from the Leonardo run.
+The Leonardo measurements will be added after the qualification run. Until
+then, the laptop table above is the result for this page.
 
-| Variant | a (Å) | d from 3.34 Å start | d from 4.4 Å start | Steps (both starts) |
-|---|---:|---:|---:|---:|
-| MACE-MP-0b small | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING |
-| Orb-v3 | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING |
-| Orb-v3 + D3(BJ) | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING |
-| Experiment (low T) | 2.46 | 3.34 | 3.34 | |
-
-| Screening, Orb-v3 | Structures | Serial, estimated (s) | Batched (s) | Estimated serial / batched |
-|---|---:|---:|---:|---:|
-| float64 | 64 | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING |
+% Fill from graphite/graphite.json and screening/summary.json, then
+% uncomment and remove the paragraph above.
+%
+% One A100, float64, one run.
+%
+% | Variant | a (Å) | d from 3.34 Å start | d from 4.4 Å start | Steps (both starts) |
+% |---|---:|---:|---:|---:|
+% | MACE-MP-0b small | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING |
+% | Orb-v3 | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING |
+% | Orb-v3 + D3(BJ) | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING |
+% | PBE (Hazrati et al., 2014) | 2.47 | 4.40 | 4.40 | |
+% | Experiment (low T) | 2.46 | 3.34 | 3.34 | |
+%
+% | Screening, Orb-v3 | Structures | Serial, estimated (s) | Batched (s) | Estimated serial / batched |
+% |---|---:|---:|---:|---:|
+% | float64 | 64 | RESULT_PENDING | RESULT_PENDING | RESULT_PENDING |
 
 ## References
 

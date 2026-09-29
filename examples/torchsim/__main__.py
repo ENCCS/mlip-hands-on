@@ -48,7 +48,7 @@ def main() -> None:
 
     models = load_models(args.model, device, dtype, args.checkpoint)
     serial = SerialRelaxer(models.make_ase_calc, args.fmax, args.max_steps)
-    batched = BatchedRelaxer(models.torchsim, args.fmax, args.max_steps, args.autobatch)
+    batched = BatchedRelaxer(models.make_torchsim(), args.fmax, args.max_steps, args.autobatch)
     serial_result = serial.run(structures[:n_base])
     batched_result = batched.run(structures)
 

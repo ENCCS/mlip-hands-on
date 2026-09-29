@@ -18,11 +18,13 @@ from ase import Atoms
 from ase.filters import FrechetCellFilter
 from ase.optimize import FIRE
 
-from .models import ORB_MODELS, keep_default_dtype, load_models
+from .models import ORB_MODELS, load_models
 from .report import sha256
 
-# Low-temperature experiment (Baskin and Meyer 1955, as cited by Hazrati et al. 2014).
+# Low-temperature experiment (Baskin and Meyer 1955) and plain PBE, both from
+# Table I of Hazrati et al. 2014. PBE is the level of theory the models learn.
 EXPERIMENT = {"a_A": 2.46, "d_A": 3.34}
+PBE = {"a_A": 2.47, "d_A": 4.40}
 VARIANTS = {
     "mace-small": ("mace-small", False),
     "orb-v3": ("orb-v3-conservative-inf-omat", False),
@@ -67,14 +69,13 @@ def relax(variant: str, device: torch.device, dtype: torch.dtype, fmax: float,
           max_steps: int, checkpoints: dict, starts: list[float]) -> list[LayerResult]:
     name, d3 = VARIANTS[variant]
     checkpoint = checkpoints["orb" if name in ORB_MODELS else "mace"]
+    calc = load_models(name, device, dtype, checkpoint, d3).make_ase_calc()
     rows = []
-    with keep_default_dtype():
-        calc = load_models(name, device, dtype, checkpoint, d3).make_ase_calc()
-        for d0 in starts:
-            a, c, steps, converged, wall = relax_one(calc, d0, fmax, max_steps)
-            error = 100 * (c / 2 - EXPERIMENT["d_A"]) / EXPERIMENT["d_A"]
-            rows.append(LayerResult(variant, name, d3, d0, a, c, c / 2, error,
-                                    steps, converged, wall))
+    for d0 in starts:
+        a, c, steps, converged, wall = relax_one(calc, d0, fmax, max_steps)
+        error = 100 * (c / 2 - EXPERIMENT["d_A"]) / EXPERIMENT["d_A"]
+        rows.append(LayerResult(variant, name, d3, d0, a, c, c / 2, error,
+                                steps, converged, wall))
     return rows
 
 
@@ -84,7 +85,8 @@ def print_table(rows: list[LayerResult]) -> None:
     for r in rows:
         print(f"{r.variant:12}{r.start_d_A:>8.2f}{r.a_A:>8.3f}{r.d_A:>8.3f}"
               f"{r.d_error_pct:>7.1f}%{r.steps:>7}  {r.converged}")
-    print(f"{'experiment':12}{'':>8}{EXPERIMENT['a_A']:>8.3f}{EXPERIMENT['d_A']:>8.3f}")
+    for label, ref in (("PBE", PBE), ("experiment", EXPERIMENT)):
+        print(f"{label:12}{'':>8}{ref['a_A']:>8.3f}{ref['d_A']:>8.3f}")
 
 
 def parse_args() -> argparse.Namespace:
@@ -116,7 +118,7 @@ def main() -> None:
     packages = {p: version(p) for p in ("torch", "ase", "mace-torch", "orb-models")}
     summary = {"device": str(device), "dtype": args.dtype, "fmax": args.fmax,
                "starts_A": args.starts,
-               "max_steps": args.max_steps, "experiment": EXPERIMENT,
+               "max_steps": args.max_steps, "experiment": EXPERIMENT, "pbe": PBE,
                "packages": packages,
                "checkpoint_sha256": {k: sha256(v) for k, v in checkpoints.items()},
                "results": [asdict(r) for r in rows]}
