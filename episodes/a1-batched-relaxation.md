@@ -12,10 +12,18 @@ kernelspec:
 
 # Batched relaxation for screening
 
-Screening relaxes many small, independent structures. This page relaxes one
-set twice with the same MACE-MP foundation model: serially with ASE, then in
-one batched [TorchSim](https://github.com/TorchSim/torch-sim) call on one
-GPU.
+:::{objectives}
+- Explain why screening benefits from batched relaxation on a GPU.
+- Relax one set of structures serially with ASE and in one TorchSim batch.
+- Compare the two routes for wall time and energy agreement.
+:::
+
+Screening compares candidate structures after each has been relaxed to its
+nearest energy minimum. With a GPU MLIP, relaxing small structures one at a
+time leaves most of the GPU idle; batched engines relax many at once (see
+{ref}`background-engines`). This page relaxes one set twice with the same
+MACE-MP foundation model: serially with ASE, then in one batched
+[TorchSim](https://github.com/TorchSim/torch-sim) call on one GPU.
 
 Part A has its own pixi environment and uses MACE-MP-0b small, not the
 MACE-MP-0a checkpoint pinned for Part B.
@@ -186,3 +194,19 @@ LUMI). A separate ASE script, without TorchSim batching, on one MI250X GCD:
 One run, float64, MACE-MP-0a small, 29 September 2026. It shows that the model
 runs on AMD hardware; it is not a speed comparison with the A100 table above.
 The CUDA-only kernels (cuEquivariance, ALCHEMI) are not available on AMD.
+
+## Reading the results
+
+On one A100, the batched run was about 5 times faster than the estimated
+serial time in float64 and about 7 times faster in float32 with
+`--autobatch`. On a CPU with the toy potential, batching was slower, so the
+gain comes from GPU parallelism. Each row is one run with an extrapolated
+serial time, so treat the ratios as indicative.
+
+:::{keypoints}
+- Batching advances many independent relaxations in one GPU call;
+  converged structures leave the batch.
+- On one A100, batching was 5 to 7 times faster than the serial estimate.
+- On a CPU, batching gives no gain.
+- Check that serial and batched energies agree before comparing timings.
+:::

@@ -12,6 +12,12 @@ kernelspec:
 
 # Background: universal MLIPs
 
+:::{objectives}
+- Explain what a foundation MLIP is and what data it is trained on.
+- Recognise why most materials models miss dispersion.
+- Choose a model and a GPU engine for a task, and check the model first.
+:::
+
 This page summarises the concepts behind the hands-on parts. Numbered
 references are listed at the end; review articles are collected in
 {doc}`../reference/reading`.
@@ -48,6 +54,7 @@ learns or does:
 - **LLMs and agents**: read, plan and run simulation tools.
 - **Autonomous labs and open data**: predict, make and measure.
 
+(background-foundation)=
 ## From bespoke to foundation models
 
 ![Timeline from system-specific MLIPs (2007 to 2022) to foundation MLIPs (2024 to 2026).](../_static/mlip-timeline.drawio.png)
@@ -124,6 +131,7 @@ Mechanical properties are a known weak spot of zero-shot models. Fine-tuning
 can also cause catastrophic forgetting, where the specialised model loses
 accuracy on other systems [16], so keep the original model for general use.
 
+(background-engines)=
 ## GPU engines
 
 ASE and LAMMPS were designed to run one system at a time, and their GPU
@@ -197,6 +205,17 @@ labels, learned DFT functionals that provide better reference data,
 generative models whose candidates are screened with MLIPs, and early
 language-model agents that drive simulation codes. In every case,
 validate the property you care about.
+
+:::{keypoints}
+- An MLIP learns energies and forces from quantum reference data and aims
+  at DFT quality at a cost close to that of a force field.
+- Foundation MLIPs are used zero-shot for screening and fine-tuned when
+  quantitative accuracy is needed.
+- Most materials models are trained on PBE data and miss dispersion unless
+  a correction such as D3 is added.
+- Batched GPU engines run many systems in one call; choose a model by your
+  task and validate the property you study.
+:::
 
 ## References
 

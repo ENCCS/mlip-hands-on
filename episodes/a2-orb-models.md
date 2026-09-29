@@ -12,7 +12,17 @@ kernelspec:
 
 # Orb-v3, MatGL and dispersion
 
-The Part A workflow is not specific to MACE. This page runs the same
+:::{objectives}
+- Run the screening workflow with a different universal model.
+- Test whether a model trained on PBE data binds graphite layers.
+- Add a D3 dispersion correction and judge the result against the right
+  reference.
+:::
+
+Two questions follow from the previous page: does the workflow depend on
+one model, and what do models trained on PBE data miss? PBE contains no
+dispersion (see {ref}`background-foundation`), and layered materials are
+held together by it. The Part A workflow is not specific to MACE. This page runs the same
 screening with an Orb-v3 model and a MatGL TensorNet model, then uses
 graphite, a layered crystal, to show what a universal MLIP trained on PBE
 data misses: the van der Waals (dispersion) attraction between layers.
@@ -227,6 +237,22 @@ sbatch --account=<PROJECT> \
 
 This script has **not yet been qualified**. The laptop results above are
 the reference for this page.
+
+## Reading the results
+
+Changing the model needs only the `--model` option (and float32 for
+TensorNet). For graphite, no model without D3 reproduces the experimental
+spacing: plain Orb-v3 stays near the PBE value of 4.40 Å, and TensorNet has no interlayer minimum
+within its 5 Å cutoff. With D3, Orb-v3 lands within about 3 % of
+experiment, so judge an uncorrected model against PBE, not experiment.
+
+:::{keypoints}
+- The batched workflow accepts other universal models; TensorNet runs the
+  serial ASE route only.
+- Models trained on PBE data miss the dispersion that binds graphite layers.
+- D3 adds dispersion; do not add it to a model already trained with it.
+- Start from two spacings and check convergence before quoting a result.
+:::
 
 ## References
 
