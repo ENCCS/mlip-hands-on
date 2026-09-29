@@ -10,19 +10,19 @@ kernelspec:
   name: python3
 ---
 
-# Screen many structures with batched relaxation
+# Batched relaxation for screening
 
-Screening relaxes many small, independent candidate structures. This page
-relaxes the same set twice with the same MACE-MP foundation model: one
-structure at a time with ASE, then all structures in one batched
-[TorchSim](https://github.com/TorchSim/torch-sim) call on one GPU.
+Screening relaxes many small, independent structures. This page relaxes one
+set twice with the same MACE-MP foundation model: serially with ASE, then in
+one batched [TorchSim](https://github.com/TorchSim/torch-sim) call on one
+GPU.
 
-Part A does not use the Part B setup: it has its own pixi environment and
-uses MACE-MP-0b small, not the pinned MACE-MP-0a checkpoint.
+Part A has its own pixi environment and uses MACE-MP-0b small, not the
+MACE-MP-0a checkpoint pinned for Part B.
 
 The workload is a toy screening set: rattled copies of four crystals
-(Cu fcc, Si diamond, Fe bcc and Al fcc, 8 to 32 atoms each). Every copy has
-a different random displacement, so each one needs its own relaxation.
+(Cu fcc, Si diamond, Fe bcc and Al fcc, 8 to 32 atoms each). Each copy has a
+different random displacement and needs its own relaxation.
 
 ```{literalinclude} ../examples/torchsim/workload.py
 :language: python
@@ -30,13 +30,13 @@ a different random displacement, so each one needs its own relaxation.
 :lineno-match:
 ```
 
-## Serial baseline and batched run
+## Serial and batched runs
 
 Both routes use FIRE with a fixed cell and stop when the largest force falls
 below `--fmax` (0.05 eV/Å by default) or after `--max-steps`. The serial
 baseline relaxes only the first `--baseline-n` structures and extrapolates
-its per-structure time to the full set; relaxing every structure serially
-would take most of the allocation.
+its per-structure time to the full set; a full serial run would use most
+of the allocation.
 
 ```{literalinclude} ../examples/torchsim/runners.py
 :language: python
@@ -46,9 +46,9 @@ would take most of the allocation.
 
 TorchSim takes the whole list of ASE `Atoms`, builds one batched state and
 advances every structure together. Converged structures leave the batch;
-with `--autobatch` TorchSim also splits the set to fit GPU memory. The same
-checkpoint drives both routes. TorchSim needs the raw PyTorch model, so it is
-loaded with `return_raw_model=True`:
+with `--autobatch` TorchSim also splits the set to fit GPU memory. Both
+routes use the same checkpoint. TorchSim needs the raw PyTorch model, so it
+is loaded with `return_raw_model=True`:
 
 ```{literalinclude} ../examples/torchsim/models.py
 :language: python
@@ -62,14 +62,13 @@ structures relaxed both ways and writes `summary.json` and
 `relaxed.extxyz`. When `--checkpoint` names a local file, the summary also
 records its SHA-256.
 
-## Run it on a laptop
+## Laptop run
 
-The example is a small Python package in the `examples/torchsim/` folder;
-its entry point is
-[`examples/torchsim/__main__.py`](../examples/torchsim/__main__.py). It has its own
-[pixi](https://pixi.sh) environment. The `smoke` task uses a toy
-Lennard-Jones potential: it needs no download and finishes in seconds, but
-its timings and energies mean nothing physically.
+The example is a Python package in `examples/torchsim/` with its own
+[pixi](https://pixi.sh) environment; its entry point is
+[`examples/torchsim/__main__.py`](../examples/torchsim/__main__.py). The
+`smoke` task uses a toy Lennard-Jones potential. It needs no download and
+finishes in seconds; its timings and energies have no physical meaning.
 
 ```bash
 cd examples/torchsim
@@ -92,13 +91,12 @@ estimated serial / batched: 0.04
 max |E_ASE - E_TorchSim| on the serial subset: 2.03e-01 eV
 ```
 
-On a CPU with a cheap potential, batching is slower: there is no GPU
-parallelism to exploit. The energy difference is expected: ASE and TorchSim
-use different cutoff and energy-shift conventions for Lennard-Jones, so the
-two toy potentials are not the same function. Only the MACE run is a real
-consistency check (a few meV).
+On a CPU with a cheap potential, batching is slower because there is no
+GPU parallelism. The energy difference arises because ASE and TorchSim use
+different cutoff and energy-shift conventions for Lennard-Jones, so the two
+toy potentials differ. Only the MACE run is a consistency check (a few meV).
 
-To try the real model on a CPU, run the `cpu` task. It relaxes four
+To run the MACE model on a CPU, use the `cpu` task. It relaxes four
 structures for at most 20 steps and writes to `examples/torchsim_cpu/`. The
 first run downloads the MACE-MP-0b small checkpoint, about 68 MB:
 
@@ -106,7 +104,7 @@ first run downloads the MACE-MP-0b small checkpoint, about 68 MB:
 pixi run cpu
 ```
 
-## Run it on Leonardo (one A100)
+## Leonardo run (one A100)
 
 Compute nodes have no internet access. On a login node, install the pixi
 environment inside your lesson copy and download the checkpoint to a
@@ -142,12 +140,12 @@ sbatch --account=<PROJECT> \
 :lineno-match:
 ```
 
-This script has **not yet been qualified** as submitted here. The float64
-row below came from an earlier script with the same workload and options as
-this job; the float32 row came from a separate tuned run with the options
-listed below the table. Neither was produced by this script.
+This script has **not yet been qualified**. The float64 row below comes
+from an earlier script with the same workload and options; the float32 row
+comes from a separate tuned run with the options listed below the table.
+Neither was produced by this script.
 
-## Measured on Leonardo
+## Leonardo results
 
 One A100, MACE-MP-0b small, no cuEquivariance kernels. The serial column
 measured 8 structures; the estimate scales that time to the full set.
@@ -160,7 +158,7 @@ measured 8 structures; the estimate scales that time to the full set.
 The float32 run used `--dtype float32 --n-variants 32 --autobatch`.
 
 :::{warning}
-Read these as one example, not a benchmark.
+These are single examples, not a benchmark.
 
 - Each row is **one run**. There are no repeats, medians or ranges.
 - The serial time for the full set is **extrapolated** from 8 structures,

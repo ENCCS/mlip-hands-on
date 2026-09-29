@@ -58,8 +58,8 @@ with MACE-MP-0b small, not the MACE-MP-0a checkpoint pinned for Part B. The
 serial totals are extrapolated from eight relaxed structures, no
 cuEquivariance kernels were used, and the lesson's
 `scripts/test-leonardo-torchsim.sbatch` has not yet been qualified. They
-illustrate batched screening throughput; they are not a benchmark and are
-not comparable with the MD timings.
+illustrate batched screening throughput, are not a benchmark and are not
+comparable with the MD timings.
 
 The Orb-v3 graphite spacings on the Part A pages are single static
 relaxations from two starting spacings, compared with a low-temperature

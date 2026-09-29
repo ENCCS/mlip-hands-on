@@ -10,22 +10,21 @@ kernelspec:
   name: python3
 ---
 
-# Switch the foundation model: Orb-v3 and dispersion
+# Orb-v3 and dispersion
 
-The Part A example is not tied to MACE. This page runs the same screening
-workflow with an Orb-v3 model, then uses a layered crystal, graphite, to
+The Part A workflow is not specific to MACE. This page runs the same
+screening with an Orb-v3 model, then uses graphite, a layered crystal, to
 show what a universal MLIP trained on PBE data misses: the van der Waals
 (dispersion) attraction between layers.
 
-## Why Orb-v3
+## Orb-v3
 
 [Orb-v3](https://arxiv.org/abs/2504.06231) (Rhodes et al., 2025) is a
 family of universal potentials from Orbital Materials, released under the
 Apache-2.0 licence in the
 [`orb-models`](https://github.com/orbital-materials/orb-models) package.
-Unlike MACE, it is not built to be equivariant; the authors report that it
-still models physical properties accurately, with much lower latency and
-memory use. The model names encode three choices:
+Unlike MACE, it is not equivariant by construction; the authors report
+accurate physical properties at much lower latency and memory use. The model names encode three choices:
 
 | Part of the name | Options | Meaning |
 |---|---|---|
@@ -35,7 +34,7 @@ memory use. The model names encode three choices:
 
 The example uses `orb-v3-conservative-inf-omat`. Its training data are PBE
 and PBE+U calculations without a dispersion correction, so the model has
-learnt no dispersion, whatever its 6 Å cutoff.
+learnt no dispersion, regardless of its 6 Å cutoff.
 
 ## Switch the model
 
@@ -50,8 +49,8 @@ batch:
 :lineno-match:
 ```
 
-To rerun the laptop CPU check of the previous page with Orb, change only
-`--model`. The first run downloads the checkpoint, about 100 MB:
+To repeat the laptop CPU check of the previous page with Orb, change
+only `--model`. The first run downloads the checkpoint, about 100 MB:
 
 ```bash
 cd examples
@@ -65,7 +64,7 @@ differed by 4 × 10⁻⁴ eV after at most 20 relaxation steps. This reflects
 the two optimiser paths, not the model: a single-point energy of the same
 structure agrees to about 10⁻¹² eV.
 
-Three details matter for accuracy. Set the precision through the loader
+Three implementation details affect accuracy. Set the precision through the loader
 (`precision="float32-highest"` or `"float64"`), not with
 `torch.set_float32_matmul_precision` beforehand: the loader resets it.
 The Orb and MACE loaders also change torch's global default dtype, so the
@@ -77,7 +76,7 @@ float32 positions. The example also turns off `torch.compile`
 (`compile=False`), which the loader otherwise applies on the first call
 and so adds a one-off cost to the timed serial baseline.
 
-## Graphite: the interlayer test
+## Graphite interlayer spacing
 
 Bernal (AB) graphite has four atoms per cell. Its layers are held together
 almost entirely by dispersion. Plain PBE gives an interlayer spacing of
@@ -86,7 +85,7 @@ almost entirely by dispersion. Plain PBE gives an interlayer spacing of
 against 3.34 Å in experiment
 ([Baskin and Meyer, 1955](https://doi.org/10.1103/PhysRev.100.544), as
 tabulated by Hazrati et al.). A model trained on PBE data inherits this
-error, whatever its cutoff; the dispersion must come from an added term
+error, regardless of its cutoff; dispersion must come from an added term
 such as D3.
 
 [`examples/torchsim/layered.py`](../examples/torchsim/layered.py) relaxes the
@@ -98,7 +97,7 @@ correction with PBE parameters. The D3 term comes from `orb-models` itself:
 orbff = D3SumModel(orbff, AlchemiDFTD3(functional="PBE", damping="BJ"))
 ```
 
-PBE is the right D3 functional here because it matches the training data.
+PBE is the correct D3 functional here because it matches the training data.
 Do not add D3 to a model already trained with a dispersion correction, such
 as `orb-d3-v2`; that counts dispersion twice. This page adds D3 to Orb only.
 
@@ -129,13 +128,13 @@ experiment             2.460   3.340
 
 Here `d = c/2` is the interlayer spacing and `d err` is measured against
 experiment. Both models give the in-plane lattice constant `a` within
-0.4 % of experiment. Without D3 the target is PBE, not experiment: plain
-Orb-v3 (4.31 to 4.37 Å) is close to the PBE value of 4.40 Å, while MACE
-stops shorter, at 4.10 Å. The smaller error for MACE therefore does not
-mean that MACE describes the interlayer binding better; on an almost
-unbound surface, small fitting differences move the spacing a long way.
-Plain Orb-v3 is also poorly defined: the two starts end 0.05 Å apart after
-more than 500 steps, a sign of a nearly flat interlayer energy surface.
+0.4 % of experiment. Without D3 the reference is PBE, not experiment:
+plain Orb-v3 (4.31 to 4.37 Å) is close to the PBE value of 4.40 Å, while
+MACE stops shorter, at 4.10 Å. The smaller MACE error therefore does not
+indicate better interlayer binding; on a nearly unbound surface, small
+fitting differences shift the spacing considerably. The plain Orb-v3
+spacing is also poorly defined: the two starts end 0.05 Å apart after more
+than 500 steps, which indicates a nearly flat interlayer energy surface.
 With D3, Orb-v3 has a clear minimum within about 3 % of experiment, and
 both starts agree to 0.005 Å. With the looser threshold of 0.01 eV/Å, the
 D3 starts differed by about 0.04 Å, so check convergence before quoting a
@@ -145,17 +144,17 @@ runs; the spacings do not.
 :::{note}
 The experimental value is a low-temperature measurement; the relaxations
 are static and include no zero-point motion or temperature. In
-`orb-models` 0.7.0 the D3 neighbour list assumes atoms inside the cell; the graphite cell is built that way and the atoms do not
-move out of it. A fix for unwrapped positions exists only on the main
+`orb-models` 0.7.0 the D3 neighbour list assumes atoms inside the cell;
+the graphite cell is built that way and the atoms do not move out of it. A fix for unwrapped positions exists only on the main
 branch.
 :::
 
-## Run it on Leonardo (one A100)
+## Leonardo run (one A100)
 
 Set the variables of the previous page. On a login node, update the pixi
 environment of your lesson copy (this page adds `orb-models`, and compute
 nodes have no internet), then download the Orb checkpoint next to the MACE
-one and check its SHA-256. Finally, submit the job, which runs the graphite
+one and check its SHA-256. Then submit the job, which runs the graphite
 study and the Orb screening batch:
 
 ```bash
@@ -173,7 +172,8 @@ sbatch --account=<PROJECT> \
   scripts/test-leonardo-orb.sbatch
 ```
 
-This script has **not yet been qualified**. The laptop results above are the reference for this page.
+This script has **not yet been qualified**. The laptop results above are
+the reference for this page.
 
 ## References
 

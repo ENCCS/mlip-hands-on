@@ -35,8 +35,8 @@ Part B examples use one pinned MACE checkpoint but separate software environment
 JupyterLab for the notebooks, an ALCHEMI SIF on Arrhenius (or a private native
 environment on JUPITER), and native Python/LAMMPS for ML-IAP/Kokkos. Keeping
 them separate avoids loading two incompatible CUDA or MPI stacks into one
-notebook kernel. Part A uses its own pixi environment and model; see its
-page.
+notebook kernel. Part A uses its own pixi environment and models; see
+its pages.
 
 The core exercises need one GPU and prepared artifacts. Building a SIF and
 LAMMPS is covered in the first episodes, but can be done before the GPU session.

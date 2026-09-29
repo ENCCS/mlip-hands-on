@@ -9,8 +9,8 @@ the `main` branch by GitHub Actions.
 
 It contains the source of a short, runnable MyST lesson. The
 same Markdown files build a web handout and open as notebooks in JupyterLab.
-Part A relaxes many small crystals in one batch with TorchSim and a MACE-MP
-foundation model (`examples/torchsim/`). Part B uses one pinned MACE
+Part A relaxes many small crystals in one batch with TorchSim, using the
+MACE-MP and Orb-v3 foundation models (`examples/torchsim/`). Part B uses one pinned MACE
 checkpoint to run silicon molecular dynamics with NVIDIA ALCHEMI Toolkit and
 LAMMPS ML-IAP/Kokkos.
 
