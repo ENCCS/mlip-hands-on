@@ -77,7 +77,8 @@ small, targeted dataset [10]:
   scratch.
 - For molybdenum (MACE-MP-0b3), the error in the elastic constant $C_{11}$
   fell from 45.9% zero-shot to 2.6% after fine-tuning.
-- For silicon (MACE-MP-0b), errors fell from 19 to 53% to 0.6 to 5.2%.
+- For silicon (MACE-MP-0b), errors fell from 19-53% zero-shot to 0.6-5.2%
+  after fine-tuning.
 
 Mechanical properties are a known weak spot of zero-shot models. Fine-tuning
 can also cause catastrophic forgetting, so keep the original model for
@@ -142,7 +143,7 @@ validate the property you care about.
 11. [TorchSim](https://github.com/TorchSim/torch-sim),
     [kUPS](https://github.com/cusp-ai-oss/kups),
     [ALCHEMI Toolkit](https://github.com/NVIDIA/nvalchemi-toolkit)
-12. Kavanagh et al., NequIP and Allegro foundation models.
+12. S. R. Kavanagh et al., NequIP and Allegro foundation models.
     [arXiv:2607.28461](https://arxiv.org/abs/2607.28461)
 13. J. Riebesell et al., Matbench Discovery, Nat. Mach. Intell. 7, 836 (2025).
     [doi:10.1038/s42256-025-01055-1](https://doi.org/10.1038/s42256-025-01055-1)
