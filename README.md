@@ -1,4 +1,4 @@
-# Universal MLIPs on HPC: batched screening with TorchSim and molecular dynamics with ALCHEMI and LAMMPS
+# Universal MLIPs on HPC: hands-on
 
 This independent Git repository is the maintained source of the
 MLIP MyST/Jupyter lesson. The older in-tree lesson in `mlip-hands-on` is
