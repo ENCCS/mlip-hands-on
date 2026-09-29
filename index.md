@@ -1,9 +1,8 @@
 # Universal MLIPs on HPC: hands-on
 
-This lesson runs universal machine-learned interatomic potentials (MLIPs)
-from the MACE-MP family on GPU nodes of HPC systems. It has two parts that
-share one idea: keep the GPU busy with many independent systems, and measure
-what that buys you honestly.
+Universal machine-learned interatomic potentials (MLIPs), MACE-MP and
+Orb-v3, on GPU nodes of HPC systems. Both parts run many independent systems
+on one GPU and report throughput with its measurement conditions.
 
 **Part A** screens many small crystals at once: it relaxes a set of
 structures one at a time with ASE, then all together in one batched TorchSim

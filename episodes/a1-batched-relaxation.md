@@ -12,12 +12,10 @@ kernelspec:
 
 # Screen many structures with batched relaxation
 
-A screening campaign relaxes many small candidate structures and keeps the
-promising ones. Each relaxation is independent, so the question is how to
-keep one GPU busy. This page relaxes the same set twice with the same MACE-MP
-foundation model: first one structure at a time with ASE, then all
-structures in one batched [TorchSim](https://github.com/TorchSim/torch-sim)
-call.
+Screening relaxes many small, independent candidate structures. This page
+relaxes the same set twice with the same MACE-MP foundation model: one
+structure at a time with ASE, then all structures in one batched
+[TorchSim](https://github.com/TorchSim/torch-sim) call on one GPU.
 
 Part A does not use the Part B setup: it has its own pixi environment and
 uses MACE-MP-0b small, not the pinned MACE-MP-0a checkpoint.
