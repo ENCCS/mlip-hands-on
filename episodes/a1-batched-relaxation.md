@@ -171,3 +171,18 @@ These are single examples, not a benchmark.
 - This is **relaxation, not molecular dynamics**. Do not compare these
   times with the Part B MD timings.
 :::
+
+## LUMI (AMD MI250X) check
+
+MACE also runs on AMD GPUs through ROCm PyTorch (the CSC `pytorch` module on
+LUMI). A separate ASE script, without TorchSim batching, on one MI250X GCD:
+
+| Step | System | Time (s) |
+|---|---|---:|
+| Single point | 32 atoms | 1.6 |
+| FIRE relaxation, serial | 6 structures (Cu, Al, Fe, Si) | 17.0 |
+| MD, 600 K | 200 steps, 32 atoms | 3.9 |
+
+One run, float64, MACE-MP-0a small, 29 September 2026. It shows that the model
+runs on AMD hardware; it is not a speed comparison with the A100 table above.
+The CUDA-only kernels (cuEquivariance, ALCHEMI) are not available on AMD.
