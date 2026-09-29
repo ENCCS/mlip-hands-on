@@ -19,12 +19,14 @@ ML-IAP model activation; it is not yet a standalone `.in`-file recipe.
 The relevant input is visible below; the
 [complete source](../examples/lammps_si.py) is supplied with the lesson.
 
+:::{dropdown} lammps_si.py
 ```{literalinclude} ../examples/lammps_si.py
 :language: python
 :start-at: for command in (
 :end-at: lmp.command("run 0")
 :lineno-match:
 ```
+:::
 
 With the MPI-enabled native runtime extracted and selected as
 `MLIP_NATIVE_PREFIX`, the first cell runs one 64-atom NVE trajectory on one
@@ -40,6 +42,7 @@ As with ALCHEMI, the notebook times the complete command. The runner's
 MD-only time is shown separately.
 
 ```{code-cell} ipython3
+:tags: [hide-input]
 import json
 import subprocess
 from time import perf_counter
@@ -100,6 +103,7 @@ The runner's own `group_wall_seconds` starts later and is not substituted
 for this live comparison.
 
 ```{code-cell} ipython3
+:tags: [hide-input]
 sequential_start = perf_counter()
 sequential_call = subprocess.run(
     ["bash", str(lesson / "scripts/run-lammps-group.sh"), "sequential", "--cells", "2",
@@ -116,6 +120,7 @@ display(Markdown(
 ```
 
 ```{code-cell} ipython3
+:tags: [hide-input]
 plain_start = perf_counter()
 plain_call = subprocess.run(
     ["bash", str(lesson / "scripts/run-lammps-group.sh"), "plain", "--cells", "2",
@@ -132,6 +137,7 @@ display(Markdown(
 ```
 
 ```{code-cell} ipython3
+:tags: [hide-input]
 mps_start = perf_counter()
 mps_call = subprocess.run(
     ["bash", str(lesson / "scripts/run-lammps-group.sh"), "mps", "--cells", "2",

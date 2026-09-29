@@ -23,12 +23,14 @@ The supplied Arrhenius build job takes a pinned LAMMPS source archive and a
 prepared native Python archive. It checks their identities, then loads the
 current reviewed GCC/CUDA environment:
 
+:::{dropdown} build-lammps-mpi.sbatch
 ```{literalinclude} ../scripts/build-lammps-mpi.sbatch
 :language: bash
 :start-at: source /software/sse2/init/hpc_init_sse.sh
 :end-at: test -x "$(command -v make)"
 :lineno-match:
 ```
+:::
 
 This Arrhenius build targets its GH200 nodes: an Arm Grace CPU and Hopper GPU.
 The CMake configuration enables MPI, ML-IAP, Kokkos, Python, and the explicit
@@ -37,12 +39,14 @@ The CMake configuration enables MPI, ML-IAP, Kokkos, Python, and the explicit
 executable. JUPITER needs its own GH200 build against its compiler/MPI stack;
 the Arrhenius executable is not a portable binary.
 
+:::{dropdown} build-lammps-mpi.sbatch
 ```{literalinclude} ../scripts/build-lammps-mpi.sbatch
 :language: bash
 :start-at: cmake -S
 :end-at: -D Python_LIBRARY=
 :lineno-match:
 ```
+:::
 
 The script runs in a separately reviewed Slurm build allocation and writes
 an MPI runtime candidate archive. It does not overwrite an existing LAMMPS
@@ -59,12 +63,14 @@ recommends the unified ML-IAP interface with CUDA Kokkos, Newton on, and
 half neighbor lists. Our runnable Python example uses those settings through
 the LAMMPS library rather than a separate `lmp` command:
 
+:::{dropdown} lammps_si.py
 ```{literalinclude} ../examples/lammps_si.py
 :language: python
 :lines: 23-34
 :lineno-match:
 :emphasize-lines: 2,11-12
 ```
+:::
 
 The later `mliap/kk unified` pair style applies the exported MACE model.
 See the [complete example](../examples/lammps_si.py) for atom creation,

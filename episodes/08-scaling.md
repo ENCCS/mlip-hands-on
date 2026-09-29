@@ -127,11 +127,13 @@ Do not treat `sbatch --test-only` as proof that a reservation or allocation
 will actually run. Verify current site policy and the real job outcome.
 :::
 
+:::{dropdown} lammps-mpi-size-benchmark.sbatch
 ```{literalinclude} ../scripts/lammps-mpi-size-benchmark.sbatch
 :language: bash
 :lines: 1-16
 :lineno-match:
 ```
+:::
 
 Read the [complete job script](../scripts/lammps-mpi-size-benchmark.sbatch)
 before adapting or submitting it; the excerpt hides setup, checks, and the

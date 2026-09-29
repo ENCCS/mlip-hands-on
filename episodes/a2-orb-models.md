@@ -30,8 +30,12 @@ what PBE-trained models miss.
 - [Orb-v3](https://arxiv.org/abs/2504.06231) (Rhodes et al., 2025): universal potentials
   from Orbital Materials, Apache-2.0, in
   [`orb-models`](https://github.com/orbital-materials/orb-models).
-- Not equivariant by construction; its developers report accurate
-  properties at much lower latency and memory use.
+- Not equivariant by construction (MACE is); it learns the symmetry
+  approximately from data. Its developers report accurate properties at much
+  lower latency and memory use.
+
+![Equivariance: rotating the structure rotates the forces; the energy is unchanged.](../_static/equivariance.drawio.png)
+
 - Comparison with other fast models: {ref}`background-choosing`.
 
 Model names encode three choices:
@@ -50,7 +54,7 @@ without dispersion, so it has learnt none, despite its 6 Å cutoff.
 The Orb loader returns a model and an atoms adapter, used by both the ASE
 calculator (serial) and the TorchSim wrapper (batch):
 
-:::{dropdown} Code: models.py
+:::{dropdown} models.py
 ```{literalinclude} ../examples/torchsim/models.py
 :language: python
 :start-at: def load_orb
@@ -94,7 +98,7 @@ Implementation details that affect accuracy:
 - Example: `TensorNet-PES-MatPES-PBE-2025.2` (0.84 M parameters, 5 Å
   cutoff) through MatGL's ASE calculator:
 
-:::{dropdown} Code: models.py
+:::{dropdown} models.py
 ```{literalinclude} ../examples/torchsim/models.py
 :language: python
 :start-at: def load_matgl

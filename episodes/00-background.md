@@ -77,8 +77,12 @@ adds D3. OMol25 models use a different reference level.
 - Message passing: in a graph neural network (GNN), atoms exchange
   information with neighbours over several rounds; features are learnt,
   not hand-designed.
-- Equivariant: predictions rotate with the structure. NequIP needs up to
-  about 1000 times less data [2].
+- Equivariant: rotate the structure and the predicted forces rotate with it,
+  while the energy is unchanged. NequIP needs up to about 1000 times less
+  data [2].
+
+![Equivariance: rotating the structure rotates the forces; the energy is unchanged.](../_static/equivariance.drawio.png)
+
 - Transformers scale the idea to the largest datasets. By 2026, simpler
   designs compete closely: data and scale matter more than architecture.
 

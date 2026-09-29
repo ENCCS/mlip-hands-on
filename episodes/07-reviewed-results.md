@@ -106,6 +106,7 @@ simulations per second: `8 × 200 / group wall seconds`. It is not the speed
 of one trajectory or a standard MD performance unit.
 
 ```{code-cell} ipython3
+:tags: [hide-input]
 import csv
 from pathlib import Path
 from IPython.display import Markdown, display
@@ -140,6 +141,7 @@ the two eight-process LAMMPS modes, with ordinary sharing and CUDA MPS kept
 separate. These are complete-workflow timings, not force-kernel speedups.
 
 ```{code-cell} ipython3
+:tags: [hide-input]
 %matplotlib inline
 import matplotlib.pyplot as plt
 

@@ -27,7 +27,7 @@ Serial relaxation leaves the GPU idle; batching fills it
 - Workload: rattled copies of Cu fcc, Si diamond, Fe bcc and Al fcc (8 to
   32 atoms); each copy needs its own relaxation.
 
-:::{dropdown} Code: workload.py
+:::{dropdown} workload.py
 ```{literalinclude} ../examples/torchsim/workload.py
 :language: python
 :start-at: FAMILIES
@@ -45,7 +45,7 @@ Both routes use FIRE with a fixed cell.
 - Serial relaxes only the first `--baseline-n` structures and extrapolates
   to the full set; a full serial run would use most of the allocation.
 
-:::{dropdown} Code: runners.py
+:::{dropdown} runners.py
 ```{literalinclude} ../examples/torchsim/runners.py
 :language: python
 :start-at: class SerialRelaxer
@@ -59,7 +59,7 @@ Both routes use FIRE with a fixed cell.
 - Same checkpoint for both; TorchSim needs the raw model
   (`return_raw_model=True`):
 
-:::{dropdown} Code: models.py
+:::{dropdown} models.py
 ```{literalinclude} ../examples/torchsim/models.py
 :language: python
 :start-at: def load_mace
@@ -144,7 +144,7 @@ sbatch --account=<PROJECT> \
 ```
 :::
 
-:::{dropdown} Code: test-leonardo-torchsim.sbatch
+:::{dropdown} test-leonardo-torchsim.sbatch
 ```{literalinclude} ../scripts/test-leonardo-torchsim.sbatch
 :language: bash
 :start-at: outdir=

@@ -17,18 +17,22 @@ copies two lock files and the ALCHEMI MD example into the SIF. The lock files
 fix the build dependencies and the runtime packages, including their hashes.
 They are part of this repository, not generated during a class.
 
+:::{dropdown} alchemi-aarch64.def
 ```{literalinclude} ../alchemi-aarch64.def
 :language: text
 :lines: 1-11
 :lineno-match:
 ```
+:::
 
+:::{dropdown} alchemi-aarch64.def
 ```{literalinclude} ../alchemi-aarch64.def
 :language: text
 :start-at: %post
 :end-before: %labels
 :lineno-match:
 ```
+:::
 
 The complete [Apptainer definition](../alchemi-aarch64.def) and its
 [build lock](../locks/build-requirements.lock) and
@@ -49,6 +53,7 @@ temporary `.partial` file (called `staged` in the shell code). That prevents
 an incomplete build from appearing at the final SIF path. After
 `apptainer sif list` succeeds, it moves the finished file into place.
 
+:::{dropdown} build-alchemi-sif.sh
 ```{literalinclude} ../scripts/build-alchemi-sif.sh
 :language: bash
 :start-at: staged=
@@ -56,6 +61,7 @@ an incomplete build from appearing at the final SIF path. After
 :lineno-match:
 :emphasize-lines: 5
 ```
+:::
 
 The highlighted line is the `apptainer build` call. This excerpt omits
 the preflight checks: run the complete [build script](../scripts/build-alchemi-sif.sh),

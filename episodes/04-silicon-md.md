@@ -22,24 +22,28 @@ The ALCHEMI example constructs `AtomicData` for each system, assigns seeded
 velocities, and collects the systems into a `Batch`. With one replica the
 batch still contains just one physical simulation:
 
+:::{dropdown} alchemi_si.py
 ```{literalinclude} ../examples/alchemi_si.py
 :language: python
 :start-at: def make_batch
 :end-before: def run_steps
 :lineno-match:
 ```
+:::
 
 The integrator and neighbor-list hook are explicit. `--integrator nve`
 selects `NVE`; `--integrator langevin` selects an NVT Langevin method with
 temperature and friction set in the code. Those methods answer different
 physical questions and should not share one performance or trajectory claim.
 
+:::{dropdown} alchemi_si.py
 ```{literalinclude} ../examples/alchemi_si.py
 :language: python
 :start-at: def run_steps
 :end-before: def main
 :lineno-match:
 ```
+:::
 
 The complete [ALCHEMI example](../examples/alchemi_si.py) also shows the
 seeded initial velocities and the timing code.
@@ -59,6 +63,7 @@ as a table. Neither command submits a job. Both require an existing GPU
 allocation and the selected environment variables from the setup page.
 
 ```{code-cell} ipython3
+:tags: [hide-input]
 import json
 import subprocess
 from time import perf_counter

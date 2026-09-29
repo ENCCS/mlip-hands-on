@@ -32,6 +32,7 @@ The notebook times each complete command, including setup and model loading.
 The runner also reports MD-only time; those are different timing windows.
 
 ```{code-cell} ipython3
+:tags: [hide-input]
 import json
 import subprocess
 from time import perf_counter
@@ -55,6 +56,7 @@ display(Markdown(
 ```
 
 ```{code-cell} ipython3
+:tags: [hide-input]
 batch_start = perf_counter()
 batch_call = subprocess.run(
     ["bash", str(lesson / "scripts/run-alchemi.sh"), "--replicas", "8", "--cells", "2",

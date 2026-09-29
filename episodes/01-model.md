@@ -25,11 +25,13 @@ loaded by ALCHEMI Toolkit. A separately exported ML-IAP representation of
 the same potential is loaded by LAMMPS. Their file hashes differ because
 their formats differ; the export still needs its own validation.
 
+:::{dropdown} model.toml
 ```{literalinclude} ../reference/model.toml
 :language: toml
 :lines: 1-13
 :lineno-match:
 ```
+:::
 
 Open the complete [model identity file](../reference/model.toml) to see the
 checkpoint and export hashes before preparing either engine.
