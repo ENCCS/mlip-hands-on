@@ -1,24 +1,19 @@
 # Universal MLIPs on HPC: hands-on
 
-Universal machine-learned interatomic potentials (MLIPs), MACE-MP and
-Orb-v3, on GPU nodes of HPC systems. Both parts run many independent systems
-on one GPU and report throughput with its measurement conditions.
+Machine-learned interatomic potentials (MLIPs) learn energies and forces
+from quantum-mechanical data and then run at a small fraction of the cost of
+density functional theory. Universal, or foundation, MLIPs are trained once on
+large datasets that span the periodic table, and are used directly or
+fine-tuned for one system. On HPC systems most of their cost is GPU inference,
+so the way work is placed on the GPU sets the throughput.
 
-**Part A** screens many small crystals at once: it relaxes a set of
-structures one at a time with ASE, then all together in one batched TorchSim
-call. **Part B** follows one silicon system from a single molecular-dynamics
-trajectory to many independent replicas with ALCHEMI Toolkit and LAMMPS
-ML-IAP/Kokkos, and shows how to read single-trajectory speed and aggregate
-throughput separately.
+This lesson shows two cases. **Part A** relaxes many small crystals in one
+batched TorchSim call and compares it with one-at-a-time relaxation in ASE,
+using MACE-MP and Orb-v3. **Part B** runs molecular dynamics of silicon with
+MACE-MP in ALCHEMI Toolkit and LAMMPS, from one trajectory to many replicas and
+many GPUs.
 
-The {doc}`episodes/00-background` page introduces MLIPs, foundation models,
-fine-tuning and GPU engines for readers new to the topic. It condenses the
-ENCCS and Sweden AI Factory webinar *Universal Machine Learning Interatomic
-Potentials on HPC* (30 September 2026); the webinar slides are shared
-through the [ENCCS events page](https://enccs.se/events), and the webinar
-demo is Part A of this lesson.
-
-Contributors: Wei Li (Part B) and Karim Elgammal (Part A).
+New to MLIPs? Start with {doc}`episodes/00-background`.
 
 ![Lesson map: Part A screening and Part B molecular dynamics.](_static/lesson-map.drawio.png)
 
