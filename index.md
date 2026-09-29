@@ -1,14 +1,18 @@
-# Molecular dynamics with MACE on GPUs
+# Universal MLIPs on HPC: hands-on
 
-Follow one silicon system from a single trajectory to independent replicas on
-a GPU. The steps use the same pinned MACE potential with ALCHEMI Toolkit and
-LAMMPS ML-IAP/Kokkos, then show how to read their timings without conflating
-single-trajectory speed and aggregate throughput.
+This lesson runs universal machine-learned interatomic potentials (MLIPs)
+from the MACE-MP family on GPU nodes of HPC systems. It has two parts that
+share one idea: keep the GPU busy with many independent systems, and measure
+what that buys you honestly.
 
-Run the examples in order, or use the setup pages to prepare artifacts in
-advance. Each runnable section shows its inputs and a small result table;
-the reviewed-results page keeps the repeated measurements separate from a
-single notebook run.
+**Part A** screens many small crystals at once: it relaxes a set of
+structures one at a time with ASE, then all together in one batched TorchSim
+call. **Part B** follows one silicon system from a single molecular-dynamics
+trajectory to many independent replicas with ALCHEMI Toolkit and LAMMPS
+ML-IAP/Kokkos, and shows how to read single-trajectory speed and aggregate
+throughput separately.
+
+Contributors: Wei Li (Part B) and Karim Elgammal (Part A).
 
 ## Setup
 
@@ -22,7 +26,12 @@ setup/leonardo
 setup/notebook
 ```
 
-## Episodes
+## Part B: molecular dynamics
+
+Run the examples in order, or use the setup pages to prepare artifacts in
+advance. Each runnable section shows its inputs and a small result table;
+the reviewed-results page keeps the repeated measurements separate from a
+single notebook run.
 
 ```{toctree}
 :maxdepth: 1

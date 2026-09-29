@@ -1,4 +1,4 @@
-# Molecular dynamics with MACE on GPUs
+# Universal MLIPs on HPC: hands-on
 
 This independent Git repository is the maintained source of the
 MLIP MyST/Jupyter lesson. The older in-tree lesson in `mlip-hands-on` is
@@ -9,8 +9,11 @@ the `main` branch by GitHub Actions.
 
 It contains the source of a short, runnable MyST lesson. The
 same Markdown files build a web handout and open as notebooks in JupyterLab.
-The lesson uses one pinned MACE checkpoint to run silicon molecular dynamics
+Part B uses one pinned MACE checkpoint to run silicon molecular dynamics
 with NVIDIA ALCHEMI Toolkit and LAMMPS ML-IAP/Kokkos.
+Part A adds batched relaxation of many small crystals with TorchSim and a
+MACE-MP foundation model (`examples/torchsim/`); Part B is the molecular
+dynamics lesson.
 
 Start at `index.md`. The core exercises use one GPU; the later scaling
 episode is optional. Software builds are included as episodes, but a class

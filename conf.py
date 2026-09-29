@@ -1,6 +1,6 @@
 """Published pages do not execute GPU workloads."""
 
-project = "Molecular dynamics with MACE on GPUs"
+project = "Universal MLIPs on HPC: hands-on"
 author = "ENCCS contributors"
 extensions = ["sphinx_lesson", "sphinx_evita", "myst_nb", "sphinx_design"]
 master_doc = "index"
