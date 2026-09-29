@@ -1,0 +1,4 @@
+/* Keep long commands readable without changing the ENCCS theme chrome. */
+article .highlight pre { line-height: 1.5; }
+article table { display: block; overflow-x: auto; }
+article img { max-width: 100%; height: auto; }

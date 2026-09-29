@@ -5,7 +5,7 @@ extension and the MIT-licensed ENCCS `sphinx-evita` extension. It uses Furo
 for HTML presentation and MyST-NB for the Markdown notebook source. Their
 versions are declared in `requirements.txt`.
 
-The ENCCS light/dark logos and favicon in `_static/` are copied from the
+The ENCCS light/dark logos and favicon in `content/_static/` are copied from the
 [ENCCS course template](https://github.com/ENCCS/python-for-hpc),
 which provides a [CC BY-SA 4.0 content license](https://github.com/ENCCS/python-for-hpc/blob/main/LICENSE)
 and [MIT code license](https://github.com/ENCCS/python-for-hpc/blob/main/LICENSE.code). The assets
@@ -16,10 +16,10 @@ content.
 The site setup pages also include two resized photographs licensed under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/):
 
-- `_static/jupiter-booster-racks.jpg`: JUPITER Booster racks by
+- `content/_static/jupiter-booster-racks.jpg`: JUPITER Booster racks by
   Forschungszentrum Jülich / Sascha Kreklau;
   [Wikimedia Commons source](https://commons.wikimedia.org/wiki/File:JUPITER_racks_with_logos_of_supporters_and_partners._Copyright-_Forschungszentrum_J%C3%BClich_-_Sascha_Kreklau.jpg).
-- `_static/leonardo-cabinets.png`: Leonardo supercomputer by the National
+- `content/_static/leonardo-cabinets.png`: Leonardo supercomputer by the National
   Institute of Geophysics and Volcanology (INGV);
   [Wikimedia Commons source](https://commons.wikimedia.org/wiki/File:Leonardo_supercomputer.png).
 

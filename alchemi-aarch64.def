@@ -5,7 +5,6 @@ From: docker.io/library/python@sha256:519591d6871b7bc437060736b9f7456b8731f1499a
 %files
     locks/build-requirements.lock /opt/mlip/build-requirements.lock
     locks/requirements.lock /opt/mlip/requirements.lock
-    examples/alchemi_si.py /opt/mlip/alchemi_si.py
 
 %environment
     export PYTHONNOUSERSITE=1
@@ -21,7 +20,7 @@ From: docker.io/library/python@sha256:519591d6871b7bc437060736b9f7456b8731f1499a
 %test
     python -c 'import platform; assert platform.machine() == "aarch64"'
     python -c 'import torch,nvalchemi,mace; assert torch.version.cuda == "12.6"'
-    python -m py_compile /opt/mlip/alchemi_si.py
+    python -c 'from nvalchemi.data import AtomicData, Batch; from nvalchemi.dynamics import NVTLangevin, FIRE'
 
 %labels
     org.mlip-md-lesson.environment alchemi-aarch64

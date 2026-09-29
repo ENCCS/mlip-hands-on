@@ -1,0 +1,14 @@
+# One fixed-cell silicon relaxation; select an input with -var start.
+# Required -var values: model, start.
+units           metal
+atom_style      atomic/kk
+newton          on
+boundary        p p p
+read_data       ${start}
+pair_style      mliap/kk unified ${model} 0
+pair_coeff      * * Si
+
+thermo_style    custom step atoms pe fmax
+thermo          25
+min_style       cg/kk
+minimize        0.0 0.05 300 600

@@ -1,0 +1,22 @@
+# Build the ALCHEMI image
+
+The ALCHEMI runtime and Python dependencies are described by
+[`alchemi-aarch64.def`](../../alchemi-aarch64.def). The definition is for
+ARM/GH200; the MACE weights stay outside the image.
+
+The build command is short:
+
+```bash
+bash scripts/build-alchemi.sh "$PWD" "$MLIP_ALCHEMI_SIF"
+```
+
+In [the script](../../scripts/build-alchemi.sh), the actual operation is
+`apptainer build OUTPUT alchemi-aarch64.def`. Select a fresh output path
+on storage with enough space. Building an image may require a prepared
+build environment; instructors can supply a prebuilt image instead.
+
+One exact existing ARM/GH200 image was hash-verified and ran the short
+single, batched, and relaxation examples on Arrhenius and JUPITER. The
+current definition file keeps the same locked packages but omits an old
+bundled example; rebuilding it produces a different image identity and
+requires its own test. The native JUPITER environment is a separate fallback.

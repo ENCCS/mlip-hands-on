@@ -1,0 +1,30 @@
+# One silicon/MACE trajectory. Single-rank and MPI launchers use this input.
+# Required -var values: model, cells, warmup, steps, seed, bath_seed.
+
+units           metal
+atom_style      atomic/kk
+newton          on
+boundary        p p p
+
+lattice         diamond 5.43
+region          box block 0 ${cells} 0 ${cells} 0 ${cells} units lattice
+create_box      1 box
+create_atoms    1 box
+mass            1 28.085
+run_style       verlet/kk
+atom_modify     sort 0 0.0
+
+pair_style      mliap/kk unified ${model} 0
+pair_coeff      * * Si
+
+velocity        all create 300 ${seed} mom yes rot yes dist gaussian
+timestep        0.0001    # metal units: 0.1 fs
+fix             integrate all nve/kk
+fix             bath all langevin 300 300 0.1 ${bath_seed}
+
+thermo_style    custom step atoms temp pe
+thermo          10
+# thermo        1000    # uncomment to print step, atoms, temperature, and PE every 1000 steps
+run             0
+run             ${warmup}
+run             ${steps}
