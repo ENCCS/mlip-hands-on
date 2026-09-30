@@ -1,0 +1,11 @@
+/* EU co-funding emblem: at least as prominent as the ENCCS logo (grant agreement Article 17) */
+.copyright:before {
+    height: 90px !important;
+}
+
+/* Light theme chosen while the OS is dark: keep the positive emblem */
+@media (prefers-color-scheme: dark) {
+    body[data-theme="light"] .copyright:before {
+        background-image: url("EN_Co-funded/EN_Co-fundedbytheEU_RGB_POS.png") !important;
+    }
+}

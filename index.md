@@ -102,8 +102,8 @@ Spain, Sweden, Türkiye, and Kosovo.
 
 Funded by the European Union. Views and opinions expressed are however those
 of the author(s) only and do not necessarily reflect those of the European
-Union or EuroHPC Joint Undertaking. Neither the European Union nor the
-EuroHPC Joint Undertaking can be held responsible for them.
+Union or the granting authority (EuroHPC Joint Undertaking). Neither the
+European Union nor the granting authority can be held responsible for them.
 
 ENCCS has also received national funding through Vinnova and the Swedish
 Research Council (VR).
