@@ -100,6 +100,15 @@ LUMI (A3 and A4):
 | `MLIP_FLOAT_BITS` | `64` in the LUMI job | A4 float width; default 32. |
 | `MATGL_FLOAT_BITS` | `64` in the LUMI job | A3 float width; default 32. |
 
+LUMI (A6, Orb and UMA):
+
+| Variable | Example or source | Used for |
+| --- | --- | --- |
+| `HF_TOKEN_PATH` | `$HOME/.cache/huggingface/token` | Hugging Face token for the gated UMA weights (licence accepted on the model page). |
+| `HF_HOME` | `<SCRATCH>/mlip-uma/hf-home` | Hugging Face cache, kept off home. |
+| `FAIRCHEM_CACHE_DIR` | `<SCRATCH>/mlip-uma/fairchem-cache` | UMA checkpoint cache. |
+| `CACHED_PATH_CACHE_ROOT` | `<SCRATCH>/mlip-uma/cached-path` | Orb-v3 and OrbMol weights cache. |
+
 The scripts check additional standard site variables such as `SLURM_JOB_ID`,
 `SLURM_NTASKS`, and `CUDA_VISIBLE_DEVICES`. Their values come from the
 allocation, not `.env`. Recheck the actual site policy and artifact hashes

@@ -16,7 +16,7 @@
 #   pip install --no-deps fairchem-core==2.21.0 && pip install -r examples/uma/requirements.txt
 #   export HF_HOME=$PWD/hf-home FAIRCHEM_CACHE_DIR=$PWD/fairchem-cache CACHED_PATH_CACHE_ROOT=$PWD/cached-path
 #   export HF_TOKEN_PATH=$HOME/.cache/huggingface/token
-#   python examples/uma/cli.py prefetch --model orb   # and --model uma once access is granted
+#   python examples/uma/cli.py prefetch --model orb   # and --model uma (UMA licence accepted, token set)
 # Submit from <SCRATCH>/mlip-uma with: sbatch scripts/lumi-uma.sbatch orb   (or uma)
 set -uo pipefail
 : "${SLURM_JOB_ID:?submit through Slurm}"

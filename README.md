@@ -9,16 +9,22 @@ the `main` branch by GitHub Actions.
 
 It contains the source of a short, runnable MyST lesson. The
 same Markdown files build a web handout and open as notebooks in JupyterLab.
-Part A relaxes many small crystals in one batch with TorchSim, using the
-MACE-MP and Orb-v3 foundation models (`examples/torchsim/`). Part B uses one pinned MACE
-checkpoint to run silicon molecular dynamics with NVIDIA ALCHEMI Toolkit and
-LAMMPS ML-IAP/Kokkos.
+Part A covers screening and training with universal models: batched
+relaxation with TorchSim (A1, `examples/torchsim/`), Orb-v3 and D3 on graphite
+(A2), MatGL on LUMI (A3, `examples/matgl/`), fine-tuning TensorNet (A4,
+`examples/training/`), CI-NEB of a Li hop in LiFePO4 (A5, `examples/neb/`) and
+Orb-v3, OrbMol and UMA on crystals and on molecules with charge and spin (A6,
+`examples/uma/`). Part B uses one pinned MACE checkpoint to run silicon
+molecular dynamics with NVIDIA ALCHEMI Toolkit and LAMMPS ML-IAP/Kokkos.
+The webinar slides are on the `slides` page (PDF in `_static/slides/`).
 
 Start at `index.md`. The core exercises use one GPU; the later scaling
 episode is optional. Software builds are included as episodes, but a class
-can use artifacts prepared beforehand. No model weights, container images,
-site credentials, results directory, or personal environment file are stored
-in Git.
+can use artifacts prepared beforehand. Small saved results (CSV and JSON) are
+committed so that the pages read without a GPU. No model weights, container
+images, site credentials or personal environment files are stored in Git.
+UMA weights are gated: accept the licence on the Hugging Face model page and
+log in with a token before running A6 with `--model uma`.
 
 To build the pages in a Python environment with `requirements.txt` installed,
 run `make html`. `make livehtml PORT=8766` watches the Markdown and serves the
