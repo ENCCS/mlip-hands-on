@@ -24,5 +24,5 @@ exec srun "${mpi_option[@]}" --nodes=1 --ntasks="$ranks" --gpus=1 \
     "$lmp" -k on g 1 -sf kk \
     -pk kokkos newton on neigh half gpu/aware on \
     -log none -in "$lesson_root/examples/lammps_mace.in" \
-    -var model "$model" -var cells "$cells" -var warmup 0 \
+    -var model "$model" -var cells "$cells" -var warmup 10 \
     -var steps "$steps" -var seed 20260924 -var bath_seed 20260925
