@@ -399,12 +399,36 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
 - Most GPU speed-ups are NVIDIA-only (Leonardo). On AMD (LUMI), choose a
   pure-PyTorch model such as [NequIP](https://github.com/mir-group/nequip)
   or [MACE](https://github.com/ACEsuit/mace).
-- A low energy error does not guarantee stable MD. Benchmark your property
-  class and check stability.
-- One error number is not enough: in finite-temperature MD of 15 foundation
-  MLIPs, the tier with the lowest force error had the worst median pressure
-  error (3.40 GPa) [[20](https://arxiv.org/abs/2607.03433)]. It is now the
-  Matbench Discovery MD task.
+- A low force error is not enough: check MD stability, speed, memory and
+  your property [[Forces are not enough](https://arxiv.org/abs/2210.07237)].
+- Finite-temperature MD of 15 foundation MLIPs, tier medians
+  [[20](https://arxiv.org/abs/2607.03433)]:
+
+  | Tier (training data) | Force RMSE, eV/Å | Pressure MAE, GPa |
+  |---|---:|---:|
+  | 1 (MPtrj) | 0.166 | 0.82 |
+  | 2 (+ Alexandria) | 0.106 | 1.04 |
+  | 3 (OMat24-based) | 0.063 | 0.82 |
+  | 4 (multi-dataset) | 0.054 | 3.40 |
+
+  The tier with the lowest force error has the worst pressure error, driven
+  by the UMA models on one alloy (an unrelaxed experimental cell). It is now
+  the [Matbench Discovery MD task](https://matbench-discovery.materialsproject.org/benchmarks/md).
+
+  ![Pressure error per model and tier in finite-temperature MD.](../_static/dynamat-fig4a-pressure.png)
+
+  *Gawkowski et al., arXiv:2607.03433, Fig. 4(a) (CC BY-SA 4.0, cropped).*
+
+- Molecules, 15 pretrained models, MD of a 2,661-atom water box on one H100
+  [[15](https://doi.org/10.1021/acs.jctc.6c00130)]: accuracy tracks model size
+  and data, but slower is not always more accurate.
+
+  | Model | Energy MAE, kcal/mol | MD steps/s |
+  |---|---:|---:|
+  | UMA-m-1.1 | 0.53 | 0.16 |
+  | UMA-s-1.1 | 0.61 | 3.65 |
+  | MACE-OFF23 (L) | 1.73 | 1.43 |
+  | AIMNet2 | 2.55 | 33.7 |
 - Beyond one score: [MLIP Arena](https://github.com/atomind-ai/mlip-arena)
   [[14](https://arxiv.org/abs/2509.20630)] tests equations of state, phonons, diffusion barriers and diatomic
   curves; [mlipbenchmarks](https://github.com/peastman/mlipbenchmarks) [[15](https://doi.org/10.1021/acs.jctc.6c00130)]
