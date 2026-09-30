@@ -134,6 +134,7 @@ everywhere. Logos identify the developing organisations.*
   50 million, so inference stays affordable. OMol25 adds hybrid-DFT
   molecules. Use the current checkpoint (UMA 1.2 small, patch 1.2.1); the
   original `uma-s-1` is archived [[7](https://arxiv.org/abs/2506.23971)].
+  {doc}`a6-uma` runs it on crystals and on molecules with charge and spin.
 
   ![UMA: five datasets feed one model with a mixture of linear experts.](../_static/uma-scale.drawio.png)
 
@@ -322,9 +323,12 @@ most of the gap.
 *Engines are built from swappable blocks. After the kUPS
 design.*
 
-- Leonardo (NVIDIA): CUDA-only kernels such as cuEquivariance and ALCHEMI
-  run.
-- LUMI (AMD MI250X): ROCm PyTorch runs MACE; CUDA-only kernels do not.
+- Leonardo (NVIDIA A100; Booster nodes with four GPUs each): CUDA-native,
+  so TorchSim, cuEquivariance and ALCHEMI run directly. Our batched
+  relaxation gave 5 to 7x over serial ({doc}`a1-batched-relaxation`).
+- LUMI (AMD MI250X; LUMI-G nodes with four MI250X, each two GCDs): ROCm
+  PyTorch runs MACE, NequIP and MatGL (float64); CUDA-only kernels do not.
+  Our MACE, MatGL, fine-tuning and NEB runs used one GCD.
 - Arrhenius (NVIDIA GH200, Linköping, inaugurated September 2026): 382
   nodes with four Grace Hopper superchips each; CUDA-native
   [[NAISS](https://www.naiss.se/resources/arrhenius-technical-description/)].
@@ -332,6 +336,9 @@ design.*
   18.7 s as one ALCHEMI batch versus 88 to 100 s as eight LAMMPS processes
   ({doc}`07-reviewed-results`); one LAMMPS system on four GPUs ran 2.4 times
   faster than on one ({doc}`08-scaling`). Setup: {doc}`../setup/arrhenius`.
+- ENCCS and Sweden AI Factory help with access and the software stack;
+  Sweden AI Factory's own AI-optimised system in Linköping follows in
+  2026/2027.
 - NequIP and Allegro foundation models run LAMMPS ML-IAP/Kokkos MD on
   both: up to 102.5 million atoms on 256 GPUs, about 44 000 atoms per A100
   and 22 000 per MI250X GCD. NequIP-OAM-XL matches eSEN-30M-OAM on
