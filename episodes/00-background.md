@@ -387,6 +387,10 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
 - F1 (0 to 1, higher is better): stable-crystal classification on
   [Matbench Discovery](https://matbench-discovery.materialsproject.org) [[13](https://doi.org/10.1038/s42256-025-01055-1)].
   κSRME (lower is better): thermal-conductivity error.
+- Models are ranked by CPS, a combined score: 50% F1, 40% κSRME and 10%
+  structure error (RMSD). The compliant tier trains on MPtrj only, for a
+  fair comparison. Since July 2026 there is also an
+  [MD task](https://matbench-discovery.materialsproject.org/benchmarks/md).
 - MatGL 4.0.3 models (TensorNet, CHGNet, M3GNet and QET trained on MatPES;
   used in A2 to A4) are not on the leaderboard.
 - The compliant tier fixes the training data to MPtrj, so architectures are
