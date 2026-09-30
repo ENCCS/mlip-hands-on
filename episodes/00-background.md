@@ -296,7 +296,7 @@ most of the gap.
   :gutter: 2
 
   :::{grid-item-card} One system per call
-  Classical tools and ASE: the GPU sits mostly idle.
+  Classical tools and ASE: one structure at a time, hardware mostly idle.
   :::
 
   :::{grid-item-card} Many systems per call
