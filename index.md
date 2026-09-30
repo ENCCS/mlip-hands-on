@@ -20,6 +20,13 @@ placement sets throughput.
   upcoming [events](https://enccs.se/events) and
   [lessons](https://enccs.github.io/lessons/).
 
+:::{prereq}
+- Basic Python and the command line.
+- To run the examples: access to a GPU system such as LUMI, Leonardo or
+  Arrhenius (see {doc}`setup/index`). To read the saved results: nothing.
+- No machine-learning background is needed.
+:::
+
 ![Lesson map: background, Part A screening and training, Part B molecular dynamics.](_static/lesson-map.drawio.png)
 
 ## Background
@@ -81,12 +88,24 @@ episodes/08-scaling
 ```{toctree}
 :maxdepth: 1
 
+reference/quick-reference
 reference/choosing-a-model
 reference/environment
 reference/instructor
 reference/limits
 reference/reading
 ```
+
+## Learning outcomes
+
+By the end of this lesson, learners can:
+
+- explain what a universal MLIP learns and where its accuracy comes from;
+- relax and simulate structures with a foundation model, batched on a GPU;
+- fine-tune a model on a small targeted dataset;
+- compute a migration barrier with CI-NEB and judge it against DFT;
+- run one model on crystals and on molecules with charge and spin;
+- choose a model for a task and check it before trusting it.
 
 ## Acknowledgements
 
