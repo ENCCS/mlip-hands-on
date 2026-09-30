@@ -532,16 +532,49 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
   | 2026 | Skala in CP2K ([molecular](https://arxiv.org/abs/2608.19033), [condensed phase](https://arxiv.org/abs/2609.34055)) | usable for materials |
 
   Better, cheaper DFT means better MLIP training data.
-- Generative models propose, MLIPs screen: MatterGen is more than twice as
-  likely as earlier generators to give new, stable crystals, and one has
-  been synthesised; LeMat-GenBench scores generators with MLIP ensembles and
-  finds a stability-versus-novelty trade-off [[33](https://doi.org/10.1038/s41586-025-08628-5)].
-- Language-model agents driving simulation codes.
-- Early agentic workflows: in an NVIDIA test, coding agents wrote 45
-  batched GPU MLIP pipelines, but none pushed back on an ill-posed task, and
-  an unspecified thermostat changed Li diffusion by 3 to 5 times
-  [[21](https://developer.nvidia.com/blog/how-ai-coding-agents-can-unlock-materials-simulation-with-nvidia-alchemi-toolkit/)].
-  Physics choices still need an expert.
+- Generative models propose, MLIPs screen. A diffusion model turns a
+  crystal into noise step by step and learns to run it backwards:
+
+  ![Diffusion for crystals: a stable material is corrupted into a random one, and the model learns the reverse.](../_static/mattergen-fig1a.png)
+
+  *Zeni et al., Nature 2025, Fig. 1a (CC BY 4.0, cropped).*
+
+  ::::{grid} 1 2 2 2
+  :gutter: 2
+
+  :::{grid-item-card} MatterGen
+  [paper](https://doi.org/10.1038/s41586-025-08628-5),
+  [code](https://github.com/microsoft/mattergen). Can be steered towards a
+  target chemistry, symmetry or property; more than twice as likely as
+  earlier generators to give stable, unique and new crystals. One candidate
+  was made in the lab; a 2026 study argues it was already known
+  ([Mater. Horiz.](https://doi.org/10.1039/D6MH00268D)).
+  :::
+
+  :::{grid-item-card} LeMat-GenBench
+  [paper](https://arxiv.org/abs/2512.04562),
+  [code](https://github.com/LeMaterial/lemat-genbench),
+  [leaderboard](https://huggingface.co/spaces/LeMaterial/LeMat-GenBench).
+  Scores 12 generators with an MLIP ensemble (MACE-MP, UMA, Orb); more stable
+  output tends to be less novel. Synthesis remains the bottleneck.
+  :::
+  ::::
+
+- Early agentic workflows: agents turn a plain-language goal into
+  simulation steps (plan, call a tool, read the result, repeat).
+
+  ![MDCrow: a think, act, observe loop over a set of MD tools.](../_static/mdcrow-fig1a.png)
+
+  *Campbell et al., arXiv:2502.09565, Fig. 1A (CC BY 4.0, cropped).*
+
+  | Example | What it does | Result |
+  |---|---|---|
+  | [MDCrow](https://arxiv.org/abs/2502.09565) ([code](https://github.com/ur-whitelab/MDCrow)) | MD through OpenMM, 40+ tools | 25 tasks: 72% correct (gpt-4o) vs 28% for a bare LLM |
+  | [El Agente Q](https://doi.org/10.1016/j.matt.2025.102263) | xTB and ORCA, jobs via SLURM | 6 exercises, about 88% average success |
+  | [NVIDIA test](https://developer.nvidia.com/blog/how-ai-coding-agents-can-unlock-materials-simulation-with-nvidia-alchemi-toolkit/), Aug 2026 | a coding agent wrote 45 batched GPU MACE pipelines | none questioned an ill-posed task; an unstated thermostat damped Li diffusion 3 to 5 times |
+
+  Agents can already run the codes, but they do not yet question the
+  physics: expert judgement stays in the loop.
 - In every case, validate the property you care about.
 
 > "A poorly posed initial question results in AI scientific slop, an
