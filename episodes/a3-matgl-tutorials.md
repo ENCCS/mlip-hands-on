@@ -10,7 +10,7 @@ kernelspec:
   name: python3
 ---
 
-# MatGL: relaxation, MD, lattice benchmark and training
+# A3 MatGL: relaxation, MD, lattice benchmark and training
 
 :::{objectives}
 - Relax crystals and run MD with two MatGL universal potentials.

@@ -10,7 +10,7 @@ kernelspec:
   name: python3
 ---
 
-# Batched relaxation for screening
+# A1 Batched relaxation for screening
 
 :::{objectives}
 - Explain why batched GPU relaxation speeds up screening.

@@ -10,7 +10,7 @@ kernelspec:
   name: python3
 ---
 
-# Simulate silicon with MACE
+# B4 Simulate silicon with MACE
 
 - System: cubic diamond Si, 2 x 2 x 2 cells, 64 atoms.
 - Potential: pinned MACE model for energy and forces.

@@ -13,7 +13,7 @@ kernelspec:
   name: python3
 ---
 
-# Read a completed shared-GPU benchmark
+# B7 Read a completed shared-GPU benchmark
 
 ALCHEMI batching versus eight native LAMMPS processes sharing one GH200
 on Arrhenius or JUPITER.

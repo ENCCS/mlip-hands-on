@@ -10,7 +10,7 @@ kernelspec:
   name: python3
 ---
 
-# Batch independent trajectories on one GPU
+# B5 Batch independent trajectories on one GPU
 
 Eight copies of a 64-atom cell with different seeded velocities stay eight
 independent simulations, not one coupled 512-atom cell. `Batch.from_data_list`

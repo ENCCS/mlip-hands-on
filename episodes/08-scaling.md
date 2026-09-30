@@ -10,7 +10,7 @@ kernelspec:
   name: python3
 ---
 
-# One silicon simulation on more than one GPU
+# B8 One silicon simulation on more than one GPU
 
 How many GPUs for one large molecular-dynamics (MD) run? Ask: does it fit, how
 long does it take, do extra GPUs save enough time. Measured LAMMPS/MACE runs on

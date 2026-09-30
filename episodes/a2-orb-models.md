@@ -10,7 +10,7 @@ kernelspec:
   name: python3
 ---
 
-# Orb-v3, MatGL and dispersion
+# A2 Orb-v3, MatGL and dispersion
 
 :::{objectives}
 - Run the screening workflow with another universal model.

@@ -10,7 +10,7 @@ kernelspec:
   name: python3
 ---
 
-# Run the same silicon case with LAMMPS
+# B6 Run the same silicon case with LAMMPS
 
 - LAMMPS loads the validated ML-IAP export of the MACE checkpoint; ML-IAP
   connects the potential and `/kk` styles run supported GPU work with Kokkos.

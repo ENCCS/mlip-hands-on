@@ -10,7 +10,7 @@ kernelspec:
   name: python3
 ---
 
-# Train and fine-tune a potential
+# A4 Train and fine-tune a potential
 
 :::{objectives}
 - Train a small formation-energy model and read its learning curve.

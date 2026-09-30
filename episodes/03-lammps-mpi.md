@@ -10,7 +10,7 @@ kernelspec:
   name: python3
 ---
 
-# Build native LAMMPS with ML-IAP, Kokkos, and MPI
+# B3 Build native LAMMPS with ML-IAP, Kokkos, and MPI
 
 - ML-IAP embeds Python: needs a prepared CPython 3.12 archive (Torch, MACE,
   CuPy) with matching `Python.h` and `libpython3.12.so`. The notebook venv

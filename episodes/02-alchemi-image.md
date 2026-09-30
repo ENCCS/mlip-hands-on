@@ -10,7 +10,7 @@ kernelspec:
   name: python3
 ---
 
-# Build the ALCHEMI image
+# B2 Build the ALCHEMI image
 
 - Base: OCI image pinned by digest.
 - Copied into the SIF: two lock files and the ALCHEMI MD example.

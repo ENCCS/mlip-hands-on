@@ -10,7 +10,7 @@ kernelspec:
   name: python3
 ---
 
-# The MACE potential and the two MD engines
+# B1 The MACE potential and the two MD engines
 
 A molecular-dynamics (MD) engine steps positions and velocities forward
 one step at a time, giving a trajectory; a MACE machine-learned interatomic potential supplies
