@@ -1,0 +1,11 @@
+{
+  "torch": "2.7.1+rocm6.2.4",
+  "ase": "3.29.0",
+  "numpy": "2.2.6",
+  "fairchem-core": "2.21.0",
+  "e3nn": "0.6.0",
+  "checkpoints": [
+    "uma-s-1p2"
+  ],
+  "gpu": "AMD Instinct MI250X"
+}

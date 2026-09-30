@@ -1,0 +1,4 @@
+system,model,dtype,load_s,first_call_s,per_call_s,status
+Si 216 atoms (omat),orb-v3-conservative-inf-omat,float32,,,,CUDA driver error: 209
+Cu 256 atoms (omat),orb-v3-conservative-inf-omat,float32,,,,CUDA driver error: 209
+H2O 3 atoms (omol),orb-v3-conservative-omol,float32,0.9,4.524,0.0215,ok

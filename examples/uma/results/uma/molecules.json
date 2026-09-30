@@ -1,0 +1,32 @@
+{
+  "model": "uma-s-1p2",
+  "o2": {
+    "states": {
+      "triplet": {
+        "energy_eV": -4091.282627495787,
+        "bond_A": 1.1971
+      },
+      "singlet": {
+        "energy_eV": -4089.779104671426,
+        "bond_A": 1.1964
+      }
+    },
+    "gap_eV": 1.504,
+    "experiment_eV": 0.982,
+    "ie_vertical_eV": 12.708,
+    "ie_experiment_eV": 12.07
+  },
+  "water": {
+    "vertical_eV": 12.636,
+    "adiabatic_eV": 12.552,
+    "experiment_eV": 12.62,
+    "neutral": {
+      "oh_A": 0.9617,
+      "hoh_deg": 105.0
+    },
+    "cation": {
+      "oh_A": 0.9987,
+      "hoh_deg": 106.4
+    }
+  }
+}

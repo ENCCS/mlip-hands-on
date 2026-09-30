@@ -1,0 +1,3 @@
+crystal,model,a_A,pbe_A,experiment_A,vs_pbe_pct,vs_experiment_pct
+Si,orb-v3-conservative-inf-omat,5.4603,5.47,5.431,-0.18,0.54
+Cu,orb-v3-conservative-inf-omat,3.6134,3.629,3.615,-0.43,-0.04

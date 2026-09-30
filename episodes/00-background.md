@@ -143,7 +143,8 @@ everywhere. Logos identify the developing organisations.*
   50 million, so inference stays affordable. OMol25 adds hybrid-DFT
   molecules. Use the current checkpoint (UMA 1.2 small, patch 1.2.1); the
   original `uma-s-1` is archived [[7](https://arxiv.org/abs/2506.23971)].
-  {doc}`a6-uma` runs it on crystals and on molecules with charge and spin.
+  {doc}`a6-uma` sets it beside Orb-v3 and OrbMol, on crystals and on
+  molecules with charge and spin.
 
   ![UMA: five datasets feed one model with a mixture of linear experts.](../_static/uma-scale.drawio.png)
 

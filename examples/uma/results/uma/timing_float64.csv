@@ -1,0 +1,4 @@
+system,model,dtype,load_s,first_call_s,per_call_s,status
+Si 216 atoms (omat),uma-s-1p2,float64,22.4,1.822,0.1367,ok
+Cu 256 atoms (omat),uma-s-1p2,float64,22.4,0.249,0.248,ok
+H2O 3 atoms (omol),uma-s-1p2,float64,22.4,0.078,0.0611,ok

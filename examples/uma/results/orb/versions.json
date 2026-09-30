@@ -1,0 +1,11 @@
+{
+  "torch": "2.7.1+rocm6.2.4",
+  "ase": "3.29.0",
+  "numpy": "2.2.6",
+  "orb-models": "0.5.5",
+  "checkpoints": [
+    "orb-v3-conservative-inf-omat",
+    "orb-v3-conservative-omol"
+  ],
+  "gpu": "AMD Instinct MI250X"
+}

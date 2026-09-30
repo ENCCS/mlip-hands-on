@@ -1,0 +1,32 @@
+{
+  "model": "orb-v3-conservative-omol",
+  "o2": {
+    "states": {
+      "triplet": {
+        "energy_eV": -4091.321526546901,
+        "bond_A": 1.1877
+      },
+      "singlet": {
+        "energy_eV": -4089.777784485433,
+        "bond_A": 1.1962
+      }
+    },
+    "gap_eV": 1.544,
+    "experiment_eV": 0.982,
+    "ie_vertical_eV": 12.661,
+    "ie_experiment_eV": 12.07
+  },
+  "water": {
+    "vertical_eV": 6.068,
+    "adiabatic_eV": 6.064,
+    "experiment_eV": 12.62,
+    "neutral": {
+      "oh_A": 0.9617,
+      "hoh_deg": 105.0
+    },
+    "cation": {
+      "oh_A": 0.9689,
+      "hoh_deg": 106.3
+    }
+  }
+}

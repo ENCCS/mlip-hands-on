@@ -11,6 +11,7 @@ CRYSTALS = {
 }
 
 O2_GAP_EV = 0.982
+O2_IE_EV = 12.07
 WATER_IE_EV = 12.62
 
 
@@ -20,14 +21,14 @@ def crystal(name: str) -> Atoms:
 
 
 def with_state(atoms: Atoms, charge: int, spin: int) -> Atoms:
-    """UMA's omol task reads total charge and spin multiplicity from atoms.info."""
+    """OrbMol and the UMA omol task read total charge and spin multiplicity from atoms.info."""
     atoms = atoms.copy()
     atoms.info.update(charge=charge, spin=spin)
     return atoms
 
 
-def oxygen(spin: int) -> Atoms:
-    return with_state(molecule("O2"), charge=0, spin=spin)
+def oxygen(spin: int, charge: int = 0) -> Atoms:
+    return with_state(molecule("O2"), charge=charge, spin=spin)
 
 
 def water(charge: int = 0, spin: int = 1) -> Atoms:
