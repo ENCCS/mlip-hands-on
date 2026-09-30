@@ -71,6 +71,7 @@ episodes/08-scaling
 ```{toctree}
 :maxdepth: 1
 
+reference/choosing-a-model
 reference/environment
 reference/instructor
 reference/limits

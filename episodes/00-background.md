@@ -159,6 +159,8 @@ design.*
 
 - Choose by task and hardware, not by the top leaderboard row.
 - Validate the property you study; compare several models.
+- Rules of thumb, a check protocol and the evidence behind them:
+  {doc}`../reference/choosing-a-model`.
 
 Fast universal models ([Matbench Discovery](https://matbench-discovery.materialsproject.org)
 data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-1)]):

@@ -243,6 +243,8 @@ the reference.
   4.40 Å; TensorNet (5 Å cutoff) has no minimum.
 - With D3, Orb-v3 is within about 3 % of experiment. Judge uncorrected
   models against PBE, not experiment.
+- How this fits into choosing a model for other systems:
+  {doc}`../reference/choosing-a-model`.
 
 :::{keypoints}
 - Other universal models plug in; TensorNet runs serial ASE only.
