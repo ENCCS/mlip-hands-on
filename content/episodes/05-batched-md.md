@@ -54,6 +54,12 @@ For a throughput comparison, count *all* completed replica steps and divide
 by elapsed seconds. Eight replicas take more total work than one; a shorter
 time per replica does not mean the eight-replica job finishes sooner.
 
+The shell runner accepts a sixth argument for the cubic cell count:
+`2` gives 64 atoms per trajectory and `4` gives 512. The notebook cells
+above stay with the smaller 64-atom example. See the separate
+[completed eight-trajectory benchmark](09-results.md) before comparing
+methods; its clock includes startup as well as MD.
+
 ```{note}
 The example selects Langevin NVT. Its source shows where to select a
 Nose–Hoover thermostat instead. Thermostat details differ from LAMMPS;

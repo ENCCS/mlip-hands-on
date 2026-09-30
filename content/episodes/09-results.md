@@ -46,6 +46,39 @@ with `--mpi=none`, leaving the children to initialize independently. Earlier
 failed attempts are not counted as completed runs. These short functional
 checks do not establish performance or scientific equivalence.
 
+## Eight independent trajectories on one GPU
+
+A fresh Arrhenius benchmark used this branch's ALCHEMI SIF example and
+native LAMMPS CLI plus `.in` file—not the historical main-branch Python
+driver. Each method finished eight independent silicon trajectories of
+either 64 or 512 atoms on one GH200 GPU. Each trajectory advanced 200 steps
+at 0.1 fs with the MACE-MP-0a small model. LAMMPS ran eight processes with
+ordinary GPU sharing or CUDA MPS; ALCHEMI advanced an eight-system batch in
+one process. No separate warm-up steps were used in this comparison.
+
+| Atoms per trajectory | ALCHEMI batch | LAMMPS ordinary sharing | LAMMPS CUDA MPS |
+| ---: | ---: | ---: | ---: |
+| 64 | 17.79 s | 93.00 s | 86.02 s |
+| 512 | 26.00 s | 104.84 s | 80.85 s |
+
+These are **median whole-workflow times** for all eight trajectories to
+finish, from three differently ordered rounds in Arrhenius job `3195110`.
+They include client startup, model loading, initial setup, and MD; they
+exclude queue time and the once-per-job native runtime extraction. At 64
+atoms, the LAMMPS ordinary and MPS medians were 5.23 and 4.84 times the
+ALCHEMI median; at 512 atoms, 4.03 and 3.11 times. Those ratios describe
+the complete workflows, **not** the speed of a MACE force kernel or an
+isolated MD step. All eighteen cases completed, but three rounds in one
+allocation do not establish site-wide performance confidence.
+
+Both routes used a Langevin thermostat, but ALCHEMI and LAMMPS do not have
+identical integrator implementations or matched initial velocities. This is
+a comparison of a stated workload, not evidence of trajectory equivalence.
+The benchmark varied `cells=2` and `cells=4` in the [ALCHEMI example](../../examples/alchemi_si_one_cell.py)
+and the [LAMMPS input](../../examples/lammps_mace.in); the usual notebook
+demo remains at `cells=2`. The MLIP science project retains the exact
+artifact hashes, all eighteen timings, and qualification limits.
+
 ### One trajectory, multiple MPI ranks sharing one GPU
 
 An Arrhenius GH200 capacity check on 30 September 2026 used the pinned

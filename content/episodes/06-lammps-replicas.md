@@ -77,10 +77,13 @@ times as one elapsed time. CUDA MPS is an optional third configuration;
 enabling it changes GPU process scheduling but does not turn LAMMPS into an
 ALCHEMI batch.
 
-These 200-step cells are a short functional demonstration. To measure
-throughput, run a separate declared workload with a warm-up interval and
-more measured steps; pass the measured step count as the launcher's final
-argument.
+These 200-step notebook cells are a short functional demonstration. A
+benchmark should declare its clock, workload, and repetition order before
+running. The launcher's fifth argument sets MD steps, its sixth sets
+`cells` (`2` is 64 atoms; `4` is 512), and its seventh sets warm-up steps. The
+[completed eight-trajectory benchmark](09-results.md) used 200 steps and
+zero separate warm-up steps with both engines; this notebook demonstration
+retains its default ten-step LAMMPS warm-up.
 
 The [reference](../reference/limits.md) distinguishes historical process
 measurements from runs qualified with this branch's CLI input. Only compare

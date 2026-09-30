@@ -6,6 +6,8 @@ lmp=$2
 model=$3
 result=$4
 steps=${5:-200}
+cells=${6:-2}
+warmup=${7:-10}
 : "${SLURM_JOB_ID:?run inside one Slurm GPU allocation}"
 : "${CUDA_VISIBLE_DEVICES:?one allocated GPU must be visible}"
 mkdir "$result"                    # Refuse an existing output directory.
@@ -13,7 +15,7 @@ pids=()
 for ((i = 0; i < 8; i++)); do
     "$lmp" -k on g 1 -sf kk -pk kokkos newton on neigh half \
         -log none -in "$lesson_root/examples/lammps_mace.in" \
-        -var model "$model" -var cells 2 -var warmup 10 \
+        -var model "$model" -var cells "$cells" -var warmup "$warmup" \
         -var steps "$steps" -var seed "$((20260924 + 2*i))" \
         -var bath_seed "$((20260925 + 2*i))" \
         >"$result/replica-$i.log" 2>&1 &
