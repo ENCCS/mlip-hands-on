@@ -107,3 +107,17 @@ European Union nor the granting authority can be held responsible for them.
 
 ENCCS has also received national funding through Vinnova and the Swedish
 Research Council (VR).
+
+## Licence
+
+- Text, figures made for this lesson and other pedagogical material:
+  [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+  ([LICENSE](https://github.com/ENCCS/mlip-hands-on/blob/main/LICENSE)).
+- Source code and code snippets: MIT
+  ([LICENSE.code](https://github.com/ENCCS/mlip-hands-on/blob/main/LICENSE.code)).
+- Figures reused from publications keep the licence given in their caption;
+  third-party components are listed in
+  [THIRD_PARTY.md](https://github.com/ENCCS/mlip-hands-on/blob/main/THIRD_PARTY.md).
+- Webinar slides: CC BY 4.0.
+- To cite this lesson, use
+  [CITATION.cff](https://github.com/ENCCS/mlip-hands-on/blob/main/CITATION.cff).

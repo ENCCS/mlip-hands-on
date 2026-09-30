@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this lesson, please cite it as below."
+title: "Universal MLIPs on HPC: hands-on"
+type: software
+authors:
+  - given-names: Wei
+    family-names: Li
+    affiliation: ENCCS
+  - given-names: Karim
+    family-names: Elgammal
+    affiliation: ENCCS
+url: "https://enccs.github.io/mlip-hands-on/"
+repository-code: "https://github.com/ENCCS/mlip-hands-on"
+license: CC-BY-SA-4.0
+date-released: "2026-09-30"
