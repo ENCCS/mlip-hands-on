@@ -222,7 +222,7 @@ is better):
 - Molybdenum (MACE-MP-0b3): $C_{11}$ error 45.9% zero-shot, 2.6%
   fine-tuned.
 - Silicon (MACE-MP-0b): 19-53% zero-shot, 0.6-5.2% fine-tuned.
-- Mechanical properties are a known zero-shot weak spot.
+- Zero-shot models fall short on mechanical properties.
 - Amorphous materials are another: across 41 universal models, some exceed
   100% relative energy error on amorphous carbon and get ring statistics
   wrong; fine-tuning on only four amorphous SiO2 structures cuts the energy
