@@ -46,6 +46,30 @@ with `--mpi=none`, leaving the children to initialize independently. Earlier
 failed attempts are not counted as completed runs. These short functional
 checks do not establish performance or scientific equivalence.
 
+### One trajectory, multiple MPI ranks sharing one GPU
+
+An Arrhenius GH200 capacity check on 30 September 2026 used the pinned
+MACE-MP-0a small model and the native ML-IAP/Kokkos input. CUDA MPS was
+enabled. The same 39,304-atom trajectory completed with one, two, and four
+MPI ranks sharing **one** GPU; the completed cases each ran ten warm-up and
+two further MD steps. At 46,656 atoms, the one- and two-rank attempts failed
+with explicit CUDA out-of-memory errors during the first force evaluation.
+The four-rank 46,656-atom case was not tested. Its 64,000-atom attempt also
+failed with CUDA OOM.
+
+| MPI ranks on one GPU | Largest completed size in this check | Next checked failure |
+| ---: | ---: | --- |
+| 1 | 39,304 atoms | 46,656 atoms: CUDA OOM |
+| 2 | 39,304 atoms | 46,656 atoms: CUDA OOM |
+| 4 | 39,304 atoms | 64,000 atoms: CUDA OOM; 46,656 untested |
+
+These are bounded observations, **not** the exact maximum atom count or a
+performance comparison. Adding ranks did not raise the completed size in
+this check. Two failed multi-rank steps required cancellation after one rank
+reported OOM and Slurm did not close the step promptly. No failed case was
+replayed. A larger single trajectory should instead be tested across more
+GPUs, with one rank per GPU.
+
 No new CLI benchmark table is published yet. Run a declared measurement
 workload before quoting speed or scaling. Include failed attempts in private
 qualification evidence instead of silently treating a corrected rerun as
