@@ -46,21 +46,29 @@ seeds and writes a separate log. It waits for every process to exit:
 ```
 
 The cell below uses that launcher. This is process sharing, not ALCHEMI's
-in-process batch. It does not create eight overlapping Slurm steps. The native
-CLI route has passed on JUPITER Booster. On Arrhenius, separate processes
-fail during MPICH/OFI initialization, while an MPI-partition alternative
-aborts during shutdown; this branch does not present either as a working
-Arrhenius exercise.
+in-process batch. It does not create eight overlapping Slurm steps. On
+Arrhenius the MPI-enabled LAMMPS children need a networked Slurm step around
+their launcher, without making the eight independent clients members of one
+PMI job; JUPITER can launch them from the batch shell.
+
+```{note}
+The Arrhenius `--mpi=none` option belongs to the **one-rank wrapper step**.
+It does not make this a serial LAMMPS build or turn eight trajectories into
+one MPI trajectory. This route was functionally checked for eight 64-atom
+replicas on one GH200; the multi-GPU MPI route is a separate exercise.
+```
 
 ```{code-cell} ipython3
 %%bash
 cd ../..
 source "scripts/${MLIP_SITE}-lammps-env.sh"
+launch=()
 if [[ "$MLIP_SITE" == arrhenius ]]; then
-  echo 'SKIPPED: eight-process native LAMMPS is not qualified on Arrhenius'
-  exit 0
+  export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1
+  launch=(srun --mpi=none --nodes=1 --ntasks=1 --gpus=1 \
+    --cpus-per-task=8 --cpu-bind=cores)
 fi
-time bash scripts/run-lammps-replicas.sh "$PWD" "$MLIP_LMP" \
+time "${launch[@]}" bash scripts/run-lammps-replicas.sh "$PWD" "$MLIP_LMP" \
   "$MLIP_MLIAP_MODEL" "$MLIP_ARTIFACT_ROOT/replicas-${SLURM_JOB_ID}" 200
 ```
 

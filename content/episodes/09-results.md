@@ -23,7 +23,7 @@ commands complete, not a performance ranking:
 | LAMMPS CLI, Kokkos CG relaxation | completed | completed |
 | LAMMPS CLI, two and four MPI ranks on one node | completed | completed |
 | LAMMPS, eight independent GPU-sharing processes (historical Python route) | completed | not yet run |
-| LAMMPS CLI, eight independent GPU-sharing processes (this branch) | not qualified | completed |
+| LAMMPS CLI, eight independent GPU-sharing processes (this branch) | completed | completed |
 
 The JUPITER ALCHEMI checks used both a native environment and the same
 hash-verified ARM/GH200 SIF previously run on Arrhenius. Rebuilding the
@@ -36,14 +36,15 @@ and [batched ALCHEMI trajectories](05-batched-md.md) were executed on both
 sites. The [relaxation page](07-relaxation.md) was also executed on both
 sites. These were functional runs, not comparable
 timings: the integrators differ and no warmed measurement interval was
-declared. The eight-replica LAMMPS notebook route completed on JUPITER but
-remains unqualified on Arrhenius.
+declared. The eight-replica LAMMPS notebook route completed on both sites.
 
-On Arrhenius, eight separate native LAMMPS processes failed during MPICH/OFI
-initialization. An eight-partition MPI route ran the MD steps but aborted
-during shutdown. Neither is a completed participant exercise, and the
-historical Python-route result in the table above does not qualify this
-branch's CLI route.
+On Arrhenius, launching eight separate native LAMMPS processes directly from
+the batch shell failed during MPICH/OFI initialization. A shared PMI-2 step
+also failed because the children sent PMI-1 initialization commands. The
+completed route instead places the launcher inside one networked Slurm step
+with `--mpi=none`, leaving the children to initialize independently. Earlier
+failed attempts are not counted as completed runs. These short functional
+checks do not establish performance or scientific equivalence.
 
 No new CLI benchmark table is published yet. Run a declared measurement
 workload before quoting speed or scaling. Include failed attempts in private

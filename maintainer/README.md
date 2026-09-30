@@ -8,9 +8,8 @@ matches the CLI source exactly. `test-notebook-alchemi.py` checks that its
 container adapter sends the visible source to Python without a shell or an
 implicit second simulation.
 `qualify-notebook.py` executes the actual MyST page inside a separately
-approved site allocation and reports a bounded outcome. On Arrhenius, page 06
-explicitly reports its eight-process LAMMPS cell as skipped; it must not be
-counted as an eight-replica qualification.
+approved site allocation and reports a bounded outcome. Page 06 requires
+all eight LAMMPS processes to exit successfully before reporting completion.
 
 The bounded Jupyter site jobs and laptop connector live in `scripts/` because
 participants need them. Other older scientific site jobs remain recoverable

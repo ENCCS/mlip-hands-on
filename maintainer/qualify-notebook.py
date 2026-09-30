@@ -50,11 +50,6 @@ for name in chosen:
             raise SystemExit("ALCHEMI notebook cell did not complete")
         if "Total wall time:" not in output_text:
             raise SystemExit("LAMMPS notebook cell did not complete")
-    if name == "06-lammps-replicas" and os.environ["MLIP_SITE"] == "arrhenius":
-        if "SKIPPED: eight-process native LAMMPS is not qualified on Arrhenius" not in output_text:
-            raise SystemExit("Arrhenius site limitation was not disclosed")
-        print(f"MyST notebook {name}: single-process cell completed; eight-process cell skipped", flush=True)
-        continue
     if name == "06-lammps-replicas" and "Eight LAMMPS process logs:" not in output_text:
         raise SystemExit("eight-process notebook cell did not complete")
     print(f"MyST notebook {name}: GPU cells completed", flush=True)
