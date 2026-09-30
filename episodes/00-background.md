@@ -289,11 +289,28 @@ most of the gap.
   [blog](https://developer.nvidia.com/blog/building-custom-atomistic-simulation-workflows-for-chemistry-and-materials-science-with-nvidia-alchemi-toolkit/))
   batch many systems into one GPU call. Part A uses TorchSim; Part B uses
   ALCHEMI Toolkit.
-- TorchSim reports up to about 100 times the throughput of ASE for the same
-  model, as time per atom with thousands of atoms batched on one H100
-  [[11](https://github.com/TorchSim/torch-sim)]. That is aggregate throughput,
-  not a per-system speed-up; our A100 runs gave 5 to 7 times
-  ({doc}`a1-batched-relaxation`).
+- What batching changes:
+
+  ::::{grid} 1 2 2 2
+  :gutter: 2
+
+  :::{grid-item-card} One system per call
+  Classical tools and ASE: the GPU sits mostly idle.
+  :::
+
+  :::{grid-item-card} Many systems per call
+  GPU-native engines fill the card with a batch.
+  :::
+
+  :::{grid-item-card} Up to about 100x
+  TorchSim against ASE on one H100: total throughput, not per system
+  [[paper](https://arxiv.org/abs/2508.06628)].
+  :::
+
+  :::{grid-item-card} 5 to 7x
+  Our A100 runs, 64 to 128 relaxations ({doc}`a1-batched-relaxation`).
+  :::
+  ::::
 - ALCHEMI also supplies common GPU building blocks (neighbour lists, D3
   dispersion, Ewald sums;
   [Toolkit-Ops](https://github.com/NVIDIA/nvalchemi-toolkit-ops),
