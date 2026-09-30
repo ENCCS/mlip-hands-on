@@ -214,7 +214,7 @@ First papers and code: [Behler and Parrinello 2007](https://doi.org/10.1103/Phys
 - Fine-tuning can cause catastrophic forgetting on other systems [16];
   keep the original model for general use.
 
-Fine-tuning is data-efficient [[10](https://doi.org/10.1063/5.0299305)] (errors in meV/atom against DFT; lower
+Fine-tuning usually needs less data than training from scratch [[10](https://doi.org/10.1063/5.0299305)] (errors in meV/atom against DFT; lower
 is better):
 
 - High-entropy alloy: fine-tuned 13.8 meV/atom; from scratch 16.4 (MACE)
