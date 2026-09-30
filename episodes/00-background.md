@@ -75,9 +75,11 @@ adds D3. OMol25 models use a different reference level.
 
 ## How the models are built
 
-![From quantum data to a learned PES, and the history of MLIP families by first paper.](../_static/ml-idea.drawio.png)
+![From quantum data to a learned PES.](../_static/ml-pipeline.drawio.png)
 
-First papers: [Behler and Parrinello 2007](https://doi.org/10.1103/PhysRevLett.98.146401), [GAP 2010](https://doi.org/10.1103/PhysRevLett.104.136403), [SNAP 2015](https://doi.org/10.1016/j.jcp.2014.12.018), [MTP 2016](https://doi.org/10.1137/15M1054183), [ANI-1 2017](https://doi.org/10.1039/C6SC05720A), [SchNet](https://doi.org/10.1063/1.5019779), [DeePMD 2018](https://doi.org/10.1103/PhysRevLett.120.143001), [ACE 2019](https://doi.org/10.1103/PhysRevB.99.014104), [NequIP](https://doi.org/10.1038/s41467-022-29939-5), [MACE](https://arxiv.org/abs/2206.07697), [M3GNet](https://doi.org/10.1038/s43588-022-00349-3), [CHGNet](https://doi.org/10.1038/s42256-023-00716-3), [MACE-MP-0](https://arxiv.org/abs/2401.00096), [UMA](https://arxiv.org/abs/2506.23971).
+![Timeline of MLIP families by first paper.](../_static/mlhist.drawio.png)
+
+First papers and code: [Behler and Parrinello 2007](https://doi.org/10.1103/PhysRevLett.98.146401) ([code](https://github.com/CompPhysVienna/n2p2)), [GAP 2010](https://doi.org/10.1103/PhysRevLett.104.136403) ([code](https://github.com/libAtoms/QUIP)), [SNAP 2015](https://doi.org/10.1016/j.jcp.2014.12.018) ([code](https://github.com/FitSNAP/FitSNAP)), [MTP 2016](https://doi.org/10.1137/15M1054183) ([code](https://gitlab.com/ashapeev/mlip-2)), [ANI-1 2017](https://doi.org/10.1039/C6SC05720A) ([code](https://github.com/aiqm/torchani)), [SchNet](https://doi.org/10.1063/1.5019779) ([code](https://github.com/atomistic-machine-learning/schnetpack)), [DeePMD 2018](https://doi.org/10.1103/PhysRevLett.120.143001) ([code](https://github.com/deepmodeling/deepmd-kit)), [ACE 2019](https://doi.org/10.1103/PhysRevB.99.014104) ([code](https://github.com/ICAMS/python-ace)), [NequIP](https://doi.org/10.1038/s41467-022-29939-5) ([code](https://github.com/mir-group/nequip)), [MACE](https://arxiv.org/abs/2206.07697) ([code](https://github.com/ACEsuit/mace)), [M3GNet](https://doi.org/10.1038/s43588-022-00349-3) ([code](https://github.com/materialyzeai/matgl)), [CHGNet](https://doi.org/10.1038/s42256-023-00716-3) ([code](https://github.com/CederGroupHub/chgnet)), [MACE-MP-0](https://arxiv.org/abs/2401.00096) ([code](https://github.com/ACEsuit/mace-foundations)), [UMA](https://arxiv.org/abs/2506.23971) ([code](https://github.com/facebookresearch/fairchem)).
 
 - Message passing: in a graph neural network (GNN), atoms exchange
   information with neighbours over several rounds; features are learnt,
