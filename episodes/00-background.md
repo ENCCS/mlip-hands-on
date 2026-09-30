@@ -494,10 +494,30 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
 
 ## Outlook
 
-- Long-range physics: standard MLIPs are short-ranged. Latent Ewald
-  summation learns latent charges from energies and forces alone, giving
-  polarisation, Born effective charges, infrared spectra under a field and
-  ferroelectric behaviour (PbTiO3) [[30](https://doi.org/10.1038/s41524-025-01911-z)].
+- Long-range physics [[30](https://doi.org/10.1038/s41524-025-01911-z)]:
+
+  ::::{grid} 1 3 3 3
+  :gutter: 2
+
+  :::{grid-item-card} The gap
+  Standard MLIPs see only neighbours within a cutoff, so they miss
+  long-range electrostatics: ions, interfaces, polar materials.
+  :::
+
+  :::{grid-item-card} The idea
+  Learn hidden (latent) charges from energies and forces alone, then add the
+  long-range part with an Ewald sum; no charge training data needed.
+  :::
+
+  :::{grid-item-card} What it unlocks
+  Born effective charges and polarisation, infrared spectra under a field,
+  ferroelectrics such as PbTiO3, ionic conduction in superionic water.
+  :::
+  ::::
+
+  ![Liquid water: Born effective charges from the model against DFT, and infrared spectra against experiment and under an applied field.](../_static/les-fig1-water.png)
+
+  *Zhong, Kim, King and Cheng, npj Comput. Mater. 11, 384 (2025), Fig. 1 (CC BY 4.0, cropped).*
 - ML inside DFT: learned exchange-correlation functionals, from DM21
   [[31](https://doi.org/10.1126/science.abj6511)] to Skala, which reports
   hybrid accuracy at semi-local cost [[32](https://arxiv.org/abs/2506.14665)].
