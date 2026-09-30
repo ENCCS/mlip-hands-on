@@ -122,7 +122,7 @@ D3 and D4 dispersion now run on the GPU in TorchSim and with Orb.
 ![Timeline from system-specific MLIPs (2007 to 2022) to foundation MLIPs (2024 to 2026).](../_static/mlip-timeline.drawio.png)
 
 *MLIP milestones, from one model per material to one model reused
-everywhere. Own diagram; logos identify the developing organisations.*
+everywhere. Logos identify the developing organisations.*
 
 - System-specific MLIP: trained for one material, refitted for the next.
 - Equivariant graph networks, NequIP [[2](https://doi.org/10.1038/s41467-022-29939-5)] and MACE [[3](https://arxiv.org/abs/2206.07697)], need far less data.
@@ -238,7 +238,7 @@ is better):
 
 ![Engine building blocks: a potential, an integrator and a thermostat combine into different simulation types.](../_static/engine-building-blocks.drawio.png)
 
-*Engines are built from swappable blocks. Own diagram, after the kUPS
+*Engines are built from swappable blocks. After the kUPS
 design.*
 
 - Leonardo (NVIDIA): CUDA-only kernels such as cuEquivariance and ALCHEMI
