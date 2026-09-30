@@ -12,6 +12,8 @@ kernelspec:
 
 # Background: universal MLIPs
 
+The webinar slides for this page: {doc}`../slides` ([PDF](../_static/slides/mlip-webinar-slides.pdf)).
+
 :::{objectives}
 - Define a foundation MLIP and its training data.
 - Explain why most materials models miss dispersion.

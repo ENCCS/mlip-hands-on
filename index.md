@@ -13,6 +13,7 @@ placement sets throughput.
 - Part B: silicon MD with MACE-MP in ALCHEMI Toolkit and LAMMPS, from
   one trajectory to many replicas and GPUs.
 - New to MLIPs? Start with {doc}`episodes/00-background`.
+- Webinar slides: {doc}`slides` ([PDF](_static/slides/mlip-webinar-slides.pdf)).
 - Source, scripts and job files: [GitHub](https://github.com/ENCCS/mlip-hands-on).
 - Contact and access support: [training@enccs.se](mailto:training@enccs.se);
   compute and AI support from [Sweden AI Factory](https://swedenaifactory.se);
@@ -27,6 +28,7 @@ placement sets throughput.
 :maxdepth: 1
 
 episodes/00-background
+slides
 ```
 
 ## Setup
