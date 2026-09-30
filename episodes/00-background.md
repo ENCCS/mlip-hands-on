@@ -518,9 +518,19 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
   ![Liquid water: Born effective charges from the model against DFT, and infrared spectra against experiment and under an applied field.](../_static/les-fig1-water.png)
 
   *Zhong, Kim, King and Cheng, npj Comput. Mater. 11, 384 (2025), Fig. 1 (CC BY 4.0, cropped).*
-- ML inside DFT: learned exchange-correlation functionals, from DM21
-  [[31](https://doi.org/10.1126/science.abj6511)] to Skala, which reports
-  hybrid accuracy at semi-local cost [[32](https://arxiv.org/abs/2506.14665)].
+- ML inside DFT: DFT is exact except for the exchange-correlation (XC)
+  functional, which must be approximated (the rungs of Jacob's ladder).
+  Machine learning can learn that term from accurate data:
+
+  | Year | Milestone | What it did |
+  |---|---|---|
+  | 2012 | [First ML functional](https://doi.org/10.1103/PhysRevLett.108.253002) | kinetic energy learnt from examples; 1D model systems |
+  | 2017 | [ML density maps](https://doi.org/10.1038/s41467-017-00839-3) | density learnt from the potential, skipping Kohn-Sham steps |
+  | 2020 | [NeuralXC](https://doi.org/10.1038/s41467-020-17265-7) ([code](https://github.com/semodi/neuralxc)) | neural correction on top of a standard XC functional |
+  | 2021 | DM21, DeepMind [[31](https://doi.org/10.1126/science.abj6511)] ([code](https://github.com/google-deepmind/deepmind-research/tree/master/density_functional_approximation_dm21)) | trained with fractional charge and spin; fixes delocalisation error |
+  | 2025 | Skala, Microsoft [[32](https://arxiv.org/abs/2506.14665)] ([code](https://github.com/microsoft/skala)) | deep-learned XC at meta-GGA cost; beats hybrids on GMTKN55 (2.8 kcal/mol) |
+  | 2026 | Skala in CP2K ([molecular](https://arxiv.org/abs/2608.19033), [condensed phase](https://arxiv.org/abs/2609.34055)) | usable for materials |
+
   Better, cheaper DFT means better MLIP training data.
 - Generative models propose, MLIPs screen: MatterGen is more than twice as
   likely as earlier generators to give new, stable crystals, and one has
