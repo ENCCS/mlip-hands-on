@@ -177,6 +177,10 @@ design.*
 - Leonardo (NVIDIA): CUDA-only kernels such as cuEquivariance and ALCHEMI
   run.
 - LUMI (AMD MI250X): ROCm PyTorch runs MACE; CUDA-only kernels do not.
+- Arrhenius (NVIDIA GH200, Linköping, inaugurated September 2026): 382
+  nodes with four Grace Hopper superchips each; CUDA-native like Leonardo,
+  so the same stack should apply. Not yet tested in this lesson
+  [[NAISS](https://www.naiss.se/resources/arrhenius-technical-description/)].
 - NequIP and Allegro foundation models run LAMMPS ML-IAP/Kokkos MD on
   both: up to 102.5 million atoms on 256 GPUs, about 44 000 atoms per A100
   and 22 000 per MI250X GCD. NequIP-OAM-XL matches eSEN-30M-OAM on
