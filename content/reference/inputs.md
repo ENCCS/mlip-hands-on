@@ -1,7 +1,8 @@
 # Inputs and paths
 
-Copy `.env.example` to a private `.env`, then edit these paths for your
-allocation. No account, model weight, SIF, executable or token belongs in Git.
+Copy `.env.example` to a private file outside the checkout as shown in
+[Before you start](../setup/index.md), then edit these paths for your site.
+No account, model weight, SIF, executable or token belongs in Git.
 
 | Variable | What it names |
 | --- | --- |
@@ -18,7 +19,7 @@ The scripts take the lesson root as their first argument. From that root,
 `"$PWD"` supplies it. Relaxation starts are tracked under
 `examples/starts/`.
 
-Load `.env` with `set -a; . ./.env; set +a`. Then source the site-specific
-LAMMPS environment script in the same shell that runs LAMMPS. A Jupyter
-server should be started with the prepared environment, so its notebook
-shell cells inherit these variables.
+Load the private file with `set -a; source "$MLIP_ENV_FILE"; set +a`. Then
+source the site-specific LAMMPS environment script in the same shell that
+runs LAMMPS. Start the Jupyter server with the prepared environment so its
+notebook shell cells inherit these variables.
