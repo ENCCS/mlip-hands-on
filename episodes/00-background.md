@@ -105,6 +105,13 @@ is better):
   fine-tuned.
 - Silicon (MACE-MP-0b): 19-53% zero-shot, 0.6-5.2% fine-tuned.
 - Mechanical properties are a known zero-shot weak spot.
+- Amorphous materials are another: across 41 universal models, some exceed
+  100% relative energy error on amorphous carbon and get ring statistics
+  wrong; fine-tuning on only four amorphous SiO2 structures cuts the energy
+  error more than 5 times [[17](https://arxiv.org/abs/2607.11384)].
+- Our own run, {doc}`a4-training`: TensorNet (MatPES-PBE) fine-tuned to
+  r2SCAN on 84 Li structures reaches 60 meV/atom energy and 128 meV/Å force
+  error, against 513 and 427 from scratch (one run, one MI250X GCD).
 
 (background-engines)=
 ## GPU engines
@@ -130,6 +137,18 @@ design.*
   both: up to 102.5 million atoms on 256 GPUs, about 44 000 atoms per A100
   and 22 000 per MI250X GCD. NequIP-OAM-XL matches eSEN-30M-OAM on
   Matbench Discovery at about ten times the speed [[12](https://arxiv.org/abs/2607.28461)].
+- DPA4C (DeePMD-kit v3.2.0) approaches MACE-OMat accuracy at about 100
+  times the throughput; 2.048 billion atoms on 1024 V100 GPUs
+  [[18](https://arxiv.org/abs/2608.19041)]. Checkpoints are CC-BY-NC.
+- LUMI tip: with the CSC PyTorch module (`torch` 2.7.1+rocm6.2.4),
+  `torch.det` and `prod` fail in float32 on the MI250X but work in float64,
+  so MatGL runs in float64 there ({doc}`a3-matgl-tutorials`,
+  {doc}`a4-training`).
+- Pin versions and re-check after upgrades. Bugs that silently gave wrong
+  results were fixed between July and September 2026 in cuEquivariance
+  v0.12.0 (fused tensor-product reduction), NequIP v0.19.0 (wrong forces
+  and stress in TorchSim) and TorchSim v0.6.1 (D3, Ewald, PME and DSF
+  stress sign) [[19](https://github.com/TorchSim/torch-sim/releases/tag/v0.6.1)].
 - Measured multi-GPU MACE scaling: {doc}`08-scaling`.
 
 (background-choosing)=
@@ -162,6 +181,10 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
   or [MACE](https://github.com/ACEsuit/mace).
 - A low energy error does not guarantee stable MD. Benchmark your property
   class and check stability.
+- One error number is not enough: in finite-temperature MD of 15 foundation
+  MLIPs, the tier with the lowest force error had the worst median pressure
+  error (3.40 GPa) [[20](https://arxiv.org/abs/2607.03433)]. It is now the
+  Matbench Discovery MD task.
 - Beyond one score: [MLIP Arena](https://github.com/atomind-ai/mlip-arena)
   [[14](https://arxiv.org/abs/2509.20630)] tests equations of state, phonons, diffusion barriers and diatomic
   curves; [mlipbenchmarks](https://github.com/peastman/mlipbenchmarks) [[15](https://doi.org/10.1021/acs.jctc.6c00130)]
@@ -178,7 +201,16 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
 - Directions: long-range electrostatics without charge labels, learned DFT
   functionals for better reference data, generative models screened with
   MLIPs, language-model agents driving simulation codes.
+- Early agentic workflows: in an NVIDIA test, coding agents wrote 45
+  batched GPU MLIP pipelines, but none pushed back on an ill-posed task, and
+  an unspecified thermostat changed Li diffusion by 3 to 5 times
+  [[21](https://developer.nvidia.com/blog/how-ai-coding-agents-can-unlock-materials-simulation-with-nvidia-alchemi-toolkit/)].
+  Physics choices still need an expert.
 - In every case, validate the property you care about.
+
+> "A poorly posed initial question results in AI scientific slop, an
+> unfortunate side effect that is now becoming far too common."
+> Shyue Ping Ong, 2026 [[22](https://www.materialyze.ai/post/the-non-ai-pocalypse-in-materials-science)]
 
 :::{keypoints}
 - MLIPs learn DFT energies and forces at near force-field cost.
@@ -186,6 +218,7 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
 - PBE-trained models miss dispersion without D3.
 - Batched GPU engines run many systems in one call; choose a model by task
   and validate the property you study.
+- One error number is not enough; pin package versions.
 :::
 
 ## References
@@ -220,3 +253,18 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
     [doi:10.1021/acs.jctc.6c00130](https://doi.org/10.1021/acs.jctc.6c00130)
 16. Kim et al., catastrophic forgetting,
     npj Comput. Mater. 12, 26 (2026).
+17. Fragapane and Deringer, AM26 amorphous-materials benchmark.
+    [arXiv:2607.11384](https://arxiv.org/abs/2607.11384)
+18. DPA4 and DPA4C, [DeePMD-kit v3.2.0](https://github.com/deepmodeling/deepmd-kit/releases/tag/v3.2.0).
+    [arXiv:2608.19041](https://arxiv.org/abs/2608.19041)
+19. Release notes:
+    [cuEquivariance v0.12.0](https://github.com/NVIDIA/cuEquivariance/releases/tag/v0.12.0),
+    [NequIP v0.19.0](https://github.com/mir-group/nequip/releases/tag/v0.19.0),
+    [TorchSim v0.6.1](https://github.com/TorchSim/torch-sim/releases/tag/v0.6.1)
+20. Dyna-Mat, foundation MLIPs in finite-temperature MD.
+    [arXiv:2607.03433](https://arxiv.org/abs/2607.03433)
+21. NVIDIA, How AI coding agents can unlock materials simulation with NVIDIA
+    ALCHEMI Toolkit (2026).
+    [blog](https://developer.nvidia.com/blog/how-ai-coding-agents-can-unlock-materials-simulation-with-nvidia-alchemi-toolkit/)
+22. S. P. Ong, The Non-AI-pocalypse in Materials Science (2026).
+    [post](https://www.materialyze.ai/post/the-non-ai-pocalypse-in-materials-science)
