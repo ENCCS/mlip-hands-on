@@ -208,25 +208,58 @@ First papers and code: [Behler and Parrinello 2007](https://doi.org/10.1103/Phys
 
 ![Pre-train on a large dataset, use zero-shot, then fine-tune on a small targeted set.](../_static/bg-pretrain-finetune.drawio.png)
 
-- Recipe [[10](https://doi.org/10.1063/5.0299305)]: zero-shot for screening; fine-tune on a small targeted set
-  when you need numbers; add data by uncertainty (active learning);
-  validate the property, not only the energy.
-- Fine-tuning can cause catastrophic forgetting on other systems [16];
-  keep the original model for general use.
+Recipe [[10](https://doi.org/10.1063/5.0299305)]:
 
-Fine-tuning usually needs less data than training from scratch [[10](https://doi.org/10.1063/5.0299305)] (errors in meV/atom against DFT; lower
-is better):
+::::{grid} 1 2 4 4
+:gutter: 2
 
-- High-entropy alloy: fine-tuned 13.8 meV/atom; from scratch 16.4 (MACE)
-  and 24.1 (ACE).
-- Molybdenum (MACE-MP-0b3): $C_{11}$ error 45.9% zero-shot, 2.6%
-  fine-tuned.
-- Silicon (MACE-MP-0b): 19-53% zero-shot, 0.6-5.2% fine-tuned.
-- Zero-shot models fall short on mechanical properties.
-- Amorphous materials are another: across 41 universal models, some exceed
-  100% relative energy error on amorphous carbon and get ring statistics
-  wrong; fine-tuning on only four amorphous SiO2 structures cuts the energy
-  error more than 5 times [[17](https://arxiv.org/abs/2607.11384)].
+:::{grid-item-card} 1 · Start zero-shot
+Use the foundation model directly; often good enough for screening.
+:::
+
+:::{grid-item-card} 2 · Fine-tune
+Add a small, targeted dataset when you need numbers for one system.
+:::
+
+:::{grid-item-card} 3 · Select data
+Uncertainty-aware sampling adds what the model is least sure about.
+:::
+
+:::{grid-item-card} 4 · Validate
+Test the property that matters, not just the energy.
+:::
+::::
+
+::::{grid} 1 2 2 2
+:gutter: 2
+
+:::{grid-item-card} Catastrophic forgetting
+A fine-tuned model can lose accuracy on other systems [16]; keep the
+original for general use.
+:::
+
+:::{grid-item-card} Pin versions
+Silent wrong-result bugs were fixed July to September 2026
+(cuEquivariance 0.12.0, NequIP 0.19.0, TorchSim 0.6.1); re-check after
+upgrades.
+:::
+::::
+
+Where zero-shot models fall short: used as-is, foundation models get
+structures right but can be far off on mechanical and disordered systems;
+fine-tuning usually needs less data than training from scratch and closes
+most of the gap.
+
+| System, model | Property | Zero-shot | Fine-tuned |
+|---|---|---|---|
+| Mo, MACE-MP-0b3 [[10](https://doi.org/10.1063/5.0299305)] | $C_{11}$ elastic constant, error | 45.9% | 2.6% |
+| Mo, MACE-MP-0b3 [[10](https://doi.org/10.1063/5.0299305)] | stacking-fault energy | far too low | close to DFT |
+| Si, MACE-MP-0b [[Si](https://arxiv.org/abs/2506.07401)] | elastic constants, error | 19 to 53% | 0.6 to 5.2% |
+| High-entropy alloy, MACE-MP-0 [[HEA](https://arxiv.org/abs/2506.07401)] | energy error, meV/atom | 59 to 64 | 13.8 (from scratch: 16.4 MACE, 24.1 ACE) |
+| 41 models on a-C and a-SiO2 [[17](https://arxiv.org/abs/2607.11384)] | energy error | above 100% for some (a-C) | more than 5x lower from 4 structures (a-SiO2) |
+
+- Elastic constant: how stiff a material is. Stacking-fault energy: the
+  cost of sliding atomic layers, which sets how metals deform.
 - Our own run, {doc}`a4-training`: TensorNet (MatPES-PBE) fine-tuned to
   r2SCAN on 84 Li structures reaches 60 meV/atom energy and 128 meV/Å force
   error, against 513 and 427 from scratch (one run, one MI250X GCD).
