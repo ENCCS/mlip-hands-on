@@ -28,9 +28,10 @@ reviews are in {doc}`../reference/reading`.
 - A potential gives energy from atomic positions; its gradient gives the
   forces for molecular dynamics (MD) and relaxation.
 - Classical force fields: fixed functional form, fast, limited
-  transferability. Density functional theory (DFT): accurate, cost grows
-  steeply with system size.
-- An MLIP is trained on quantum (DFT) energies and forces: near-DFT
+  transferability. First-principles (quantum-mechanical) methods such as
+  density functional theory (DFT): accurate, cost grows steeply with system
+  size.
+- An MLIP is trained on first-principles (DFT) energies and forces: near-DFT
   accuracy at near force-field cost. The idea dates from 2007 [[1](https://doi.org/10.1103/PhysRevLett.98.146401)].
 
 ## MLIPs among AI methods for materials
