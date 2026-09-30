@@ -258,8 +258,26 @@ most of the gap.
 (background-engines)=
 ## GPU engines
 
-- ASE and LAMMPS run one system at a time; their GPU support targets
-  classical force fields.
+::::{grid} 1 2 2 2
+:gutter: 2
+
+:::{grid-item-card} CPU-era simulation tools
+<img src="../_static/logos/ase.png" alt="ASE" height="40"> <img src="../_static/logos/lammps.png" alt="LAMMPS" height="40"> <img src="../_static/logos/gromacs.svg" alt="GROMACS" height="32">
+
+- Built to run one system at a time
+- GPU speed-ups first targeted classical force fields
+- Excellent for cheap, simple functional forms
+:::
+
+:::{grid-item-card} GPU-era foundation MLIPs
+<img src="../_static/logos/pytorch.png" alt="PyTorch" height="28"> <img src="../_static/logos/jax.png" alt="JAX" height="32">
+
+- Neural networks with millions of parameters
+- Want batched inference: many structures per GPU call
+- One structure at a time leaves the GPU mostly idle
+:::
+::::
+
 - TorchSim (PyTorch), kUPS (JAX) and NVIDIA ALCHEMI Toolkit (PyTorch and
   Warp) batch many systems into one GPU call [[11](https://github.com/TorchSim/torch-sim)]. Part A uses TorchSim;
   Part B uses ALCHEMI Toolkit.
@@ -268,9 +286,9 @@ most of the gap.
   [[11](https://github.com/TorchSim/torch-sim)]. That is aggregate throughput,
   not a per-system speed-up; our A100 runs gave 5 to 7 times
   ({doc}`a1-batched-relaxation`).
-- ALCHEMI also supplies GPU kernels (neighbour lists, D3, Ewald) used
-  under UMA, Orb, PET and TorchSim. The GPU path is CUDA-only: it runs on
-  Leonardo, not on LUMI. The D3 on {doc}`a2-orb-models` also runs on a CPU.
+- ALCHEMI also supplies common GPU building blocks (neighbour lists, D3
+  dispersion, Ewald sums) used by UMA, Orb, PET and TorchSim. These run on
+  NVIDIA GPUs only; the D3 on {doc}`a2-orb-models` also runs on a CPU.
 
 ![Engine building blocks: a potential, an integrator and a thermostat combine into different simulation types.](../_static/engine-building-blocks.drawio.png)
 
