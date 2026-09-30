@@ -230,20 +230,11 @@ Test the property that matters, not just the energy.
 :::
 ::::
 
-::::{grid} 1 2 2 2
-:gutter: 2
-
-:::{grid-item-card} Catastrophic forgetting
-A fine-tuned model can lose accuracy on other systems [16]; keep the
-original for general use.
-:::
-
-:::{grid-item-card} Pin versions
-Silent wrong-result bugs were fixed July to September 2026
-(cuEquivariance 0.12.0, NequIP 0.19.0, TorchSim 0.6.1); re-check after
-upgrades.
-:::
-::::
+Catastrophic forgetting: a network trained further on new data can lose
+accuracy on what it learnt before [[EWC](https://doi.org/10.1073/pnas.1611835114)].
+Fine-tuned universal MLIPs show it too, and forgetting-aware fine-tuning
+limits it [[16](https://doi.org/10.1038/s41524-025-01895-w)]. Keep the
+original model for general use.
 
 Where zero-shot models fall short: used as-is, foundation models get
 structures right but can be far off on mechanical and disordered systems;
@@ -307,12 +298,15 @@ design.*
   `torch.det` and `prod` fail in float32 on the MI250X but work in float64,
   so MatGL runs in float64 there ({doc}`a3-matgl-tutorials`,
   {doc}`a4-training`).
-- Pin versions and re-check after upgrades. Bugs that silently gave wrong
-  results were fixed between July and September 2026 in cuEquivariance
-  v0.12.0 (fused tensor-product reduction), NequIP v0.19.0 (wrong forces
-  and stress in TorchSim) and TorchSim v0.6.1 (D3, Ewald, PME and DSF
-  stress sign) [[19](https://github.com/TorchSim/torch-sim/releases/tag/v0.6.1)].
 - Measured multi-GPU MACE scaling: {doc}`08-scaling`.
+
+:::{note}
+Pin software versions and re-check results after upgrades. Bugs that
+silently gave wrong results were fixed between July and September 2026 in
+cuEquivariance v0.12.0 (fused tensor-product reduction), NequIP v0.19.0
+(wrong forces and stress in TorchSim) and TorchSim v0.6.1 (D3, Ewald, PME
+and DSF stress sign) [[19](https://github.com/TorchSim/torch-sim/releases/tag/v0.6.1)].
+:::
 
 (background-choosing)=
 ## Choosing and trusting a model
@@ -457,8 +451,9 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
     [arXiv:2509.20630](https://arxiv.org/abs/2509.20630)
 15. Eastman, Pretti and Markland, mlipbenchmarks, J. Chem. Theory Comput. 22, 6108 (2026).
     [doi:10.1021/acs.jctc.6c00130](https://doi.org/10.1021/acs.jctc.6c00130)
-16. Kim et al., catastrophic forgetting,
+16. Kim et al., forgetting-aware fine-tuning of universal MLIPs,
     npj Comput. Mater. 12, 26 (2026).
+    [doi:10.1038/s41524-025-01895-w](https://doi.org/10.1038/s41524-025-01895-w)
 17. Fragapane and Deringer, AM26 amorphous-materials benchmark.
     [arXiv:2607.11384](https://arxiv.org/abs/2607.11384)
 18. DPA4 and DPA4C, [DeePMD-kit v3.2.0](https://github.com/deepmodeling/deepmd-kit/releases/tag/v3.2.0).
