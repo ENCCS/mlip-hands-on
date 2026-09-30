@@ -70,4 +70,5 @@ capacity point, not sustained throughput or scientific equivalence. CUDA MPS
 is recommended for usable multi-rank Kokkos performance; without it, do not
 interpret a slow shared-GPU run as a meaningful speed comparison.
 The [bounded Arrhenius result](09-results.md)
-reports which tested sizes completed; it is not an absolute memory limit.
+reports the completed sizes and a separate 200-step timing check; neither
+establishes an absolute memory limit or a universal speedup.

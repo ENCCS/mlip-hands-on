@@ -70,10 +70,33 @@ reported OOM and Slurm did not close the step promptly. No failed case was
 replayed. A larger single trajectory should instead be tested across more
 GPUs, with one rank per GPU.
 
-No new CLI benchmark table is published yet. Run a declared measurement
-workload before quoting speed or scaling. Include failed attempts in private
-qualification evidence instead of silently treating a corrected rerun as
-the original result.
+### Measured one-GPU MD-loop time
+
+A later Arrhenius run measured the same 39,304-atom silicon trajectory with
+native LAMMPS ML-IAP/Kokkos, MACE-MP-0a small, and CUDA MPS. One, two, or
+four MPI ranks shared **one GH200 GPU**. Each case had ten warm-up steps and
+200 measured MD steps. Three rounds changed the rank order to reduce simple
+order effects. The table reports LAMMPS `Loop time` for the 200-step run;
+it excludes model loading, warm-up, and scheduler wait.
+
+| Round | 1 rank | 2 ranks | 4 ranks |
+| ---: | ---: | ---: | ---: |
+| 1 | 276.819 s | 266.362 s | 266.697 s |
+| 2 | 274.817 s | 266.009 s | 266.574 s |
+| 3 | 275.975 s | 265.571 s | 265.794 s |
+| Median | 275.975 s | 266.009 s | 266.574 s |
+
+For this workload, two ranks delivered about **3.75% more measured MD-step
+throughput** than one rank; four delivered about **3.53% more**. Four ranks
+did not improve on two. All nine 200-step runs completed in Arrhenius job
+`3180940`. These are timings for one model, input, GPU, and site, not a
+general rule for choosing MPI ranks. The earlier two-step capacity check
+above is not used as speed evidence. The exact run identities and limits are
+retained in the MLIP project's scientific evidence record.
+
+Use a declared measurement workload before quoting other speed or scaling
+results. Include failed attempts in private qualification evidence instead
+of silently treating a corrected rerun as the original result.
 
 For one trajectory, report MD steps per second. For independent trajectories,
 report **completed replica-steps per second**—the sum of completed steps over
