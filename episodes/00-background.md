@@ -75,7 +75,7 @@ adds D3. OMol25 models use a different reference level.
 
 ## How the models are built
 
-![From quantum data to a learned PES.](../_static/ml-pipeline.drawio.png)
+![From first-principles data to a learned PES.](../_static/ml-pipeline.drawio.png)
 
 ![Timeline of MLIP families by first paper.](../_static/mlhist.drawio.png)
 
