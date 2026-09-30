@@ -165,13 +165,13 @@ Model families (figures as published; the field moves fast):
 
 | Model family | From | Architecture | Params | Training data |
 |---|---|---|---|---|
-| CHGNet, 2023 [[5](https://doi.org/10.1038/s42256-023-00716-3)] | UC Berkeley | GNN with magnetic moments | 0.4M | MPtrj |
+| CHGNet, 2023 [[5](https://doi.org/10.1038/s42256-023-00716-3)] ([code](https://github.com/CederGroupHub/chgnet)) | UC Berkeley | GNN with magnetic moments | 0.4M | MPtrj |
 | MACE-MP-0, 2024 [[4](https://arxiv.org/abs/2401.00096)] ([code](https://github.com/ACEsuit/mace-foundations)) | Cambridge and others | equivariant message passing (ACE) | 4.7M | MPtrj; newer multi-head models add more |
-| SevenNet-0, now Omni ([code](https://github.com/MDIL-SNU/SevenNet)) | SNU | NequIP-style equivariant GNN | 0.8M, now 55M | MPtrj, now 243M structures |
-| Orb-v3 [[8](https://arxiv.org/abs/2504.06231)] | Orbital Materials | non-equivariant graph network | 26M | OMat24, or MPtrj plus Alexandria |
-| eqV2, eSEN, UMA [[6](https://doi.org/10.1038/s43588-026-00996-w)] [[eSEN](https://arxiv.org/abs/2502.12147)] [[7](https://arxiv.org/abs/2506.23971)] | Meta FAIR | equivariant transformer, then eSEN with a mixture of linear experts | 31M to 153M; UMA up to 1.4B (50M active) | OMat24, then about 500M |
-| DPA-3, now DPA-4 and DPA4C [[18](https://arxiv.org/abs/2608.19041)] | AISI Beijing, DP Technology | line-graph GNN, now SO(3)-equivariant | 0.03M to 25M | OpenLAM (163M) |
-| NequIP and Allegro OAM, 2026 [[12](https://arxiv.org/abs/2607.28461)] | Harvard, Cambridge | E(3)-equivariant; Allegro strictly local | 0.6M to 32M | OAM |
+| SevenNet-0, now Omni [[Omni](https://arxiv.org/abs/2510.11241)] ([code](https://github.com/MDIL-SNU/SevenNet)) | SNU | NequIP-style equivariant GNN | 0.8M, now 55M | MPtrj, now 243M structures |
+| Orb-v3 [[8](https://arxiv.org/abs/2504.06231)] ([code](https://github.com/orbital-materials/orb-models)) | Orbital Materials | non-equivariant graph network | 26M | OMat24, or MPtrj plus Alexandria |
+| eqV2, eSEN, UMA [[6](https://doi.org/10.1038/s43588-026-00996-w)] [[eSEN](https://arxiv.org/abs/2502.12147)] [[7](https://arxiv.org/abs/2506.23971)] ([code](https://github.com/facebookresearch/fairchem)) | Meta FAIR | equivariant transformer, then eSEN with a mixture of linear experts | 31M to 153M; UMA up to 1.4B (50M active) | OMat24, then about 500M |
+| DPA-3, now DPA-4 and DPA4C [[18](https://arxiv.org/abs/2608.19041)] ([code](https://github.com/deepmodeling/deepmd-kit)) | AISI Beijing, DP Technology | line-graph GNN, now SO(3)-equivariant | 0.03M to 25M | OpenLAM (163M) |
+| NequIP and Allegro OAM, 2026 [[12](https://arxiv.org/abs/2607.28461)] ([NequIP](https://github.com/mir-group/nequip), [Allegro](https://github.com/mir-group/allegro)) | Harvard, Cambridge | E(3)-equivariant; Allegro strictly local | 0.6M to 32M | OAM |
 | PET-OAM, 2026 [[PET](https://arxiv.org/abs/2601.16195)] ([code](https://github.com/lab-cosmo/upet)) | EPFL | transformer, symmetry not enforced | 26M to 730M | OAM |
 | GRACE [[GRACE](https://doi.org/10.1103/PhysRevX.14.021036)] ([code](https://github.com/ICAMS/grace-tensorpotential)) | ICAMS, Bochum | graph atomic cluster expansion | 3.4M to 42M | MPtrj; OAM |
 
