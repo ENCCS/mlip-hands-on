@@ -84,7 +84,7 @@ The job runs `versions`, `relax-md`, `lattice`, `predict`, `train` and
 ```
 :::
 
-Conditions for all results: one AMD MI250X GCD, float64, one run on (about 8.5 min in total), `matgl` 4.0.3, `torch`
+Conditions for all results: one AMD MI250X GCD, float64, one run (about 8.5 min in total), `matgl` 4.0.3, `torch`
 2.7.1+rocm6.2.4, `lightning` 2.6.1, `torch_geometric` 2.8.0.post1, `ase`
 3.29.0, `pymatgen` 2026.9.24.
 
