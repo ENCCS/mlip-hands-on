@@ -65,7 +65,7 @@ Training data grew over a hundredfold in a few years:
 | MPtrj [[5](https://doi.org/10.1038/s42256-023-00716-3)] | about 1.58 million configurations, 89 elements | PBE(+U) |
 | MatterSim | about 17 million configurations (active learning) | PBE(+U) |
 | GNoME | about 89 million structures (not public) | PBE(+U) |
-| OMat24 [[6](https://arxiv.org/abs/2410.12771)] | about 118 million inorganic structures | PBE+U |
+| OMat24 [[6](https://doi.org/10.1038/s43588-026-00996-w)] | about 118 million inorganic structures | PBE+U |
 | OMol25 [[9](https://arxiv.org/abs/2505.08762)] | more than 100 million molecular calculations | ωB97M-V/def2-TZVPD |
 | UMA training [[7](https://arxiv.org/abs/2506.23971)] | about 500 million structures | mixed |
 
@@ -199,7 +199,7 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
    [arXiv:2401.00096](https://arxiv.org/abs/2401.00096)
 5. B. Deng et al., CHGNet and MPtrj, Nat. Mach. Intell. 5, 1031 (2023).
    [doi:10.1038/s42256-023-00716-3](https://doi.org/10.1038/s42256-023-00716-3)
-6. L. Barroso-Luque et al., OMat24. [arXiv:2410.12771](https://arxiv.org/abs/2410.12771)
+6. L. Barroso-Luque et al., OMat24, Nat. Comput. Sci. 6, 642 (2026). [doi:10.1038/s43588-026-00996-w](https://doi.org/10.1038/s43588-026-00996-w); [arXiv:2410.12771](https://arxiv.org/abs/2410.12771)
 7. B. M. Wood et al., UMA. [arXiv:2506.23971](https://arxiv.org/abs/2506.23971)
 8. B. Rhodes et al., Orb-v3. [arXiv:2504.06231](https://arxiv.org/abs/2504.06231)
 9. D. S. Levine et al., OMol25. [arXiv:2505.08762](https://arxiv.org/abs/2505.08762)
