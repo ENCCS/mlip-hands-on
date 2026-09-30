@@ -18,7 +18,8 @@ mpi_option=()
 if [[ -n "${MLIP_SRUN_MPI:-}" ]]; then
     mpi_option+=("--mpi=$MLIP_SRUN_MPI")
 fi
-exec srun "${mpi_option[@]}" --nodes=1 --ntasks="$ranks" --gpus=1 --gpu-bind=none \
+exec srun "${mpi_option[@]}" --nodes=1 --ntasks="$ranks" --gpus=1 \
+    --gpu-bind=none --wait=30 \
     /bin/bash -c 'export CUDA_VISIBLE_DEVICES="$MLIP_ALLOCATED_CUDA_DEVICES"; exec "$@"' _ \
     "$lmp" -k on g 1 -sf kk \
     -pk kokkos newton on neigh half gpu/aware on \
