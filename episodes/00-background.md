@@ -132,8 +132,10 @@ everywhere. Own diagram; logos identify the developing organisations.*
   million are active per structure (a mixture of linear experts), so
   inference stays affordable. It is trained on OMat24 plus OMol25
   (hybrid-DFT molecules). Use the current checkpoint (UMA 1.2 small, March
-  2026); the original `uma-s-1` is deprecated. For electrolytes, see the
-  molecular row of {doc}`../reference/choosing-a-model` [[23](https://arxiv.org/abs/2603.20183)].
+  2026); the original `uma-s-1` is deprecated. For electrolyte densities,
+  the OMol25-trained UMA reached R² 0.98 against 0.34 to 0.45 for
+  materials-only models [[23](https://arxiv.org/abs/2603.20183)]; see the molecular row of
+  {doc}`../reference/choosing-a-model`.
 - Coverage follows the data: common elements appear in hundreds of
   thousands of structures, rare ones (noble gases) in a handful (MPtrj
   counts in [[4](https://arxiv.org/abs/2401.00096)]). Check your elements and short-range repulsion before
