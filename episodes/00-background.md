@@ -23,7 +23,7 @@ reviews are in {doc}`../reference/reading`.
 
 ## Interatomic potentials and MLIPs
 
-![Accuracy versus cost: classical force fields, MLIPs and DFT.](../_static/bg-accuracy-cost.drawio.png)
+![Accuracy versus cost: classical force fields, MLIPs and DFT.](../_static/accuracy-ladder.drawio.png)
 
 - A potential gives energy from atomic positions; its gradient gives the
   forces for molecular dynamics (MD) and relaxation.
