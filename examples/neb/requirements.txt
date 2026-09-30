@@ -1,0 +1,7 @@
+# Installed on top of the LUMI CSC PyTorch module (ROCm); torch is not listed on purpose.
+ase>=3.25
+pymatgen>=2025.1
+mace-torch>=0.3.13
+orb-models==0.5.5
+matgl==4.0.3
+matplotlib>=3.9

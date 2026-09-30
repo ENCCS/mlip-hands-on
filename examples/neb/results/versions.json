@@ -1,0 +1,10 @@
+{
+  "torch": "2.7.1+rocm6.2.4",
+  "ase": "3.29.0",
+  "pymatgen": "2026.9.24",
+  "mace-torch": "0.3.16",
+  "orb-models": "0.5.5",
+  "matgl": "4.0.3",
+  "gpu": "AMD Instinct MI250X",
+  "float": "float64"
+}

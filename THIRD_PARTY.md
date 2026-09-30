@@ -26,6 +26,17 @@ The site setup pages also include two resized photographs licensed under
 Only the image dimensions were changed. Their inclusion does not imply that
 the photographers or institutions endorse this lesson.
 
+The NEB page reproduces one unmodified figure under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/):
+
+- `_static/neb-softening-deng2025.png`: Fig. 3 of B. Deng et al., "Systematic
+  softening in universal machine learning interatomic potentials",
+  npj Comput. Mater. 11, 9 (2025),
+  [doi:10.1038/s41524-024-01500-6](https://doi.org/10.1038/s41524-024-01500-6).
+
+The LiFePO4 atomic positions come from the Crystallography Open Database
+(entry 2100916), whose data are in the public domain.
+
 ## Runtime dependencies (not redistributed)
 
 The Part A pages install these packages and download these model weights at
