@@ -112,9 +112,9 @@ D3 and D4 dispersion now run on the GPU in TorchSim and with Orb.
 
 | Use xTB when | Use an MLIP when | Combine them |
 |---|---|---|
-| No training data exists for your chemistry | Your system is inside its training data | CREST samples with xTB, the MLIP re-ranks |
-| Unusual elements, charges or spin states | You need DFT-level accuracy for that domain | xTB checks cases outside the MLIP's data |
-| You need electrons: charges, orbitals, gaps | Large or long runs: linear scaling, GPUs | D3/D4 adds dispersion to either |
+| Chemistry absent from MLIP training data | System within the training distribution | Conformer search with xTB (CREST), energies refined with the MLIP |
+| Unusual elements, charge or spin states | Near-DFT accuracy in that domain | xTB as a cross-check outside the MLIP's domain |
+| Electronic properties: charges, orbitals, gaps | Large systems, long MD: linear scaling, GPUs | D3/D4 dispersion added to either |
 
 (background-foundation)=
 ## From bespoke to foundation models
