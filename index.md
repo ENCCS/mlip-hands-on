@@ -24,7 +24,6 @@ placement sets throughput.
 - Basic Python and the command line.
 - To run the examples: access to a GPU system such as LUMI, Leonardo or
   Arrhenius (see {doc}`setup/index`). To read the saved results: nothing.
-- No machine-learning background is needed.
 :::
 
 ![Lesson map: background, Part A screening and training, Part B molecular dynamics.](_static/lesson-map.drawio.png)
