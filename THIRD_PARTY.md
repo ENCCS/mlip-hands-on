@@ -26,13 +26,32 @@ The site setup pages also include two resized photographs licensed under
 Only the image dimensions were changed. Their inclusion does not imply that
 the photographers or institutions endorse this lesson.
 
-The NEB page reproduces one unmodified figure under
-[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/):
+The NEB page and its sources reproduce these figures under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Figures were cut
+from the published PDFs; the only changes are cropping to the figure and
+removing captions.
 
-- `_static/neb-softening-deng2025.png`: Fig. 3 of B. Deng et al., "Systematic
-  softening in universal machine learning interatomic potentials",
-  npj Comput. Mater. 11, 9 (2025),
+- `_static/neb-softening-deng2025.png` (Fig. 3, unmodified) and
+  `_static/neb-pes-softening-deng2025.png` (Fig. 1, caption removed):
+  B. Deng et al., "Systematic softening in universal machine learning
+  interatomic potentials", npj Comput. Mater. 11, 9 (2025),
   [doi:10.1038/s41524-024-01500-6](https://doi.org/10.1038/s41524-024-01500-6).
+- `_static/neb-parity-bheemaguli2025.png` (Fig. 2) and
+  `_static/neb-confusion-bheemaguli2025.png` (Fig. 4): A. K. Bheemaguli,
+  P. Xiao and G. Sai Gautam, "Evaluation of foundational machine learned
+  interatomic potentials for migration barrier predictions",
+  [arXiv:2512.03642v1](https://arxiv.org/abs/2512.03642) (CC BY 4.0);
+  published in Digital Discovery 5, 1809 (2026),
+  [doi:10.1039/D5DD00534E](https://doi.org/10.1039/D5DD00534E).
+- `_static/neb-cattsunami-overview.png` (Fig. 1) and
+  `_static/neb-cattsunami-results.png` (Fig. 2): B. Wander, M. Shuaibi,
+  J. R. Kitchin, Z. W. Ulissi and C. L. Zitnick, "CatTSunami: Accelerating
+  transition state energy calculations with pretrained graph neural
+  networks", [arXiv:2405.02078v3](https://arxiv.org/abs/2405.02078)
+  (CC BY 4.0). Only the arXiv version is used; the ACS Catalysis version
+  is not under an open licence.
+
+Their inclusion does not imply that the authors endorse this lesson.
 
 The LiFePO4 atomic positions come from the Crystallography Open Database
 (entry 2100916), whose data are in the public domain.
