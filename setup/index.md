@@ -24,7 +24,7 @@ cp .env.example .env
 Edit only `.env` with paths for **your** project and prepared artifacts;
 it is ignored by Git. The source checkout does not include MACE weights,
 SIF images, LAMMPS binaries, site credentials, or private run outputs.
-It does include the small reviewed-results CSV used by the offline chapter.
+It does include the small reviewed-results CSV used by page B7.
 Keep those outside the checkout and check their identities before a run.
 The commands in later pages assume your shell starts in the repository root
 (the directory containing `examples/` and `scripts/`). For a Jupyter

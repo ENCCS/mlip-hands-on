@@ -146,6 +146,6 @@ before adapting or submitting; the excerpt hides setup, checks and launch.
   Eight GPUs on two nodes passed a short functional check (ten steps, 512
   atoms): not a multi-node scaling study, do not plot as speedups.
 
-Many small *independent* runs: see the [batched-MD chapter](05-batched-md.md)
+Many small *independent* runs: see [B5 Batch independent trajectories](05-batched-md.md)
 and the [reviewed eight-simulation comparison](07-reviewed-results.md); the
 measure is time to finish the set, not scaling of one simulation.
