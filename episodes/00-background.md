@@ -387,6 +387,9 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
 - F1 (0 to 1, higher is better): stable-crystal classification on
   [Matbench Discovery](https://matbench-discovery.materialsproject.org) [[13](https://doi.org/10.1038/s42256-025-01055-1)].
   κSRME (lower is better): thermal-conductivity error.
+- F1 combines two questions. Precision: of the crystals the model calls
+  stable, what share are stable? Recall: of the truly stable crystals, what
+  share does it find? $F_1 = 2PR/(P+R)$, so a model must do well on both.
 - Models are ranked by CPS, a combined score: 50% F1, 40% κSRME and 10%
   structure error (RMSD). The compliant tier trains on MPtrj only, for a
   fair comparison. Since July 2026 there is also an
