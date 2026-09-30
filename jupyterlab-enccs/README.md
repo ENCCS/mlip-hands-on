@@ -72,7 +72,7 @@ target browser before class.
 
 The earlier main-branch setup hub had two synchronized site tab sets, tested
 in both published HTML and the patched notebook. This branch uses separate
-Arrhenius and JUPITER setup pages instead. `check_rendering.py` now targets
-the `content/` layout and its current fixture; its browser check still needs
-to be rerun for this branch before claiming notebook-rendering acceptance.
+Arrhenius and JUPITER setup pages instead. On 2026-09-30 an isolated ASUS
+JupyterLab/Firefox check passed all 18 pages and fixtures from this branch.
+That checks rendering, not the GPU cells or a participant's own browser.
 The SIF build excerpt tests matching original line numbers in both views.

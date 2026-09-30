@@ -34,5 +34,7 @@ Set `MLIP_NATIVE_PREFIX` to the native LAMMPS installed prefix and
 bash scripts/run-lammps.sh "$PWD" "$MLIP_LMP" "$MLIP_MLIAP_MODEL" 2 200
 ```
 
-Run a one-GPU command inside a GPU-bound Slurm step. A batch shell can see
-more GPUs than requested. The scaling episode gives the MPI pattern.
+Run a one-GPU command inside a one-GPU Slurm allocation and inspect its
+`CUDA_VISIBLE_DEVICES` before running. The notebook starts in the batch
+shell so its native LAMMPS child does not inherit a separate step's MPI
+descriptors. The scaling episode gives the distinct multi-rank MPI pattern.

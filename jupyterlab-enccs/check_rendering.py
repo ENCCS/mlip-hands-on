@@ -120,7 +120,7 @@ def main() -> None:
                     const root = heading.closest('.jp-Notebook');
                     const rows = [...root.querySelectorAll('.myst-tab-set-row')];
                     const numbered = [...root.querySelectorAll('pre')]
-                        .some(item => item.textContent.includes('4 | import math'));
+                        .some(item => item.textContent.includes('3 | import math'));
                     const choice = rows[0]?.querySelectorAll('.myst-tab-item-header');
                     [...(choice || [])].find(item => item.textContent.trim() === 'JUPITER')?.click();
                     return {numbered, twoRows: rows.length === 2};

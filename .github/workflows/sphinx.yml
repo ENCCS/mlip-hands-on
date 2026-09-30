@@ -28,7 +28,10 @@ jobs:
           git ls-files -z '*.sh' | xargs -0 -r -n1 bash -n
           git ls-files -z '*.py' | xargs -0 -r python -m py_compile
       - name: Check publication privacy and execution policy
-        run: python maintainer/check-public-content.py
+        run: |
+          python maintainer/check-public-content.py
+          python maintainer/check-notebook-source.py
+          python maintainer/test-notebook-alchemi.py
       - name: Build lesson without executing GPU cells
         run: make html
       - name: Upload HTML for review

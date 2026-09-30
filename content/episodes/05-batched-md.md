@@ -22,16 +22,32 @@ On an allocated GPU, run one replica and then eight. Keep the model, step
 count, and GPU the same. The printed energies are physical outputs, not
 timings; use a clock around the commands when measuring throughput.
 
+The [Python source](../../examples/alchemi_si_one_cell.py) shown in the
+previous episode changes only `MLIP_REPLICAS`: the loop creates independently
+seeded `AtomicData` objects, then `Batch.from_data_list` collects them for
+one model evaluation. These cells invoke that same source inside the SIF;
+they do not implement a second MD program.
+
 ```{code-cell} ipython3
 %%bash
 cd ../..
-time bash scripts/run-alchemi.sh "$PWD" "$MLIP_ALCHEMI_SIF" "$MLIP_MODEL" 1 2000
+time apptainer exec --cleanenv --nv \
+  --env MLIP_REPLICAS=1 --env MLIP_STEPS=2000 \
+  --env TORCH_COMPILE_DISABLE=1 --env TORCH_DISABLE_NATIVE_JIT=1 \
+  --bind "$MLIP_MODEL:/models/mace.model:ro" \
+  --bind "$PWD/examples/alchemi_si_one_cell.py:/opt/mlip/md.py:ro" \
+  "$MLIP_ALCHEMI_SIF" python /opt/mlip/md.py
 ```
 
 ```{code-cell} ipython3
 %%bash
 cd ../..
-time bash scripts/run-alchemi.sh "$PWD" "$MLIP_ALCHEMI_SIF" "$MLIP_MODEL" 8 2000
+time apptainer exec --cleanenv --nv \
+  --env MLIP_REPLICAS=8 --env MLIP_STEPS=2000 \
+  --env TORCH_COMPILE_DISABLE=1 --env TORCH_DISABLE_NATIVE_JIT=1 \
+  --bind "$MLIP_MODEL:/models/mace.model:ro" \
+  --bind "$PWD/examples/alchemi_si_one_cell.py:/opt/mlip/md.py:ro" \
+  "$MLIP_ALCHEMI_SIF" python /opt/mlip/md.py
 ```
 
 For a throughput comparison, count *all* completed replica steps and divide

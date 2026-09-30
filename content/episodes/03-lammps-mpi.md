@@ -13,14 +13,17 @@ Python environment with MACE, Torch, NumPy, Cython and headers; a general
 login-shell Python is not enough.
 
 The [short build script](../../scripts/build-lammps-mpi.sh) shows the
-essential CMake configuration. Starting from the pinned LAMMPS source
+essential CMake configuration, including MPI, ML-IAP, Kokkos CUDA,
+`Kokkos_ARCH_ARMV9_GRACE`, `Kokkos_ARCH_HOPPER90`, and the matching
+Python executable, headers and library. Starting from the pinned LAMMPS source
 archive, unpack it in scratch, then run the build inside a GPU allocation:
 
 ```bash
-tar -xzf "$MLIP_LAMMPS_SOURCE_ARCHIVE" -C "$SLURM_TMPDIR"
+scratch=${SLURM_TMPDIR:-${TMPDIR:-/tmp}}
+tar -xzf "$MLIP_LAMMPS_SOURCE_ARCHIVE" -C "$scratch"
 bash scripts/build-lammps-mpi.sh \
-  "$SLURM_TMPDIR/lammps-lammps-751b42d" \
-  "$SLURM_TMPDIR/lammps-build" \
+  "$scratch/lammps-lammps-751b42d" \
+  "$scratch/lammps-build" \
   "$MLIP_NATIVE_PREFIX" \
   "$MLIP_NATIVE_PYTHON/bin/python3"
 ```

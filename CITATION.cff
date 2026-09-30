@@ -1,0 +1,7 @@
+cff-version: 1.2.0
+message: "If you use this lesson, please cite the repository."
+title: "Molecular dynamics with MACE on GPUs"
+authors:
+  - name: ENCCS contributors
+repository-code: "https://github.com/ENCCS/mlip-hands-on"
+type: software

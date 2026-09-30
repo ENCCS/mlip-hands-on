@@ -4,14 +4,26 @@ The ALCHEMI runtime and Python dependencies are described by
 [`alchemi-aarch64.def`](../../alchemi-aarch64.def). The definition is for
 ARM/GH200; the MACE weights stay outside the image.
 
+```{literalinclude} ../../alchemi-aarch64.def
+:language: text
+:linenos:
+:lines: 1-20
+:emphasize-lines: 1-2,5-8,13-16
+```
+
+The base image is pinned by digest. `%files` copies the two hash-locked
+dependency lists; `%post` installs from those lists. Keep
+[`locks/build-requirements.lock`](../../locks/build-requirements.lock) and
+[`locks/requirements.lock`](../../locks/requirements.lock) with the
+definition when building.
+
 The build command is short:
 
 ```bash
-bash scripts/build-alchemi.sh "$PWD" "$MLIP_ALCHEMI_SIF"
+apptainer build "$MLIP_ALCHEMI_SIF" alchemi-aarch64.def
 ```
 
-In [the script](../../scripts/build-alchemi.sh), the actual operation is
-`apptainer build OUTPUT alchemi-aarch64.def`. Select a fresh output path
+Select a fresh output path
 on storage with enough space. Building an image may require a prepared
 build environment; instructors can supply a prebuilt image instead.
 

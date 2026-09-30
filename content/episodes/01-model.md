@@ -13,7 +13,9 @@ exported `.pt` file from the same checkpoint:
 bash scripts/export-mace-mliap.sh "$MLIP_MODEL"
 ```
 
-The exporter writes a second artifact beside the checkpoint. Point
+The short script refuses to overwrite an existing export. Its export command
+is `python -m mace.cli.create_lammps_model "$MLIP_MODEL" --format mliap
+--dtype float32`; it writes a second artifact beside the checkpoint. Point
 `MLIP_MLIAP_MODEL` to the output. The files are different formats; neither
 should be substituted for the other. Before a class, check that the export
 loads with the pinned LAMMPS build.

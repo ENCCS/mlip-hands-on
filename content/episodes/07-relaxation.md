@@ -21,19 +21,50 @@ them one at a time with Kokkos conjugate gradient in its
 
 On an allocated GPU, run the batched ALCHEMI example:
 
-```{code-cell} ipython3
-%%bash
-cd ../..
-bash scripts/run-alchemi-relax.sh "$PWD" "$MLIP_ALCHEMI_SIF" "$MLIP_MODEL"
+```{literalinclude} ../../examples/alchemi_relax.py
+:language: python
+:linenos:
 ```
 
-Then run a LAMMPS minimization of the first structure:
+The Python source constructs four starting systems, batches them, and applies
+FIRE. The cell runs that source in the selected SIF:
 
 ```{code-cell} ipython3
 %%bash
 cd ../..
-bash scripts/run-lammps-relax.sh "$PWD" "$MLIP_LMP" "$MLIP_MLIAP_MODEL" \
-  "$PWD/examples/starts/si-relax-01.data"
+apptainer exec --cleanenv --nv \
+  --env TORCH_COMPILE_DISABLE=1 --env TORCH_DISABLE_NATIVE_JIT=1 \
+  --bind "$MLIP_MODEL:/models/mace.model:ro" \
+  --bind "$PWD/examples/alchemi_relax.py:/opt/mlip/relax.py:ro" \
+  --bind "$PWD/examples/starts:/opt/mlip/starts:ro" \
+  "$MLIP_ALCHEMI_SIF" python /opt/mlip/relax.py
+```
+
+LAMMPS uses a different minimizer, shown in its input. `-var start` selects
+one of the same four starting structures:
+
+```{literalinclude} ../../examples/lammps_relax.in
+:language: text
+:linenos:
+```
+
+Run a LAMMPS minimization of the first structure:
+
+On Arrhenius this notebook cell uses a fresh PMI-2 Slurm step for the
+native MPICH executable; on JUPITER it runs LAMMPS directly.
+
+```{code-cell} ipython3
+%%bash
+cd ../..
+source "scripts/${MLIP_SITE}-lammps-env.sh"
+launch=()
+if [[ "$MLIP_SITE" == arrhenius ]]; then
+  launch=(srun --mpi=pmi2 --nodes=1 --ntasks=1 --gpus=1)
+fi
+"${launch[@]}" "$MLIP_LMP" -k on g 1 -sf kk -pk kokkos newton on neigh half \
+  -log none -in examples/lammps_relax.in \
+  -var model "$MLIP_MLIAP_MODEL" \
+  -var start "$PWD/examples/starts/si-relax-01.data"
 ```
 
 The code prints energies and a maximum force. A smaller final force suggests

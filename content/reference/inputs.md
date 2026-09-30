@@ -11,6 +11,8 @@ allocation. No account, model weight, SIF, executable or token belongs in Git.
 | `MLIP_NATIVE_PREFIX` | Site-native LAMMPS install prefix containing `bin/lmp` |
 | `MLIP_NATIVE_PYTHON` | Matching MACE Python environment on either site |
 | `MLIP_LMP` | LAMMPS executable, set by the site environment script |
+| `MLIP_ARTIFACT_ROOT` | Parent of your private model and runtime files; also used by the replica example for its fresh output directory |
+| `MLIP_NATIVE_RUNTIME_ARCHIVE` | Optional Arrhenius archive unpacked into private compute-node scratch by the Jupyter job |
 
 The scripts take the lesson root as their first argument. From that root,
 `"$PWD"` supplies it. Relaxation starts are tracked under

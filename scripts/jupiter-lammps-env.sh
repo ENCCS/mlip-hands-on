@@ -9,4 +9,7 @@ export MLIP_LMP="$MLIP_NATIVE_PREFIX/bin/lmp"
 export PATH="$MLIP_NATIVE_PYTHON/bin:$PATH"
 export LD_LIBRARY_PATH="$MLIP_NATIVE_PREFIX/lib64${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export PYTHONNOUSERSITE=1
+# IPython sets an inline backend for its own kernel; the separate LAMMPS
+# process must not inherit that backend when loading its native MACE Python.
+export MPLBACKEND=Agg
 unset PYTHONHOME

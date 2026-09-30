@@ -14,8 +14,8 @@ from nvalchemi.hooks import NeighborListHook
 from nvalchemi.models.mace import MACEWrapper
 
 model_path = os.environ.get("MLIP_MODEL_PATH", "/models/mace.model")
-replicas = int(os.environ.get("MLIP_REPLICAS", "8"))
-steps = int(os.environ.get("MLIP_STEPS", "2000"))
+replicas = int(os.environ.get("MLIP_REPLICAS", "1"))
+steps = int(os.environ.get("MLIP_STEPS", "200"))
 log_every = 1000
 device = torch.device("cuda:0")
 
