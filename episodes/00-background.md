@@ -36,10 +36,67 @@ reviews are in {doc}`../reference/reading`.
 
 ## MLIPs among AI methods for materials
 
-![Six families of AI methods for materials, with interatomic potentials highlighted.](../_static/bg-ai-families.drawio.png)
+Six families, often confused. They differ in what the model learns or does.
 
-- Six families: electronic structure, interatomic potentials, generative
-  models, structure to property, LLM agents, autonomous labs and open data.
+::::{grid} 1 2 3 3
+:gutter: 2
+
+:::{grid-item-card} Electronic structure
+*learns the quantum mechanics itself*
+
+- Neural wavefunctions (FermiNet, PauliNet)
+- Learned XC functionals (DM21, Skala)
+- ML Hamiltonians and tight-binding (DeepH)
+:::
+
+:::{grid-item-card} Interatomic potentials
+*learns energies and forces from DFT data*
+
+- Universal models (MACE-MP, UMA, Orb, MatterSim, NequIP-OAM)
+- Fine-tune a foundation model on your own data
+:::
+
+:::{grid-item-card} Generative models
+*proposes new structures on demand*
+
+- Diffusion for crystals (CDVAE, MatterGen)
+- Language models write crystal files (CrystaLLM)
+- Organic crystal prediction (Clari, 2026)
+:::
+
+:::{grid-item-card} Structure to property
+*maps a structure straight to a property*
+
+- Descriptors (SOAP, matminer)
+- Crystal graph networks (CGCNN, ALIGNN)
+- Multi-task models (MatterSim-MT, 2026)
+:::
+
+:::{grid-item-card} LLMs and agents
+*reads, plans and runs the tools*
+
+- Chemistry agents (ChemCrow, Coscientist)
+- Simulation agents (MDCrow, El Agente, AtomisticSkills)
+- LLM with an MLIP encoder (MatterChat)
+:::
+
+:::{grid-item-card} Autonomous labs, open data
+*closes the loop: predict, make, measure*
+
+- Self-driving labs (A-Lab, robotic chemist)
+- Open data (OMat24, Alexandria, LeMaterial)
+- Reality check: stable is not makeable
+:::
+
+::::
+
+How they connect:
+
+![Six families of AI methods for materials as a flow, with interatomic potentials highlighted.](../_static/bg-ai-families.drawio.png)
+
+- MLIPs turn first-principles data into relaxed structures and dynamics.
+- Generators propose candidates, MLIPs screen them, labs make the best ones.
+- Agents steer the loop; lab and open data feed the next round of training.
 - This lesson covers interatomic potentials only.
 
 Next door, fast quantum chemistry (outside this lesson's hands-on scope):
