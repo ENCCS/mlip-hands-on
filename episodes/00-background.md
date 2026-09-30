@@ -128,14 +128,23 @@ everywhere. Logos identify the developing organisations.*
 - Equivariant graph networks, NequIP [[2](https://doi.org/10.1038/s41467-022-29939-5)] and MACE [[3](https://arxiv.org/abs/2206.07697)], need far less data.
 - Foundation MLIP: pre-trained across the periodic table, reused without
   retraining. MACE-MP-0 [[4](https://arxiv.org/abs/2401.00096)] made zero-shot use mainstream in 2024; UMA [[7](https://arxiv.org/abs/2506.23971)] and Orb-v3 [[8](https://arxiv.org/abs/2504.06231)] followed in 2025.
-- UMA shows the scale: UMA-M has 1.4 billion parameters, but only about 50
-  million are active per structure (a mixture of linear experts), so
-  inference stays affordable. It is trained on OMat24 plus OMol25
-  (hybrid-DFT molecules). Use the current checkpoint (UMA 1.2 small, March
-  2026); the original `uma-s-1` is deprecated. For electrolyte densities,
-  the OMol25-trained UMA reached R² 0.98 against 0.34 to 0.45 for
-  materials-only models [[23](https://arxiv.org/abs/2603.20183)]; see the molecular row of
+- UMA shows the scale: one model trained on about 500 million structures
+  from five datasets. Its mixture of linear experts stores 1.4 billion
+  parameters (UMA-M) and blends them per structure into one model of about
+  50 million, so inference stays affordable. OMol25 adds hybrid-DFT
+  molecules. Use the current checkpoint (UMA 1.2 small, patch 1.2.1); the
+  original `uma-s-1` is archived [[7](https://arxiv.org/abs/2506.23971)].
+
+  ![UMA: five datasets feed one model with a mixture of linear experts.](../_static/uma-scale.drawio.png)
+
+- The training level matters: for electrolyte densities, the OMol25-trained
+  UMA reached R² 0.98 against 0.34 and 0.45 for materials-only models
+  [[23](https://arxiv.org/abs/2603.20183)]; see the molecular row of
   {doc}`../reference/choosing-a-model`.
+
+  ![Electrolyte densities, simulation against experiment, for two materials-only models and UMA.](../_static/kumar2026-electrolyte-density.png)
+
+  *Kumar et al., arXiv:2603.20183, Fig. 1 (CC BY 4.0, cropped).*
 - Coverage follows the data: common elements appear in hundreds of
   thousands of structures, rare ones (noble gases) in a handful (MPtrj
   counts in [[4](https://arxiv.org/abs/2401.00096)]). Check your elements and short-range repulsion before
@@ -154,16 +163,19 @@ Training data grew over a hundredfold in a few years:
 
 Model families (figures as published; the field moves fast):
 
-| Model | From | Architecture | Params | Training data |
+| Model family | From | Architecture | Params | Training data |
 |---|---|---|---|---|
-| CHGNet [[5](https://doi.org/10.1038/s42256-023-00716-3)] | LBNL | GNN with charge | about 0.4M | MPtrj |
-| MACE-MP-0 [[4](https://arxiv.org/abs/2401.00096)] | Cambridge and others | equivariant message passing (ACE) | a few M | MPtrj |
-| SevenNet-0 | SNU | NequIP-style GNN | about 0.8M | MPtrj |
-| MatterSim [[24](https://arxiv.org/abs/2405.04967)] | Microsoft | M3GNet-style GNN | 0.9M to 4.5M | 3M to 6M (17M in paper) |
-| Orb-v3 [[8](https://arxiv.org/abs/2504.06231)] | Orbital Materials | graph network | 26M | OMat24 or MPtrj plus Alexandria |
-| eqV2 (OMat24) [[6](https://doi.org/10.1038/s43588-026-00996-w)] | Meta FAIR | equivariant transformer | 31M to 153M | OMat24 |
-| DPA-3 | DeepModeling | line-graph GNN | scalable | OpenLAM, OMat24 |
-| UMA [[7](https://arxiv.org/abs/2506.23971)] | Meta FAIR | equivariant GNN, mixture of linear experts | 290M to 1.4B (6.6M to 50M active) | about 500M |
+| CHGNet, 2023 [[5](https://doi.org/10.1038/s42256-023-00716-3)] | UC Berkeley | GNN with magnetic moments | 0.4M | MPtrj |
+| MACE-MP-0, 2024 [[4](https://arxiv.org/abs/2401.00096)] ([code](https://github.com/ACEsuit/mace-foundations)) | Cambridge and others | equivariant message passing (ACE) | 4.7M | MPtrj; newer multi-head models add more |
+| SevenNet-0, now Omni ([code](https://github.com/MDIL-SNU/SevenNet)) | SNU | NequIP-style equivariant GNN | 0.8M, now 55M | MPtrj, now 243M structures |
+| Orb-v3 [[8](https://arxiv.org/abs/2504.06231)] | Orbital Materials | non-equivariant graph network | 26M | OMat24, or MPtrj plus Alexandria |
+| eqV2, eSEN, UMA [[6](https://doi.org/10.1038/s43588-026-00996-w)] [[eSEN](https://arxiv.org/abs/2502.12147)] [[7](https://arxiv.org/abs/2506.23971)] | Meta FAIR | equivariant transformer, then eSEN with a mixture of linear experts | 31M to 153M; UMA up to 1.4B (50M active) | OMat24, then about 500M |
+| DPA-3, now DPA-4 and DPA4C [[18](https://arxiv.org/abs/2608.19041)] | AISI Beijing, DP Technology | line-graph GNN, now SO(3)-equivariant | 0.03M to 25M | OpenLAM (163M) |
+| NequIP and Allegro OAM, 2026 [[12](https://arxiv.org/abs/2607.28461)] | Harvard, Cambridge | E(3)-equivariant; Allegro strictly local | 0.6M to 32M | OAM |
+| PET-OAM, 2026 [[PET](https://arxiv.org/abs/2601.16195)] ([code](https://github.com/lab-cosmo/upet)) | EPFL | transformer, symmetry not enforced | 26M to 730M | OAM |
+| GRACE [[GRACE](https://doi.org/10.1103/PhysRevX.14.021036)] ([code](https://github.com/ICAMS/grace-tensorpotential)) | ICAMS, Bochum | graph atomic cluster expansion | 3.4M to 42M | MPtrj; OAM |
+
+OAM = OMat24 + sAlex + MPtrj. MatterSim [[24](https://arxiv.org/abs/2405.04967)] and other fast models are compared in the fast-models table below.
 
 Materials models learn PBE, which misses dispersion, so {doc}`a2-orb-models`
 adds D3. OMol25 models use a different reference level.
