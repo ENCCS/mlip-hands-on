@@ -120,7 +120,7 @@ the checkpoint to a private location outside Git:
 
 :::{dropdown} Commands
 ```bash
-cd /leonardo_scratch/fast/<PROJECT>/<USER>/mlip-md-lesson/examples/torchsim
+cd /leonardo_scratch/fast/<PROJECT>/<USER>/mlip-hands-on/examples/torchsim
 pixi install
 curl -L -o <SCRATCH>/models/mace-mp-0b-small.model \
   https://github.com/ACEsuit/mace-mp/releases/download/mace_mp_0b/mace_agnesi_small.model
@@ -135,7 +135,7 @@ repository root; missing inputs or an existing output directory abort it:
 
 :::{dropdown} Commands
 ```bash
-export MLIP_LESSON_ROOT=/leonardo_scratch/fast/<PROJECT>/<USER>/mlip-md-lesson
+export MLIP_LESSON_ROOT=/leonardo_scratch/fast/<PROJECT>/<USER>/mlip-hands-on
 export MLIP_TORCHSIM_CHECKPOINT=<SCRATCH>/models/mace-mp-0b-small.model
 export MLIP_RESULTS_DIR=/path/to/private/results
 sbatch --account=<PROJECT> \

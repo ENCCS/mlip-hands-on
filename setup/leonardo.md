@@ -47,7 +47,7 @@ not in one shared Git repository. The pinned original checkpoint has SHA-256
 Set paths in the submitting shell; the scripts refuse missing inputs:
 
 ```bash
-export MLIP_LESSON_ROOT=/leonardo_scratch/fast/<PROJECT>/<USER>/mlip-md-lesson
+export MLIP_LESSON_ROOT=/leonardo_scratch/fast/<PROJECT>/<USER>/mlip-hands-on
 export MLIP_LEONARDO_PYTHON=/path/to/private/python/bin/python3
 export MLIP_MODEL=/path/to/private/mace-mp-0a-small.model
 export MLIP_RESULTS_DIR=/path/to/private/results
@@ -94,6 +94,6 @@ distinct smoke without it failed at `run 0` with `NameError: cupy`. Neither
 that failure nor the successful one-GPU smoke proves a multi-GPU MPI build.
 The lesson's published HTML can be viewed without a GPU allocation. To run
 the `.md` pages as notebooks on Leonardo, install the private Jupytext and
-MyST renderer environment described in [Opening the notebook](notebook.md)
-and keep the server token, TLS key, and job logs private. A Leonardo notebook
+MyST renderer environment described in [Arrhenius](arrhenius.md) (see
+[Opening the notebook](notebook.md) for the token and TLS handling) and keep the server token, TLS key, and job logs private. A Leonardo notebook
 server itself has not yet been site-qualified.

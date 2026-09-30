@@ -18,7 +18,8 @@ kernelspec:
 - Compare zero-shot, fine-tuned and from-scratch errors on one test set.
 :::
 
-The earlier pages use foundation potentials zero-shot. The
+A1 and A2 use foundation potentials zero-shot; A3 fine-tuned one on a
+toy EMT set. The
 {doc}`Background <00-background>` section "Pre-train, then fine-tune" gives
 the recipe for when that is not enough: fine-tune on a small targeted set.
 This page runs both halves with [MatGL](https://github.com/materialyzeai/matgl)
@@ -166,8 +167,10 @@ and PNG. The fine-tuning job took 46 min.
 On LUMI with `torch` 2.7.1+rocm6.2.4, `torch.det` and `Tensor.prod` fail in
 float32 (error 209); float64 works. The MatGL potential calls `torch.det`
 for the cell volume in its stress, so the job script sets
-`MLIP_FLOAT_BITS=64` (same as `--float-bits 64`). The MEGNet run did not
-hit them and ran in float32.
+`MLIP_FLOAT_BITS=64` (same as `--float-bits 64`) for both tasks. The
+float32 MEGNet result above is from an earlier run, before that setting;
+the current job trains MEGNet in float64 too, so its numbers can differ
+slightly.
 :::
 
 To check the code on a laptop CPU first, use a few structures and two

@@ -39,10 +39,9 @@ make livehtml PORT=8766
 rebuilds them when Markdown changes. It is **not** the runnable JupyterLab
 server. Forward its port over SSH if viewing it from another computer.
 
-Run the GPU notebooks in order: single MD, batched MD, then the one-rank
-LAMMPS example. Execute only one GPU notebook kernel at a time. The reviewed
-results page works without a GPU and is safe to inspect before class.
-The software-build and multi-GPU episodes are optional; give learners
+Run the GPU notebooks in order: B4, B5, then B6 (one-rank LAMMPS). Execute
+only one GPU notebook kernel at a time. B7 works without a GPU and is safe
+to inspect before class. B2, B3 and B8 (builds and multi-GPU) are optional; give learners
 prepared artifacts when build or queue time would dominate the session.
 
 ## Short live demo (webinar)
@@ -57,8 +56,8 @@ from a rehearsal and state that it is a saved result. Serve the lesson pages
 locally with `make livehtml`, which binds to `127.0.0.1`, rather than
 sharing a remote session.
 
-The webinar used this fallback: Leonardo was in maintenance, so the demo
-walked through saved runs.
+If the site is in maintenance on the day, walk through saved runs instead
+and say so.
 
 ## Publication
 

@@ -42,6 +42,19 @@ reviews are in {doc}`../reference/reading`.
   models, structure to property, LLM agents, autonomous labs and open data.
 - This lesson covers interatomic potentials only.
 
+Next door, fast quantum chemistry (outside this lesson's hands-on scope):
+the Grimme group's xTB methods need no training data, cover any element and
+give electronic information. g-xTB approaches hybrid-DFT quality for
+elements H to Lr [[25](https://doi.org/10.26434/chemrxiv-2025-bjxvt)]; CREST
+samples with xTB and an MLIP can refine the result [[26](https://doi.org/10.1063/5.0197592)].
+The two also meet: NN-xTB tunes the xTB Hamiltonian with a network
+[[27](https://doi.org/10.1038/s41467-026-73184-z)], xTB features help ML
+screen MOF band gaps [[28](https://doi.org/10.1021/acs.jctc.6c00979)], and
+dxtb is differentiable xTB in PyTorch [[29](https://doi.org/10.1063/5.0216715)].
+D3 and D4 dispersion now run on the GPU in TorchSim and with Orb. MLIPs are
+more accurate and faster on GPUs for what they were trained on; good
+workflows use both.
+
 (background-foundation)=
 ## From bespoke to foundation models
 
@@ -53,7 +66,13 @@ everywhere. Own diagram; logos identify the developing organisations.*
 - System-specific MLIP: trained for one material, refitted for the next.
 - Equivariant graph networks, NequIP [[2](https://doi.org/10.1038/s41467-022-29939-5)] and MACE [[3](https://arxiv.org/abs/2206.07697)], need far less data.
 - Foundation MLIP: pre-trained across the periodic table, reused without
-  retraining. MACE-MP-0 [[4](https://arxiv.org/abs/2401.00096)] came first; UMA [[7](https://arxiv.org/abs/2506.23971)] and Orb-v3 [[8](https://arxiv.org/abs/2504.06231)] in 2025.
+  retraining. MACE-MP-0 [[4](https://arxiv.org/abs/2401.00096)] made zero-shot use mainstream in 2024; UMA [[7](https://arxiv.org/abs/2506.23971)] and Orb-v3 [[8](https://arxiv.org/abs/2504.06231)] followed in 2025.
+- UMA shows the scale: UMA-M has 1.4 billion parameters, but only about 50
+  million are active per structure (a mixture of linear experts), so
+  inference stays affordable. It is trained on OMat24 plus OMol25
+  (hybrid-DFT molecules). Use the current checkpoint (UMA 1.2 small, March
+  2026); the original `uma-s-1` is deprecated. For electrolytes, see the
+  molecular row of {doc}`../reference/choosing-a-model` [[23](https://arxiv.org/abs/2603.20183)].
 - Coverage follows the data: common elements appear in hundreds of
   thousands of structures, rare ones (noble gases) in a handful (MPtrj
   counts in [[4](https://arxiv.org/abs/2401.00096)]). Check your elements and short-range repulsion before
@@ -69,6 +88,19 @@ Training data grew over a hundredfold in a few years:
 | OMat24 [[6](https://doi.org/10.1038/s43588-026-00996-w)] | about 118 million inorganic structures | PBE+U |
 | OMol25 [[9](https://arxiv.org/abs/2505.08762)] | more than 100 million molecular calculations | ωB97M-V/def2-TZVPD |
 | UMA training [[7](https://arxiv.org/abs/2506.23971)] | about 500 million structures | mixed |
+
+Model families (figures as published; the field moves fast):
+
+| Model | From | Architecture | Params | Training data |
+|---|---|---|---|---|
+| CHGNet [[5](https://doi.org/10.1038/s42256-023-00716-3)] | LBNL | GNN with charge | about 0.4M | MPtrj |
+| MACE-MP-0 [[4](https://arxiv.org/abs/2401.00096)] | Cambridge and others | equivariant message passing (ACE) | a few M | MPtrj |
+| SevenNet-0 | SNU | NequIP-style GNN | about 0.8M | MPtrj |
+| MatterSim [[24](https://arxiv.org/abs/2405.04967)] | Microsoft | M3GNet-style GNN | 0.9M to 4.5M | 3M to 6M (17M in paper) |
+| Orb-v3 [[8](https://arxiv.org/abs/2504.06231)] | Orbital Materials | graph network | 26M | OMat24 or MPtrj plus Alexandria |
+| eqV2 (OMat24) [[6](https://doi.org/10.1038/s43588-026-00996-w)] | Meta FAIR | equivariant transformer | 31M to 153M | OMat24 |
+| DPA-3 | DeepModeling | line-graph GNN | scalable | OpenLAM, OMat24 |
+| UMA [[7](https://arxiv.org/abs/2506.23971)] | Meta FAIR | equivariant GNN, mixture of linear experts | 290M to 1.4B (6.6M to 50M active) | about 500M |
 
 Materials models learn PBE, which misses dispersion, so {doc}`a2-orb-models`
 adds D3. OMol25 models use a different reference level.
@@ -128,9 +160,14 @@ is better):
 - TorchSim (PyTorch), kUPS (JAX) and NVIDIA ALCHEMI Toolkit (PyTorch and
   Warp) batch many systems into one GPU call [[11](https://github.com/TorchSim/torch-sim)]. Part A uses TorchSim;
   Part B uses ALCHEMI Toolkit.
-- ALCHEMI also supplies CUDA-only kernels (neighbour lists, D3, Ewald) used
-  under UMA, Orb, PET and TorchSim, including the D3 on
-  {doc}`a2-orb-models`. They run on Leonardo, not on LUMI.
+- TorchSim reports up to about 100 times the throughput of ASE for the same
+  model, as time per atom with thousands of atoms batched on one H100
+  [[11](https://github.com/TorchSim/torch-sim)]. That is aggregate throughput,
+  not a per-system speed-up; our A100 runs gave 5 to 7 times
+  ({doc}`a1-batched-relaxation`).
+- ALCHEMI also supplies GPU kernels (neighbour lists, D3, Ewald) used
+  under UMA, Orb, PET and TorchSim. The GPU path is CUDA-only: it runs on
+  Leonardo, not on LUMI. The D3 on {doc}`a2-orb-models` also runs on a CPU.
 
 ![Engine building blocks: a potential, an integrator and a thermostat combine into different simulation types.](../_static/engine-building-blocks.drawio.png)
 
@@ -178,13 +215,22 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
 | [NequIP-OAM-XL](https://github.com/mir-group/nequip) [[12](https://arxiv.org/abs/2607.28461)] | 32M | 0.906 | 0.13 | MIT / CC-BY | also runs on AMD GPUs (LUMI) |
 | [MatRIS-10M-OAM](https://github.com/HPC-AI-Team/MatRIS) | 10M | 0.921 | 0.22 | BSD-3 | best accuracy for its size |
 | [MatterSim v1 5M](https://github.com/microsoft/mattersim) | 4.5M | 0.862 | 0.57 | MIT | small and fast |
+| [Nequix](https://github.com/atomicarchitects/nequix) | 0.7M | 0.751 | 0.45 | MIT / CC-BY | cheapest to run and train |
+| [eSEN-30M-OAM](https://github.com/facebookresearch/fairchem) | 30M | 0.925 | 0.17 | MIT / gated | very accurate; UMA family |
 | [EquiformerV3-OAM](https://github.com/atomicarchitects/equiformer_v3) | 30M | 0.931 | 0.12 | MIT | accuracy leader, slower |
 
 - F1 (0 to 1, higher is better): stable-crystal classification on
   [Matbench Discovery](https://matbench-discovery.materialsproject.org) [[13](https://doi.org/10.1038/s42256-025-01055-1)].
   κSRME (lower is better): thermal-conductivity error.
-- The leaderboard moves within months; OMat24-trained models reach F1 of
-  about 0.92 to 0.93.
+- MatGL 4.0.3 models (TensorNet, CHGNet, M3GNet and QET trained on MatPES;
+  used in A2 to A4) are not on the leaderboard.
+- The compliant tier fixes the training data to MPtrj, so architectures are
+  compared fairly; the best compliant F1 today is about 0.86
+  (EquiformerV3).
+- The leaderboard moves within months. In 2024, OMat24 training reached F1
+  of about 0.92 and about 20 meV/atom, against about 0.82 for the best
+  compliant model; Orb-v3 published about 0.91 in 2025; OMat24-class models
+  now reach about 0.92 to 0.93.
 - Most GPU speed-ups are NVIDIA-only (Leonardo). On AMD (LUMI), choose a
   pure-PyTorch model such as [NequIP](https://github.com/mir-group/nequip)
   or [MACE](https://github.com/ACEsuit/mace).
@@ -207,9 +253,19 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
 
 ## Outlook
 
-- Directions: long-range electrostatics without charge labels, learned DFT
-  functionals for better reference data, generative models screened with
-  MLIPs, language-model agents driving simulation codes.
+- Long-range physics: standard MLIPs are short-ranged. Latent Ewald
+  summation learns latent charges from energies and forces alone, giving
+  polarisation, Born effective charges, infrared spectra under a field and
+  ferroelectric behaviour (PbTiO3) [[30](https://doi.org/10.1038/s41524-025-01911-z)].
+- ML inside DFT: learned exchange-correlation functionals, from DM21
+  [[31](https://doi.org/10.1126/science.abj6511)] to Skala, which reports
+  hybrid accuracy at semi-local cost [[32](https://arxiv.org/abs/2506.14665)].
+  Better, cheaper DFT means better MLIP training data.
+- Generative models propose, MLIPs screen: MatterGen is more than twice as
+  likely as earlier generators to give new, stable crystals, and one has
+  been synthesised; LeMat-GenBench scores generators with MLIP ensembles and
+  finds a stability-versus-novelty trade-off [[33](https://doi.org/10.1038/s41586-025-08628-5)].
+- Language-model agents driving simulation codes.
 - Early agentic workflows: in an NVIDIA test, coding agents wrote 45
   batched GPU MLIP pipelines, but none pushed back on an ill-posed task, and
   an unspecified thermostat changed Li diffusion by 3 to 5 times
@@ -277,3 +333,24 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
     [blog](https://developer.nvidia.com/blog/how-ai-coding-agents-can-unlock-materials-simulation-with-nvidia-alchemi-toolkit/)
 22. S. P. Ong, The Non-AI-pocalypse in Materials Science (2026).
     [post](https://www.materialyze.ai/post/the-non-ai-pocalypse-in-materials-science)
+23. Kumar et al., electrolyte solvation structure from an OMol25-trained
+    potential. [arXiv:2603.20183](https://arxiv.org/abs/2603.20183)
+24. H. Yang et al., MatterSim. [arXiv:2405.04967](https://arxiv.org/abs/2405.04967)
+25. Froitzheim, Müller, Hansen and Grimme, g-xTB, ChemRxiv (2025).
+    [doi:10.26434/chemrxiv-2025-bjxvt](https://doi.org/10.26434/chemrxiv-2025-bjxvt)
+26. Pracht et al., CREST, J. Chem. Phys. 160, 114110 (2024).
+    [doi:10.1063/5.0197592](https://doi.org/10.1063/5.0197592)
+27. Xia, Thie, Soon and Barca, NN-xTB, Nat. Commun. 17, 7302 (2026).
+    [doi:10.1038/s41467-026-73184-z](https://doi.org/10.1038/s41467-026-73184-z)
+28. Jose and Walsh, J. Chem. Theory Comput. 22, 8531 (2026).
+    [doi:10.1021/acs.jctc.6c00979](https://doi.org/10.1021/acs.jctc.6c00979)
+29. Friede, Hölzer, Ehlert and Grimme, dxtb, J. Chem. Phys. 161, 062501 (2024).
+    [doi:10.1063/5.0216715](https://doi.org/10.1063/5.0216715)
+30. Zhong, Kim, King and Cheng, latent Ewald summation, npj Comput. Mater.
+    11, 384 (2025). [doi:10.1038/s41524-025-01911-z](https://doi.org/10.1038/s41524-025-01911-z)
+31. Kirkpatrick et al., DM21, Science 374, 1385 (2021).
+    [doi:10.1126/science.abj6511](https://doi.org/10.1126/science.abj6511)
+32. Luise et al., Skala. [arXiv:2506.14665](https://arxiv.org/abs/2506.14665)
+33. Zeni et al., MatterGen, Nature 639, 624 (2025).
+    [doi:10.1038/s41586-025-08628-5](https://doi.org/10.1038/s41586-025-08628-5);
+    Betala et al., LeMat-GenBench. [arXiv:2512.04562](https://arxiv.org/abs/2512.04562)

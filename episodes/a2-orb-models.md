@@ -184,7 +184,7 @@ experiment             2.460   3.340
 
 `d = c/2` is the interlayer spacing; `d err` is against experiment.
 
-- In-plane `a`: within 0.4 % of experiment for both models.
+- In-plane `a`: within 0.4 % of experiment for all models.
 - Without D3, the reference is PBE: plain Orb-v3 (4.31 to 4.37 Å) is near
   PBE's 4.40 Å; MACE stops at 4.10 Å. Its smaller error is not better
   binding: on a nearly unbound surface, small fitting differences shift the
@@ -209,7 +209,7 @@ experiment             2.460   3.340
 
 ## Leonardo run (one A100)
 
-Set the variables of the previous page. On a login node (compute nodes
+Set the variables from {doc}`A1 <a1-batched-relaxation>`. On a login node (compute nodes
 have no internet):
 
 1. Update pixi (this page adds `orb-models`).

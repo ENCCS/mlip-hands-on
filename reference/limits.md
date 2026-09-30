@@ -25,6 +25,13 @@ Group wall includes startup, model loading, warmup, and MD, but not queue
 wait or native archive extraction. A larger 4,096-atom matrix was incomplete
 and is not included in that comparison.
 
+The checked-in `reviewed-shared-gpu-nve-jupiter.csv` holds the same
+eight-replica matrix, 64 and 512 atoms per replica, on one JUPITER GH200.
+It is one run per case with different runtime packaging. At 64 atoms,
+LAMMPS with CUDA MPS (73 s) finished before the ALCHEMI batch (76 s),
+whose whole-workflow time there is dominated by startup; compare the two
+sites only with that caveat.
+
 A distinct one-GPU capacity probe completed a short ten-step workload with
 six replicas of 8,000 atoms; seven replicas produced CUDA out-of-memory.
 That brackets **that workload**, not a general atom limit. PyTorch-reported

@@ -13,8 +13,8 @@ source revision in a private Jupyter environment, not a site-wide install:
 git clone https://github.com/jupyter-book/jupyterlab-myst.git
 cd jupyterlab-myst
 git checkout 4b4b321907455394a9ab8ceada77fc4d6940cbca
-git apply --check /path/to/mlip-md-lesson/jupyterlab-enccs/jupyterlab-enccs.patch
-git apply /path/to/mlip-md-lesson/jupyterlab-enccs/jupyterlab-enccs.patch
+git apply --check /path/to/mlip-hands-on/jupyterlab-enccs/jupyterlab-enccs.patch
+git apply /path/to/mlip-hands-on/jupyterlab-enccs/jupyterlab-enccs.patch
 python -m pip install build 'jupyter-builder>=1.2,<2'
 # Make a private Corepack shim directory so child build processes find pnpm.
 mkdir -p /path/outside/git/corepack-shims

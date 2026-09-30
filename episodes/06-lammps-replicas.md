@@ -73,7 +73,7 @@ Eight independent simulations on one GPU, three workloads:
 
 - ALCHEMI's single-process `Batch` is none of these modes.
 - Metric: time to finish all eight, with the same replicas, atoms, steps, model and GPU.
-- The [reviewed-results episode](07-reviewed-results.md) keeps plain and MPS
+- [B7 reviewed results](07-reviewed-results.md) keeps plain and MPS
   in separate rows.
 - Optional, longer cells: run each once in a suitably long allocation, not
   alongside another GPU exercise.

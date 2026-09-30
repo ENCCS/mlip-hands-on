@@ -75,7 +75,7 @@ display(Markdown(
 
 - The rows do different work, so their times are not a speedup ratio.
 - For methods on the *same eight simulations*, see the
-  [reviewed benchmark](07-reviewed-results.md); these short live runs only
+  [B7 reviewed results](07-reviewed-results.md); these short live runs only
   illustrate.
 - Aggregate rate: `simulations × measured steps / time to finish all`
   (MD steps per second across all simulations, not per trajectory).

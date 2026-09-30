@@ -24,7 +24,8 @@ cp .env.example .env
 Edit only `.env` with paths for **your** project and prepared artifacts;
 it is ignored by Git. The source checkout does not include MACE weights,
 SIF images, LAMMPS binaries, site credentials, or private run outputs.
-It does include the small reviewed-results CSV used by page B7.
+It does include the two small reviewed-results CSVs used by page B7
+(Arrhenius and JUPITER).
 Keep those outside the checkout and check their identities before a run.
 The commands in later pages assume your shell starts in the repository root
 (the directory containing `examples/` and `scripts/`). For a Jupyter
@@ -35,11 +36,13 @@ Part B examples use one pinned MACE checkpoint but separate software environment
 JupyterLab for the notebooks, an ALCHEMI SIF on Arrhenius (or a private native
 environment on JUPITER), and native Python/LAMMPS for ML-IAP/Kokkos. Keeping
 them separate avoids loading two incompatible CUDA or MPI stacks into one
-notebook kernel. Part A uses its own pixi environment and models; see
-its pages.
+notebook kernel. A1 and A2 use a pixi environment; A3 and A4 use a venv on
+the LUMI CSC PyTorch module; see their pages.
 
 The core exercises need one GPU and prepared artifacts. Building a SIF and
-LAMMPS is covered in the first episodes, but can be done before the GPU session.
+LAMMPS is covered in [B2](../episodes/02-alchemi-image.md) (ALCHEMI image)
+and [B3](../episodes/03-lammps-mpi.md) (native LAMMPS), and can be done
+before the GPU session.
 
 :::{important}
 No notebook submits a Slurm job. Obtain an allocation and check the selected

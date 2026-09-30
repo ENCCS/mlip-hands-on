@@ -25,6 +25,8 @@ when you placed that artifact elsewhere. The remaining variables below
 belong to optional builds, scaling jobs, or the other site; do not fill them
 all in before the first exercise.
 
+Part B artifacts, builds and site runs:
+
 | Variable | Example or source | Used for |
 | --- | --- | --- |
 | `MLIP_PROJECT_ROOT` | `/nobackup/proj/disk/snicXXXX-XX-X/personal/USER/mlip-md` | Convenience base path in `.env.example` only. |
@@ -40,7 +42,7 @@ all in before the first exercise.
 | `MLIP_MPI_BUILD_ROOT` | Existing private artifact directory | Destination for a distinct MPI build candidate. |
 | `MLIP_MPI_ARCHIVE` | Verified MPI runtime archive | Input for the 1/2/4-GPU scaling job. |
 | `MLIP_MPI_ARCHIVE_SHA256` | 64-character digest | Verifies that archive before extraction. |
-| `MLIP_JUPITER_ROOT` | `/e/project1/<PROJECT>/<USER>/mlip-md-lesson` | Private JUPITER inputs, build candidates, and results, outside Git. |
+| `MLIP_JUPITER_ROOT` | `/e/project1/<PROJECT>/<USER>/mlip-hands-on` | Private JUPITER inputs, build candidates, and results, outside Git. |
 | `MLIP_JUPITER_BUILD_ID` | Successful build job ID | Selects the exact native JUPITER build for Python packaging and runtime checks. |
 | `MLIP_WHEELHOUSE_OUTPUT` | Fresh private `.tar` path | Login-node destination for pinned aarch64 Python packages. |
 | `MLIP_JUPITER_WHEELHOUSE` | Reviewed wheelhouse tar path | Offline Python package input on a JUPITER compute node. |
@@ -62,6 +64,41 @@ all in before the first exercise.
 | `MLIP_LESSON_ROOT` | Private source stage on a site | Selects the exact lesson example scripts inside a site job. |
 | `MLIP_LOCAL_RANK` | Set by a launcher when needed | Optional rank annotation in the ALCHEMI result. Do not set for a one-GPU notebook. |
 | `MLIP_ALLOCATED_CUDA_DEVICES` | Set inside the MPI job | Preserves the allocation's peer-visible GPU list for each rank. Do not set manually. |
+
+Job submission and notebook servers:
+
+| Variable | Example or source | Used for |
+| --- | --- | --- |
+| `MLIP_ACCOUNT` | Your current project account | Slurm account for the Arrhenius and JUPITER Jupyter submit scripts. |
+| `MLIP_RESERVATION` | Empty unless given one | Optional Slurm reservation for the Arrhenius Jupyter job. |
+| `MLIP_TIME_LIMIT` | `02:00:00` | Optional Jupyter job time limit, `HH:MM:SS`. |
+| `MLIP_ENV_FILE` | Private `.env` path | Artifact paths sourced by the Arrhenius Jupyter job. |
+| `MLIP_NOTEBOOK_VENV` | `/path/outside/git/mlip-notebook-venv` | Private GPU-node notebook environment on Arrhenius. |
+| `MLIP_JUPYTER_TLS` | Set by the job scripts | Starts Jupyter with TLS. Do not set manually. |
+| `MLIP_SSH_CONFIG` | `$HOME/.ssh/config` | Optional SSH config for `connect-from-laptop.sh`. |
+| `MLIP_MACE_MODEL` | Original reviewed MACE checkpoint | Input for the JUPITER Metatomic export. |
+
+Part A (A1, A2) and Leonardo smokes:
+
+| Variable | Example or source | Used for |
+| --- | --- | --- |
+| `MLIP_TORCHSIM_CHECKPOINT` | `<SCRATCH>/models/` MACE checkpoint | MACE-MP-0b small for the A1 and A2 TorchSim jobs. |
+| `MLIP_ORB_CHECKPOINT` | `<SCRATCH>/models/orb-v3-conservative-inf-omat.ckpt` | Orb-v3 checkpoint for A2; check its SHA-256. |
+| `MATGL_CACHE` | MatGL download directory | Where MatGL models are cached (A2). |
+| `MLIP_REPLICAS` | `1` or `8` | Leonardo ALCHEMI smoke. |
+| `MLIP_LEONARDO_PYTHON` | Private native Python 3.12 executable | Leonardo LAMMPS ML-IAP smoke. |
+| `MLIP_LEONARDO_LAMMPS_PREFIX` | Verified CUDA-Kokkos build | Leonardo LAMMPS ML-IAP smoke. |
+| `MLIP_LEONARDO_WRAPPER_ROOT` | Matching LAMMPS Python wrapper root | Leonardo LAMMPS ML-IAP smoke. |
+| `MLIP_LEONARDO_OVERLAY_ROOT` | Matching CuPy overlay root | Leonardo LAMMPS ML-IAP smoke. |
+
+LUMI (A3 and A4):
+
+| Variable | Example or source | Used for |
+| --- | --- | --- |
+| `MLIP_TRAINING_DIR` | `<SCRATCH>/mlip-training` | Venv, data and results for A4, prepared by `lumi-training-setup.sh`. |
+| `MLIP_TASKS` | `eform finetune` (default) | Which A4 examples the job runs. |
+| `MLIP_FLOAT_BITS` | `64` in the LUMI job | A4 float width; default 32. |
+| `MATGL_FLOAT_BITS` | `64` in the LUMI job | A3 float width; default 32. |
 
 The scripts check additional standard site variables such as `SLURM_JOB_ID`,
 `SLURM_NTASKS`, and `CUDA_VISIBLE_DEVICES`. Their values come from the

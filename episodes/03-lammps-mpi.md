@@ -53,7 +53,8 @@ environment:
   MD correct.
 - Excerpts omit identity checks, private paths and validation; see the full
   [build job](../scripts/build-lammps-mpi.sbatch).
-- One-rank smoke first, then the optional 1/2/4-GPU scaling episode.
+- One-rank smoke first, then the optional 1/2/4-GPU scaling run in
+  [B8](08-scaling.md).
 
 ## Use the tested GPU path
 

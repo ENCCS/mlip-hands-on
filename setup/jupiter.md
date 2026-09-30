@@ -28,7 +28,7 @@ CPU with a GPU with 96 GB of high-bandwidth memory.
 This profile has passed short one-, two-, four-, and eight-GPU silicon runs with the pinned
 MACE ML-IAP export; the eight-GPU run used two nodes. These are functional
 checks, **not** throughput or scientific-equivalence benchmarks. Both cells
-in the eight-replica MyST page completed through a private Jupyter kernel.
+in [B5](../episodes/05-batched-md.md) completed through a private Jupyter kernel.
 A short private JupyterLab server passed TLS-fingerprint and authenticated-API
 checks, then its allocation was cancelled. Do not use an Arrhenius SIF or MPI binary
 here. Native ALCHEMI has separately passed one-GPU, one- and eight-trajectory
@@ -43,14 +43,14 @@ module load Stages/2025 GCC/13.3.0 CMake/3.29.3 CUDA/12 \
 ```
 
 Use a private project directory outside the lesson Git repository, for
-example `/e/project1/<PROJECT>/<USER>/mlip-md-lesson`. Put the pinned LAMMPS
+example `/e/project1/<PROJECT>/<USER>/mlip-hands-on`. Put the pinned LAMMPS
 source archive and model in its `inputs/` directory; check their hashes in
 `reference/model.toml` and the build script. Set `MLIP_JUPITER_ROOT` to that
 private directory. The candidate builder verifies the source archive, then
 builds OpenMPI, CUDA/Hopper Kokkos, ML-IAP, and a shared LAMMPS library:
 
 ```bash
-export MLIP_JUPITER_ROOT=/e/project1/<PROJECT>/<USER>/mlip-md-lesson
+export MLIP_JUPITER_ROOT=/e/project1/<PROJECT>/<USER>/mlip-hands-on
 sbatch --account=<PROJECT> scripts/build-jupiter-lammps-mpi.sbatch
 ```
 
@@ -87,7 +87,7 @@ allocation, and submit the smoke script with both paths in the Slurm
 environment:
 
 ```bash
-export MLIP_LESSON_ROOT=/path/to/staged/mlip-md-lesson
+export MLIP_LESSON_ROOT=/path/to/staged/mlip-hands-on
 sbatch --account=<PROJECT> --export=ALL,MLIP_JUPITER_ROOT,MLIP_LESSON_ROOT,MLIP_JUPITER_BUILD_ID \
   scripts/test-jupiter-lammps-verified.sbatch
 ```
@@ -133,8 +133,8 @@ runtime requirements are in `locks/`. The download helper checks both lock
 hashes and does not install packages:
 
 ```bash
-export MLIP_LESSON_ROOT=/path/to/staged/mlip-md-lesson
-export MLIP_WHEELHOUSE_OUTPUT=/e/project1/<PROJECT>/<USER>/mlip-md-lesson/alchemi-wheels.tar
+export MLIP_LESSON_ROOT=/path/to/staged/mlip-hands-on
+export MLIP_WHEELHOUSE_OUTPUT=/e/project1/<PROJECT>/<USER>/mlip-hands-on/alchemi-wheels.tar
 bash scripts/prepare-jupiter-wheelhouse.sh
 sha256sum "$MLIP_WHEELHOUSE_OUTPUT"
 ```
@@ -181,7 +181,7 @@ export MLIP_NATIVE_ALCHEMI_PYTHON="$MLIP_JUPITER_ROOT/env-alchemi-$MLIP_JUPITER_
 export MLIP_MODEL="$MLIP_JUPITER_ROOT/inputs/mace-mp-0a-small-2ddb079cee0e131e.model"
 ```
 
-The eight-replica short smoke and both cells in the eight-replica MyST page
+The eight-replica short smoke and both cells in [B5](../episodes/05-batched-md.md)
 passed through that exact runner. Launch
 the notebook only inside a GPU-bound `srun` step so the kernel sees one GPU.
 
@@ -205,8 +205,8 @@ placeholder is replaced by Slurm with the job ID:
 
 ```bash
 sbatch --account=<PROJECT> \
-  --output="$MLIP_JUPYTER_ROOT/jupyter-%j.log" \
-  --error="$MLIP_JUPYTER_ROOT/jupyter-%j.err" \
+  --output="$MLIP_JUPITER_ROOT/jupyter-%j.log" \
+  --error="$MLIP_JUPITER_ROOT/jupyter-%j.err" \
   --export=ALL,MLIP_JUPITER_ROOT,MLIP_LESSON_ROOT,MLIP_JUPITER_ALCHEMI_ENV_ID,MLIP_JUPITER_JUPYTER_ENV \
   scripts/jupiter-jupyter.sbatch
 ```
@@ -237,7 +237,7 @@ Metatomic model, package overlays, and LAMMPS build outside Git.
 On a login node, prepare the pinned fork and private Python overlays:
 
 ```bash
-export MLIP_LESSON_ROOT=/path/to/staged/mlip-md-lesson
+export MLIP_LESSON_ROOT=/path/to/staged/mlip-hands-on
 export MLIP_METATOMIC_SOURCE="$MLIP_JUPITER_ROOT/lammps-metatomic-patched-6a3910424d0aeccf27ad1fc233be1933f72631d2"
 export MLIP_METATOMIC_OVERLAY="$MLIP_JUPITER_ROOT/metatomic-overlay-course"
 export MLIP_MACE_EXPORT_OVERLAY="$MLIP_JUPITER_ROOT/mace-export-overlay-course"
@@ -272,7 +272,7 @@ Set `MLIP_JUPITER_METATOMIC_BUILD_ID` to the completed build job ID,
 `MLIP_METATOMIC_MODEL_SHA256` to its recorded hash. The smoke script checks
 all three identities. Its default input is a 64-atom silicon NVE trajectory;
 for multi-GPU runs, set `MLIP_METATOMIC_INPUT` to the staged
-`examples/lammps_metatomic_si_512.in` instead. A two-GPU example is:
+`examples/lammps_metatomic_si_512.in` instead. The default 64-atom input is:
 
 ```{literalinclude} ../examples/lammps_metatomic_si.in
 :language: text
