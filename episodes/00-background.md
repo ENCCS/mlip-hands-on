@@ -174,6 +174,8 @@ adds D3. OMol25 models use a different reference level.
 
 First papers and code: [Behler and Parrinello 2007](https://doi.org/10.1103/PhysRevLett.98.146401) ([code](https://github.com/CompPhysVienna/n2p2)), [GAP 2010](https://doi.org/10.1103/PhysRevLett.104.136403) ([code](https://github.com/libAtoms/QUIP)), [SNAP 2015](https://doi.org/10.1016/j.jcp.2014.12.018) ([code](https://github.com/FitSNAP/FitSNAP)), [MTP 2016](https://doi.org/10.1137/15M1054183) ([code](https://gitlab.com/ashapeev/mlip-2)), [ANI-1 2017](https://doi.org/10.1039/C6SC05720A) ([code](https://github.com/aiqm/torchani)), [ANI-1ccx, CCSD(T) data](https://doi.org/10.1038/s41467-019-10827-4), [SchNet](https://doi.org/10.1063/1.5019779) ([code](https://github.com/atomistic-machine-learning/schnetpack)), [DeePMD 2018](https://doi.org/10.1103/PhysRevLett.120.143001) ([code](https://github.com/deepmodeling/deepmd-kit)), [ACE 2019](https://doi.org/10.1103/PhysRevB.99.014104) ([code](https://github.com/ICAMS/python-ace)), [NequIP](https://doi.org/10.1038/s41467-022-29939-5) ([code](https://github.com/mir-group/nequip)), [MACE](https://arxiv.org/abs/2206.07697) ([code](https://github.com/ACEsuit/mace)), [M3GNet](https://doi.org/10.1038/s43588-022-00349-3) ([code](https://github.com/materialyzeai/matgl)), [CHGNet](https://doi.org/10.1038/s42256-023-00716-3) ([code](https://github.com/CederGroupHub/chgnet)), [MACE-MP-0](https://arxiv.org/abs/2401.00096) ([code](https://github.com/ACEsuit/mace-foundations)), [UMA](https://arxiv.org/abs/2506.23971) ([code](https://github.com/facebookresearch/fairchem)), [Orb-v3 2025](https://arxiv.org/abs/2504.06231) ([code](https://github.com/orbital-materials/orb-models)), [NequIP-OAM 2026](https://arxiv.org/abs/2607.28461) ([code](https://github.com/mir-group/nequip)), [DPA4C 2026](https://arxiv.org/abs/2608.19041) ([code](https://github.com/deepmodeling/deepmd-kit)), [Skala, learned DFT](https://arxiv.org/abs/2506.14665) ([code](https://github.com/microsoft/skala)).
 
+![Three stages of MLIP architectures: hand-designed descriptors, message passing on a graph, and attention at scale.](../_static/models-built.drawio.png)
+
 - Message passing: in a graph neural network (GNN), atoms exchange
   information with neighbours over several rounds; features are learnt,
   not hand-designed.
@@ -183,8 +185,10 @@ First papers and code: [Behler and Parrinello 2007](https://doi.org/10.1103/Phys
 
 ![Equivariance: rotating the structure rotates the forces; the energy is unchanged.](../_static/equivariance.drawio.png)
 
-- Transformers scale the idea to the largest datasets. By 2026, simpler
-  designs compete closely: data and scale matter more than architecture.
+- Attention (EquiformerV2/V3) weighs each neighbour; models such as UMA
+  (1.4B parameters) train on 100M+ structures. By 2026, simpler designs
+  compete closely [[Orb-v3](https://arxiv.org/abs/2504.06231)]: data and
+  scale matter more than architecture.
 
 ## Pre-train, then fine-tune
 
