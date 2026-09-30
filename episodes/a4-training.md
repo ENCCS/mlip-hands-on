@@ -51,7 +51,7 @@ python -m training eform --data <SCRATCH>/mlip-training/data \
   --outdir results/eform --epochs 200
 ```
 
-Result: one run on one MI250X GCD (LUMI), float32, 30 Sept 2026; 200 epochs,
+Result: one run on one MI250X GCD (LUMI), float32; 200 epochs,
 batch 64, learning rate 10⁻³, 460 s training.
 
 | Set | MAE (eV/atom) |
@@ -111,7 +111,7 @@ Two details matter:
 ```
 :::
 
-Result: one run on one MI250X GCD (LUMI), float64, 30 Sept 2026; test set
+Result: one run on one MI250X GCD (LUMI), float64; test set
 of 240 structures, lower is better.
 
 | Case | Training structures | Energy (meV/atom) | Force (meV/Å) | Stress (GPa) | Training (s) |

@@ -158,7 +158,7 @@ options; float32 is from a separate tuned run (options under the table).
 
 ## Leonardo results
 
-One A100, June 2026, MACE-MP-0b small, no cuEquivariance. Serial measured
+One A100, MACE-MP-0b small, no cuEquivariance. Serial measured
 8 structures, scaled to the full set.
 
 | Precision and batching | Structures | Serial, 8 measured (s) | Serial, estimated (s) | Batched (s) | Estimated serial / batched |
@@ -190,7 +190,7 @@ script, no TorchSim batching, one MI250X GCD:
 | FIRE relaxation, serial | 6 structures (Cu, Al, Fe, Si) | 17.0 |
 | MD, 600 K | 200 steps, 32 atoms | 3.9 |
 
-- One run, float64, MACE-MP-0a small, 29 September 2026.
+- One run, float64, MACE-MP-0a small.
 - Shows the model runs on AMD; not a speed comparison with the A100 table.
 - CUDA-only kernels (cuEquivariance, ALCHEMI) are not available on AMD.
 

@@ -57,8 +57,8 @@ from a rehearsal and state that it is a saved result. Serve the lesson pages
 locally with `make livehtml`, which binds to `127.0.0.1`, rather than
 sharing a remote session.
 
-The 30 September 2026 webinar used this fallback: Leonardo was in
-maintenance, so the demo walked through the saved June 2026 runs.
+The webinar used this fallback: Leonardo was in maintenance, so the demo
+walked through saved runs.
 
 ## Publication
 
