@@ -297,13 +297,13 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
 | Model | Params | F1 ↑ | κSRME ↓ | Licence | Use case |
 |---|---:|---:|---:|---|---|
 | [Orb-v3](https://github.com/orbital-materials/orb-models) [[8](https://arxiv.org/abs/2504.06231)] | 26M | 0.905 | 0.21 | Apache-2.0 | fast; D3 variant for van der Waals |
-| [SevenNet-Omni](https://github.com/MDIL-SNU/SevenNet) | 55M | 0.906 | 0.19 | MIT | D3 built in; LAMMPS and TorchSim |
+| [SevenNet-Omni](https://github.com/MDIL-SNU/SevenNet) [[paper](https://arxiv.org/abs/2510.11241)] | 55M | 0.906 | 0.19 | MIT | D3 built in; LAMMPS and TorchSim |
 | [NequIP-OAM-XL](https://github.com/mir-group/nequip) [[12](https://arxiv.org/abs/2607.28461)] | 32M | 0.906 | 0.13 | MIT / CC-BY | also runs on AMD GPUs (LUMI) |
-| [MatRIS-10M-OAM](https://github.com/HPC-AI-Team/MatRIS) | 10M | 0.921 | 0.22 | BSD-3 | best accuracy for its size |
-| [MatterSim v1 5M](https://github.com/microsoft/mattersim) | 4.5M | 0.862 | 0.57 | MIT | small and fast |
-| [Nequix](https://github.com/atomicarchitects/nequix) | 0.7M | 0.751 | 0.45 | MIT / CC-BY | cheapest to run and train |
-| [eSEN-30M-OAM](https://github.com/facebookresearch/fairchem) | 30M | 0.925 | 0.17 | MIT / gated | very accurate; UMA family |
-| [EquiformerV3-OAM](https://github.com/atomicarchitects/equiformer_v3) | 30M | 0.931 | 0.12 | MIT | accuracy leader, slower |
+| [MatRIS-10M-OAM](https://github.com/HPC-AI-Team/MatRIS) [[paper](https://arxiv.org/abs/2603.02002)] | 10M | 0.921 | 0.22 | BSD-3 | best accuracy for its size |
+| [MatterSim v1 5M](https://github.com/microsoft/mattersim) [[24](https://arxiv.org/abs/2405.04967)] | 4.5M | 0.862 | 0.57 | MIT | small and fast |
+| [Nequix](https://github.com/atomicarchitects/nequix) [[paper](https://arxiv.org/abs/2508.16067)] | 0.7M | 0.751 | 0.45 | MIT / CC-BY | cheapest to run and train |
+| [eSEN-30M-OAM](https://github.com/facebookresearch/fairchem) [[paper](https://arxiv.org/abs/2502.12147)] | 30M | 0.925 | 0.17 | MIT / gated | very accurate; UMA family |
+| [EquiformerV3-OAM](https://github.com/atomicarchitects/equiformer_v3) [[paper](https://arxiv.org/abs/2604.09130)] | 30M | 0.931 | 0.12 | MIT | accuracy leader, slower |
 
 - F1 (0 to 1, higher is better): stable-crystal classification on
   [Matbench Discovery](https://matbench-discovery.materialsproject.org) [[13](https://doi.org/10.1038/s42256-025-01055-1)].
