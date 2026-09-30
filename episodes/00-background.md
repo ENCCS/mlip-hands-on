@@ -447,9 +447,22 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
   | MACE-OFF23 (L) | 1.73 | 1.43 |
   | AIMNet2 | 2.55 | 33.7 |
 - Beyond one score: [MLIP Arena](https://github.com/atomind-ai/mlip-arena)
-  [[14](https://arxiv.org/abs/2509.20630)] tests equations of state, phonons, diffusion barriers and diatomic
-  curves; [mlipbenchmarks](https://github.com/peastman/mlipbenchmarks) [[15](https://doi.org/10.1021/acs.jctc.6c00130)]
-  measures accuracy, MD speed, GPU memory and stability.
+  ([leaderboard](https://huggingface.co/spaces/atomind/mlip-arena))
+  [[14](https://arxiv.org/abs/2509.20630)] tests physics in four groups:
+  asymptotic behaviour (diatomic curves, energy conservation), stability and
+  reactivity (heating, compression, combustion), distribution shifts (gas
+  adsorption, vacancy migration) and thermodynamics (equation of state,
+  phase transitions). In its heating test, 120 NVT runs from 300 to 3000 K in
+  10 ps on one A100, the share of valid runs ranges from about 97% (ORBv2)
+  to about 44% (M3GNet).
+
+  ![Heating MD: share of valid runs and MD speed against system size for seven universal MLIPs.](../_static/mliparena-fig3a-nvt.png)
+
+  *Chiang et al., arXiv:2509.20630, Fig. 3(a) (CC BY 4.0, cropped).*
+- For molecules, [mlipbenchmarks](https://github.com/peastman/mlipbenchmarks)
+  [[15](https://doi.org/10.1021/acs.jctc.6c00130)] compares accuracy, MD
+  speed and GPU memory for 15 models; all ran stable MD, so accuracy
+  against speed decides.
 - Ensemble: run several models; disagreement flags low confidence.
 - Check speed and GPU memory at your system size.
 - PBE-trained models miss dispersion. Grimme's
