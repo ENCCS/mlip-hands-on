@@ -42,3 +42,30 @@ does not establish that the job will run promptly.
 
 This episode focuses on the LAMMPS MPI route. The ALCHEMI one-GPU batch
 demonstration is not a claim of multi-GPU domain decomposition.
+
+## Can more MPI ranks enlarge a one-GPU simulation?
+
+Two or four MPI ranks can divide one trajectory while sharing a single GPU.
+That does **not** add GPU memory: each rank creates its own GPU context and
+loads the model. More ranks may therefore *lower* the largest atom count that
+fits. Test this separately from the one-rank-per-GPU scaling above.
+
+In an existing **one-GPU** allocation with CUDA MPS enabled, use the same
+input and `cells` value for each rank count. For example, `cells=16` creates
+32,768 silicon atoms:
+
+```bash
+source scripts/arrhenius-lammps-env.sh
+bash scripts/run-lammps.sh "$PWD" "$MLIP_LMP" "$MLIP_MLIAP_MODEL" 16 100
+bash scripts/run-lammps-shared-gpu-mpi.sh "$PWD" 2 "$MLIP_LMP" "$MLIP_MLIAP_MODEL" 16 100
+bash scripts/run-lammps-shared-gpu-mpi.sh "$PWD" 4 "$MLIP_LMP" "$MLIP_MLIAP_MODEL" 16 100
+```
+
+The [shared-GPU launcher](../../scripts/run-lammps-shared-gpu-mpi.sh) uses
+`-k on g 1`: **one GPU per node**, not one per rank. On Arrhenius, request
+`--network=single_node_vni` and use the site's qualified PMI-2 route.
+Increase `cells` in fresh, bounded runs; record completed sizes and explicit
+CUDA out-of-memory failures separately. A short completed run establishes a
+capacity point, not sustained throughput or scientific equivalence. CUDA MPS
+is recommended for usable multi-rank Kokkos performance; without it, do not
+interpret a slow shared-GPU run as a meaningful speed comparison.
