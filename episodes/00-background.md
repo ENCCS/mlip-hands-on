@@ -33,6 +33,13 @@ reviews are in {doc}`../reference/reading`.
   size.
 - An MLIP is trained on first-principles (DFT) energies and forces: near-DFT
   accuracy at near force-field cost. The idea dates from 2007 [[1](https://doi.org/10.1103/PhysRevLett.98.146401)].
+- An MLIP inherits the accuracy of the reference method it was trained on
+  (usually PBE DFT), not more: it reuses that rung's accuracy at a fraction
+  of its cost.
+
+![Energy of two atoms against their distance: a potential energy curve.](../_static/pes_diatomic.png)
+
+*Energy of two atoms versus their distance (illustrative Morse curve).*
 
 ## MLIPs among AI methods for materials
 
@@ -108,7 +115,9 @@ The two also meet: NN-xTB tunes the xTB Hamiltonian with a network
 [[27](https://doi.org/10.1038/s41467-026-73184-z)], xTB features help ML
 screen MOF band gaps [[28](https://doi.org/10.1021/acs.jctc.6c00979)], and
 dxtb is differentiable xTB in PyTorch [[29](https://doi.org/10.1063/5.0216715)].
-D3 and D4 dispersion now run on the GPU in TorchSim and with Orb.
+D3 and D4 dispersion add the van der Waals that PBE-trained MLIPs miss; they
+now run on the GPU in TorchSim and with Orb, and a faster D3 for large cells
+appeared in 2026.
 
 | Use xTB when | Use an MLIP when | Combine them |
 |---|---|---|
@@ -151,16 +160,20 @@ everywhere. Logos identify the developing organisations.*
   counts in [[4](https://arxiv.org/abs/2401.00096)]). Check your elements and short-range repulsion before
   screening arbitrary crystals.
 
+  ![MPtrj element occurrence across the periodic table.](../_static/mace_mptrj_element_counts.png)
+
+  *MPtrj element occurrence, Batatia et al., arXiv:2401.00096 (CC BY-NC-ND 4.0).*
+
 Training data grew over a hundredfold in a few years:
 
 | Dataset | Scale | Reference level |
 |---|---|---|
-| MPtrj [[5](https://doi.org/10.1038/s42256-023-00716-3)] | about 1.58 million configurations, 89 elements | PBE(+U) |
+| MPtrj [[5](https://doi.org/10.1038/s42256-023-00716-3)] | about 1.58 million configurations, about 146,000 Materials Project compounds, 89 elements | PBE(+U) |
 | MatterSim | about 17 million configurations (active learning) | PBE(+U) |
 | GNoME | about 89 million structures (not public) | PBE(+U) |
 | OMat24 [[6](https://doi.org/10.1038/s43588-026-00996-w)] | about 118 million inorganic structures | PBE+U |
-| OMol25 [[9](https://arxiv.org/abs/2505.08762)] | more than 100 million molecular calculations | ωB97M-V/def2-TZVPD |
-| UMA training [[7](https://arxiv.org/abs/2506.23971)] | about 500 million structures | mixed |
+| OMol25 [[9](https://arxiv.org/abs/2505.08762)] | more than 100 million calculations, about 83 million molecular systems, 83 elements | ωB97M-V/def2-TZVPD |
+| UMA training [[7](https://arxiv.org/abs/2506.23971)] | about 500 million unique 3D structures | mixed |
 
 Model families (figures as published; the field moves fast):
 
@@ -200,7 +213,8 @@ First papers and code: [Behler and Parrinello 2007](https://doi.org/10.1103/Phys
 
 ![Equivariance: rotating the structure rotates the forces; the energy is unchanged.](../_static/equivariance.drawio.png)
 
-- Attention (EquiformerV2/V3) weighs each neighbour; models such as UMA
+- Attention (EquiformerV2 [[paper](https://arxiv.org/abs/2306.12059)],
+  EquiformerV3 [[paper](https://arxiv.org/abs/2604.09130)]) weighs each neighbour; models such as UMA
   (1.4B parameters) train on 100M+ structures. By 2026, simpler designs
   compete closely [[Orb-v3](https://arxiv.org/abs/2504.06231)]: data and
   scale matter more than architecture.
@@ -242,6 +256,14 @@ structures right but can be far off on mechanical and disordered systems;
 fine-tuning usually needs less data than training from scratch and closes
 most of the gap.
 
+- Fine-tuned models have lower energy errors at every data fraction, with
+  the biggest gain at 10%; force errors converge with from-scratch training
+  as data grows [[10](https://doi.org/10.1063/5.0299305)].
+
+  ![Learning curves: energy and force errors against training-data fraction, fine-tuned against from scratch.](../_static/finetune_dataefficiency_fig4.png)
+
+  *Learning curves, fine-tune against from scratch, Liu et al., J. Appl. Phys. 139, 041101 (2026) (CC0).*
+
 | System, model | Property | Zero-shot | Fine-tuned |
 |---|---|---|---|
 | Mo, MACE-MP-0b3 [[10](https://doi.org/10.1063/5.0299305)] | $C_{11}$ elastic constant, error | 45.9% | 2.6% |
@@ -252,6 +274,10 @@ most of the gap.
 
 - Elastic constant: how stiff a material is. Stacking-fault energy: the
   cost of sliding atomic layers, which sets how metals deform.
+
+  ![Mo stacking-fault energy: zero-shot MACE-MP-0b3, DFT and the fine-tuned model.](../_static/finetune_mo_gsfe_fig7.png)
+
+  *Mo stacking-fault energy: MACE-MP-0b3 (purple), DFT (black), fine-tuned (blue). Liu et al., J. Appl. Phys. 139, 041101 (2026) (CC0).*
 - Our own run, {doc}`a4-training`: TensorNet (MatPES-PBE) fine-tuned to
   r2SCAN on 84 Li structures reaches 60 meV/atom energy and 128 meV/Å force
   error, against 513 and 427 from scratch (one run, one MI250X GCD).
@@ -289,7 +315,13 @@ most of the gap.
   [docs](https://nvidia.github.io/nvalchemi-toolkit/),
   [blog](https://developer.nvidia.com/blog/building-custom-atomistic-simulation-workflows-for-chemistry-and-materials-science-with-nvidia-alchemi-toolkit/))
   batch many systems into one GPU call. Part A uses TorchSim; Part B uses
-  ALCHEMI Toolkit.
+  ALCHEMI Toolkit. All three are open source.
+
+  | Engine | Stack | Idea | Licence |
+  |---|---|---|---|
+  | TorchSim | PyTorch | batched MD, relaxation and Monte Carlo; drives MACE, FairChem/UMA, SevenNet, ORB, MatterSim | MIT (Radical AI) |
+  | kUPS | JAX | differentiable MD, Monte Carlo and optimisation primitives; runs MACE and UMA | Apache-2.0 (CuspAI) |
+  | ALCHEMI Toolkit | PyTorch and Warp | vendor toolkit; batched and multi-GPU MD and relaxation with MACE, AIMNet2, UMA, MatGL TensorNet | Apache-2.0 (NVIDIA, [v0.2.0](https://github.com/NVIDIA/nvalchemi-toolkit/releases/tag/v0.2.0)) |
 - What batching changes:
 
   ::::{grid} 1 2 2 2
@@ -312,23 +344,33 @@ most of the gap.
   Our A100 runs, 64 to 128 relaxations ({doc}`a1-batched-relaxation`).
   :::
   ::::
+
+  ![Throughput of batched TorchSim against ASE on one H100.](../_static/torchsim_speedup.svg)
+
+  *Throughput vs ASE (single H100, batched). [TorchSim](https://github.com/TorchSim/torch-sim) (MIT).*
+
+  This makes relaxing and screening large candidate sets practical.
 - ALCHEMI also supplies common GPU building blocks (neighbour lists, D3
   dispersion, Ewald sums;
   [Toolkit-Ops](https://github.com/NVIDIA/nvalchemi-toolkit-ops),
+  [docs](https://nvidia.github.io/nvalchemi-toolkit-ops/),
   [blog](https://developer.nvidia.com/blog/accelerating-ai-powered-chemistry-and-materials-science-simulations-with-nvidia-alchemi-toolkit-ops/)) used by UMA, Orb, PET and TorchSim. These run on
   NVIDIA GPUs only; the D3 on {doc}`a2-orb-models` also runs on a CPU.
 
 ![Engine building blocks: a potential, an integrator and a thermostat combine into different simulation types.](../_static/engine-building-blocks.drawio.png)
 
-*Engines are built from swappable blocks. After the kUPS
-design.*
+*Engines are built from swappable blocks: the same potential, integrator
+and thermostat give NVE, NVT or NPT. After the kUPS design (CuspAI, 2026).*
 
 - Leonardo (NVIDIA A100; Booster nodes with four GPUs each): CUDA-native,
   so TorchSim, cuEquivariance and ALCHEMI run directly. Our batched
   relaxation gave 5 to 7x over serial ({doc}`a1-batched-relaxation`).
 - LUMI (AMD MI250X; LUMI-G nodes with four MI250X, each two GCDs): ROCm
   PyTorch runs MACE, NequIP and MatGL (float64); CUDA-only kernels do not.
-  Our MACE, MatGL, fine-tuning and NEB runs used one GCD.
+  Our MACE, MatGL, fine-tuning and NEB runs used one GCD
+  ({doc}`a1-batched-relaxation`, {doc}`a3-matgl-tutorials` to {doc}`a5-neb`).
+  TorchSim added AMD/ROCm support in v0.4.2, verified on consumer cards.
+  Docs: [docs.lumi-supercomputer.eu](https://docs.lumi-supercomputer.eu).
 - Arrhenius (NVIDIA GH200, Linköping, inaugurated September 2026): 382
   nodes with four Grace Hopper superchips each; CUDA-native
   [[NAISS](https://www.naiss.se/resources/arrhenius-technical-description/)].
@@ -384,7 +426,9 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
 | [eSEN-30M-OAM](https://github.com/facebookresearch/fairchem) [[paper](https://arxiv.org/abs/2502.12147)] | 30M | 0.925 | 0.17 | MIT / gated | very accurate; UMA family |
 | [EquiformerV3-OAM](https://github.com/atomicarchitects/equiformer_v3) [[paper](https://arxiv.org/abs/2604.09130)] | 30M | 0.931 | 0.12 | MIT | accuracy leader, slower |
 
-- F1 (0 to 1, higher is better): stable-crystal classification on
+- Matbench Discovery is the main public leaderboard for crystal stability:
+  does a predicted crystal hold together or decompose?
+  F1 (0 to 1, higher is better): stable-crystal classification on
   [Matbench Discovery](https://matbench-discovery.materialsproject.org) [[13](https://doi.org/10.1038/s42256-025-01055-1)].
   κSRME (lower is better): thermal-conductivity error.
 - F1 combines two questions. Precision: of the crystals the model calls
@@ -394,8 +438,14 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
   structure error (RMSD). The compliant tier trains on MPtrj only, for a
   fair comparison. Since July 2026 there is also an
   [MD task](https://matbench-discovery.materialsproject.org/benchmarks/md).
-- MatGL 4.0.3 models (TensorNet, CHGNet, M3GNet and QET trained on MatPES;
-  used in A2 to A4) are not on the leaderboard.
+
+  ![Matbench Discovery metrics for compliant (MPtrj-only) models.](../_static/matbench_metrics_table_compliant.png)
+
+  *Compliant (MPtrj-only) models, 2025 paper snapshot; best today is F1 ≈ 0.86 (EquiformerV3). [Matbench Discovery](https://matbench-discovery.materialsproject.org) [[13](https://doi.org/10.1038/s42256-025-01055-1)]. PBE references; not a Materials Project endorsement.*
+- [MatGL](https://github.com/materialyzeai/matgl) 4.0.3 (BSD-3) models
+  (TensorNet, CHGNet, M3GNet and QET trained on MatPES; used in A2 to A4)
+  are not on the leaderboard. MatGL has no TorchSim interface, so it runs
+  through ASE.
 - The compliant tier fixes the training data to MPtrj, so architectures are
   compared fairly; the best compliant F1 today is about 0.86
   (EquiformerV3).
@@ -413,11 +463,12 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
   broader training data. With training fixed to MPtrj (compliant tier), the
   best went from 0.82 (2024) to about 0.86 today. The top models are now
   within a few hundredths, so choose by your task, speed and licence.
-- Most GPU speed-ups are NVIDIA-only (Leonardo). On AMD (LUMI), choose a
+- Most GPU speed-ups are NVIDIA-only (Leonardo, Arrhenius). On AMD (LUMI), choose a
   pure-PyTorch model such as [NequIP](https://github.com/mir-group/nequip)
   or [MACE](https://github.com/ACEsuit/mace).
 - A low force error is not enough: check MD stability, speed, memory and
-  your property [[Forces are not enough](https://arxiv.org/abs/2210.07237)].
+  your property [[Forces are not enough](https://arxiv.org/abs/2210.07237);
+  [code](https://github.com/kyonofx/MDsim)].
 - Finite-temperature MD of 15 foundation MLIPs, tier medians
   [[20](https://arxiv.org/abs/2607.03433)]:
 
@@ -479,18 +530,52 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
   chain of images between two minima [[36](https://doi.org/10.1063/1.1329672)].
   Each image needs one force call per step, so an MLIP runs it in seconds
   on a GPU.
+
+  ![NEB: fixed end points, images joined by springs, and a climbing image that finds the saddle.](../_static/neb-method.drawio.png)
+
+- NEB relaxes 5 to 9 images together. With DFT that is hundreds to
+  thousands of DFT calls per path; with an MLIP each force call takes
+  milliseconds, so thousands of paths become practical. CatTSunami ran a CO
+  hydrogenation network on Rh(111), 19,000 NEBs, in 12 GPU days, against an
+  estimated 52 GPU years with DFT [[39](https://doi.org/10.1021/acscatal.4c04272)].
 - Universal MLIPs soften the energy surface far from equilibrium and tend
-  to underestimate barriers: MAE 0.34 to 0.49 eV for 470 Mg<sup>2+</sup>
-  paths [[37](https://doi.org/10.1038/s41524-024-01500-6)], and 0.31 eV at
-  best for 574 battery paths, where the models still sorted good from bad
-  conductors (0.5 eV cut-off) about 80 % of the time
-  [[38](https://doi.org/10.1039/D5DD00534E)].
+  to underestimate barriers: MAE 0.34 (MACE), 0.39 (CHGNet) and 0.49 eV
+  (M3GNet) for 470 Mg<sup>2+</sup> paths
+  [[37](https://doi.org/10.1038/s41524-024-01500-6)]; CHGNet and M3GNet
+  underestimate 73 % and 78 % of 574 paths [[38](https://doi.org/10.1039/D5DD00534E)].
+- For those 574 battery paths: MAE 0.31 (MACE-MP-0) to 0.35 eV (M3GNet),
+  and 0.20 to 0.26 eV without each model's outliers above 1 eV; good or bad
+  conductor at 0.5 eV right 74 % (M3GNet) to 85 % (Orb-v3) of the time; MLIP
+  paths were a better DFT starting guess in about two thirds of cases.
+  DFT-NEB itself carries about 0.06 eV [[38](https://doi.org/10.1039/D5DD00534E)].
+
+  ![Parity plot of MLIP against DFT-NEB migration barriers for 574 paths and five models.](../_static/neb-parity-bheemaguli2025.png)
+
+  *MLIP vs DFT-NEB barriers, 574 paths. Bheemaguli, Xiao & Sai Gautam, Fig. 2 (CC BY 4.0, cropped).*
 - Newer models do better (about 0.05 to 0.17 eV on 154 paths)
   [[40](https://arxiv.org/abs/2609.05714)]. For 932 surface reactions,
   MLIP-NEB followed by a few DFT checks put 88 % of barriers within 0.1 eV
   of DFT at a 28× speed-up [[39](https://doi.org/10.1021/acscatal.4c04272)].
+- Pattern: the MLIP finds the path, DFT confirms the saddle. CatTSunami:
+  all-MLIP 2200× faster with 70 % success; adding 2 DFT relaxations and 1
+  single point gives 88 % at 28× [[39](https://doi.org/10.1021/acscatal.4c04272)].
+  Molecules: MACE-OMol25 path, then DFT, 96.6 % success with 3.8 DFT
+  gradients per reaction, 94 to 96 % fewer than DFT alone
+  [[paper](https://arxiv.org/abs/2604.00405)]. Fine-tuning on even one
+  structure removes much of the softening bias
+  [[37](https://doi.org/10.1038/s41524-024-01500-6)].
 - Use MLIP-NEB to screen and to start DFT, then refine the saddle.
   Worked example with LiFePO4 on LUMI: {doc}`a5-neb`.
+
+  ![Left: CI-NEB energy profiles. Right: Li offset from the straight line.](../_static/neb-lifepo4.png)
+
+  *LUMI run, one MI250X GCD, float64 ({doc}`a5-neb`).*
+
+  MACE-MP-0b 0.26 eV and Orb-v3 0.32 eV fall within 0.05 eV of DFT (GGA
+  0.27, GGA+U 0.29 eV); TensorNet gives 0.14 eV, as softening predicts. All
+  three find the curved [010] path, 0.64 to 0.67 Å off the straight line.
+  The models cannot place the Fe<sup>3+</sup> hole, which moves the DFT
+  barrier by almost 0.2 eV.
 
 ## Outlook
 
@@ -529,9 +614,13 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
   | 2020 | [NeuralXC](https://doi.org/10.1038/s41467-020-17265-7) ([code](https://github.com/semodi/neuralxc)) | neural correction on top of a standard XC functional |
   | 2021 | DM21, DeepMind [[31](https://doi.org/10.1126/science.abj6511)] ([code](https://github.com/google-deepmind/deepmind-research/tree/master/density_functional_approximation_dm21)) | trained with fractional charge and spin; fixes delocalisation error |
   | 2025 | Skala, Microsoft [[32](https://arxiv.org/abs/2506.14665)] ([code](https://github.com/microsoft/skala)) | deep-learned XC at meta-GGA cost; beats hybrids on GMTKN55 (2.8 kcal/mol) |
-  | 2026 | Skala in CP2K ([molecular](https://arxiv.org/abs/2608.19033), [condensed phase](https://arxiv.org/abs/2609.34055)) | usable for materials |
+  | 2026 | Skala in CP2K ([molecular](https://arxiv.org/abs/2608.19033), [condensed phase](https://arxiv.org/abs/2609.34055)) | molecules (Aug), then condensed phase (Sept): usable for materials |
 
-  Better, cheaper DFT means better MLIP training data.
+  Skala today: open code ([microsoft/skala](https://github.com/microsoft/skala))
+  with PySCF, GPU4PySCF and ASE interfaces, and now in CP2K for molecular and
+  condensed-phase calculations. Why it matters here: better, cheaper
+  reference data for the next generation of MLIPs; the two directions
+  reinforce each other.
 - Generative models propose, MLIPs screen. A diffusion model turns a
   crystal into noise step by step and learns to run it backwards:
 
@@ -556,7 +645,8 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
   [code](https://github.com/LeMaterial/lemat-genbench),
   [leaderboard](https://huggingface.co/spaces/LeMaterial/LeMat-GenBench).
   Scores 12 generators with an MLIP ensemble (MACE-MP, UMA, Orb); more stable
-  output tends to be less novel. Synthesis remains the bottleneck.
+  output tends to mean less novel output, and no model wins everywhere.
+  Synthesis and experimental checks remain the real bottleneck.
   :::
   ::::
 
@@ -579,7 +669,34 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
 
 > "A poorly posed initial question results in AI scientific slop, an
 > unfortunate side effect that is now becoming far too common."
-> Shyue Ping Ong, 2026 [[22](https://www.materialyze.ai/post/the-non-ai-pocalypse-in-materials-science)]
+> Shyue Ping Ong, September 2026 [[22](https://www.materialyze.ai/post/the-non-ai-pocalypse-in-materials-science)]
+
+## Getting started
+
+- Models and code: [MACE](https://github.com/ACEsuit/mace),
+  [SevenNet](https://github.com/MDIL-SNU/SevenNet),
+  [Orb](https://github.com/orbital-materials/orb-models),
+  [MatterSim](https://github.com/microsoft/mattersim),
+  [FairChem/UMA](https://github.com/facebookresearch/fairchem),
+  [MatGL](https://github.com/materialyzeai/matgl),
+  [DeePMD-kit](https://github.com/deepmodeling/deepmd-kit). Engines:
+  [TorchSim](https://github.com/TorchSim/torch-sim),
+  [kUPS](https://github.com/cusp-ai-oss/kups),
+  [ALCHEMI Toolkit](https://github.com/NVIDIA/nvalchemi-toolkit).
+- Datasets: MPtrj (1.6M configurations, the classic start), OMat24 and
+  OMol25 (100M+ each, materials and molecules),
+  [Alexandria](https://alexandria.icams.rub.de) (large open DFT database of
+  crystals).
+- Benchmarks: [Matbench Discovery](https://matbench-discovery.materialsproject.org)
+  (stability, κSRME, MD task), [MLIP Arena](https://github.com/atomind-ai/mlip-arena)
+  (physical tasks, stability), [mlipbenchmarks](https://github.com/peastman/mlipbenchmarks)
+  (molecules, speed, memory).
+- Help from ENCCS and Sweden AI Factory: lessons at
+  [enccs.github.io/lessons](https://enccs.github.io/lessons/), workshops and
+  events at [enccs.se/events](https://enccs.se/events); access to LUMI,
+  Leonardo and Arrhenius; compute and AI expertise at
+  [swedenaifactory.se](https://swedenaifactory.se); contact
+  [training@enccs.se](mailto:training@enccs.se).
 
 :::{keypoints}
 - MLIPs learn DFT energies and forces at near force-field cost.

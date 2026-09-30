@@ -14,6 +14,10 @@ placement sets throughput.
   one trajectory to many replicas and GPUs.
 - New to MLIPs? Start with {doc}`episodes/00-background`.
 - Source, scripts and job files: [GitHub](https://github.com/ENCCS/mlip-hands-on).
+- Contact and access support: [training@enccs.se](mailto:training@enccs.se);
+  compute and AI support from [Sweden AI Factory](https://swedenaifactory.se);
+  upcoming [events](https://enccs.se/events) and
+  [lessons](https://enccs.github.io/lessons/).
 
 ![Lesson map: background, Part A screening and training, Part B molecular dynamics.](_static/lesson-map.drawio.png)
 
@@ -81,3 +85,23 @@ reference/instructor
 reference/limits
 reference/reading
 ```
+
+## Acknowledgements
+
+ENCCS is the Swedish node of the EuroCC 3 project. EuroCC 3 has received
+funding from the European High-Performance Computing Joint Undertaking (JU)
+under Grant Agreement No. 101306701. The JU receives support from the
+European Union's Digital Europe Programme and Germany, Albania, Austria,
+Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Cyprus, Czechia,
+Denmark, Estonia, Finland, France, Greece, Hungary, Iceland, Ireland, Italy,
+Latvia, Lithuania, Luxembourg, Malta, Montenegro, the Netherlands, North
+Macedonia, Norway, Poland, Portugal, Romania, Serbia, Slovakia, Slovenia,
+Spain, Sweden, Türkiye, and Kosovo.
+
+Funded by the European Union. Views and opinions expressed are however those
+of the author(s) only and do not necessarily reflect those of the European
+Union or EuroHPC Joint Undertaking. Neither the European Union nor the
+EuroHPC Joint Undertaking can be held responsible for them.
+
+ENCCS has also received national funding through Vinnova and the Swedish
+Research Council (VR).

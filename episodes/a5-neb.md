@@ -299,6 +299,7 @@ plot.
 |---|---|---|---|---|---|
 | MAE, all 574 paths | 0.310 eV | 0.336 eV | 0.344 eV | 0.343 eV | 0.349 eV |
 | MAE, 17 common outliers removed | 0.239 eV | 0.245 eV | 0.251 eV | 0.275 eV | 0.290 eV |
+| MAE, each model's outliers above 1 eV removed | 0.202 eV | 0.198 eV | 0.203 eV | 0.248 eV | 0.257 eV |
 | correct good/bad at 0.5 eV | 79.4 % | 84.8 % | 82.9 % | 73.9 % | 73.5 % |
 | underestimated paths | 52 % | 42 % | 43 % | 73 % | 78 % |
 
@@ -361,7 +362,7 @@ figure.
 - ML pre-optimised bands sometimes found lower transition states than DFT
   alone (7 % of transfers), since cheap sampling explores more paths.
 - For organic molecules, MLIP path searches followed by DFT saddle
-  refinement reached 96.6 % success (MACE-OMol25) with about four DFT gradients per reaction
+  refinement reached 96.6 % success (MACE-OMol25) with 3.8 DFT gradients per reaction, 94 to 96 % fewer than DFT alone
   [[21](https://arxiv.org/abs/2604.00405)].
 - Uncertainty-aware NEB, which weights forces by the model's force
   covariance, is an early research direction
