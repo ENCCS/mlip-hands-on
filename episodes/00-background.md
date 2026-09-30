@@ -85,7 +85,7 @@ Six families, often confused. They differ in what the model learns or does.
 
 - Self-driving labs (A-Lab, robotic chemist)
 - Open data (OMat24, Alexandria, LeMaterial)
-- Reality check: stable is not makeable
+- Predicted stable is not always synthesisable [[34](https://doi.org/10.1021/acs.chemmater.4c00643), [35](https://doi.org/10.1103/PRXEnergy.3.011002)]
 :::
 
 ::::
@@ -418,3 +418,7 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
 33. Zeni et al., MatterGen, Nature 639, 624 (2025).
     [doi:10.1038/s41586-025-08628-5](https://doi.org/10.1038/s41586-025-08628-5);
     Betala et al., LeMat-GenBench. [arXiv:2512.04562](https://arxiv.org/abs/2512.04562)
+34. Cheetham and Seshadri, Chem. Mater. 36, 3490 (2024).
+    [doi:10.1021/acs.chemmater.4c00643](https://doi.org/10.1021/acs.chemmater.4c00643)
+35. Leeman et al., PRX Energy 3, 011002 (2024).
+    [doi:10.1103/PRXEnergy.3.011002](https://doi.org/10.1103/PRXEnergy.3.011002)
