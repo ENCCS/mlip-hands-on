@@ -396,10 +396,20 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
 - The compliant tier fixes the training data to MPtrj, so architectures are
   compared fairly; the best compliant F1 today is about 0.86
   (EquiformerV3).
-- The leaderboard moves within months. In 2024, OMat24 training reached F1
-  of about 0.92 and about 20 meV/atom, against about 0.82 for the best
-  compliant model; Orb-v3 published about 0.91 in 2025; OMat24-class models
-  now reach about 0.92 to 0.93.
+- The leaderboard is a moving target:
+
+  | Year | Model | Training data | F1 |
+  |---|---|---|---:|
+  | 2023 | CHGNet | MPtrj | 0.61 |
+  | 2024 | MACE-MP-0 | MPtrj | 0.67 |
+  | 2024 | eqV2 | OMat24 | 0.92 |
+  | 2025 | Orb-v3 | OMat24 | 0.91 |
+  | 2026 | EquiformerV3 | OMat24 and more | 0.93 |
+
+  In three years F1 rose from about 0.6 to 0.93, mainly from more and
+  broader training data. With training fixed to MPtrj (compliant tier), the
+  best went from 0.82 (2024) to about 0.86 today. The top models are now
+  within a few hundredths, so choose by your task, speed and licence.
 - Most GPU speed-ups are NVIDIA-only (Leonardo). On AMD (LUMI), choose a
   pure-PyTorch model such as [NequIP](https://github.com/mir-group/nequip)
   or [MACE](https://github.com/ACEsuit/mace).
