@@ -69,5 +69,5 @@ CUDA out-of-memory failures separately. A short completed run establishes a
 capacity point, not sustained throughput or scientific equivalence. CUDA MPS
 is recommended for usable multi-rank Kokkos performance; without it, do not
 interpret a slow shared-GPU run as a meaningful speed comparison.
-The [bounded Arrhenius result](09-results.md#one-trajectory-multiple-mpi-ranks-sharing-one-gpu)
+The [bounded Arrhenius result](09-results.md)
 reports which tested sizes completed; it is not an absolute memory limit.
