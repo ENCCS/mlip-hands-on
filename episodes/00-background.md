@@ -323,20 +323,21 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
 
 - Diffusion and reactions are set by the barrier E<sub>a</sub> at a saddle
   point, and the rate depends on it exponentially: at 298 K, 60 meV is about
-  a factor of ten in diffusivity [[36](https://doi.org/10.1039/D5DD00534E)].
+  a factor of ten in diffusivity [[38](https://doi.org/10.1039/D5DD00534E)].
 - The climbing-image nudged elastic band (CI-NEB) finds the saddle with a
-  chain of images between two minima [[34](https://doi.org/10.1063/1.1329672)].
-  Each image is one force call, so an MLIP runs it in seconds on a GPU.
+  chain of images between two minima [[36](https://doi.org/10.1063/1.1329672)].
+  Each image needs one force call per step, so an MLIP runs it in seconds
+  on a GPU.
 - Universal MLIPs soften the energy surface far from equilibrium and tend
   to underestimate barriers: MAE 0.34 to 0.49 eV for 470 Mg<sup>2+</sup>
-  paths [[35](https://doi.org/10.1038/s41524-024-01500-6)], and 0.31 eV at
+  paths [[37](https://doi.org/10.1038/s41524-024-01500-6)], and 0.31 eV at
   best for 574 battery paths, where the models still sorted good from bad
   conductors (0.5 eV cut-off) about 80 % of the time
-  [[36](https://doi.org/10.1039/D5DD00534E)].
+  [[38](https://doi.org/10.1039/D5DD00534E)].
 - Newer models do better (about 0.05 to 0.17 eV on 154 paths)
-  [[38](https://arxiv.org/abs/2609.05714)]. With a few DFT checks after the
-  MLIP-NEB, 91 % of 932 surface-reaction barriers were within 0.1 eV of DFT
-  at a 28× speed-up [[37](https://doi.org/10.1021/acscatal.4c04272)].
+  [[40](https://arxiv.org/abs/2609.05714)]. For 932 surface reactions,
+  MLIP-NEB followed by a few DFT checks put 88 % of barriers within 0.1 eV
+  of DFT at a 28× speed-up [[39](https://doi.org/10.1021/acscatal.4c04272)].
 - Use MLIP-NEB to screen and to start DFT, then refine the saddle.
   Worked example with LiFePO4 on LUMI: {doc}`a5-neb`.
 
@@ -447,15 +448,15 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
     [doi:10.1021/acs.chemmater.4c00643](https://doi.org/10.1021/acs.chemmater.4c00643)
 35. Leeman et al., PRX Energy 3, 011002 (2024).
     [doi:10.1103/PRXEnergy.3.011002](https://doi.org/10.1103/PRXEnergy.3.011002)
-34. G. Henkelman, B. P. Uberuaga and H. Jónsson, CI-NEB, J. Chem. Phys.
+36. G. Henkelman, B. P. Uberuaga and H. Jónsson, CI-NEB, J. Chem. Phys.
     113, 9901 (2000). [doi:10.1063/1.1329672](https://doi.org/10.1063/1.1329672)
-35. B. Deng et al., systematic softening in universal MLIPs,
+37. B. Deng et al., systematic softening in universal MLIPs,
     npj Comput. Mater. 11, 9 (2025).
     [doi:10.1038/s41524-024-01500-6](https://doi.org/10.1038/s41524-024-01500-6)
-36. A. K. Bheemaguli, P. Xiao and G. Sai Gautam, Digital Discovery 5, 1809 (2026).
+38. A. K. Bheemaguli, P. Xiao and G. Sai Gautam, Digital Discovery 5, 1809 (2026).
     [doi:10.1039/D5DD00534E](https://doi.org/10.1039/D5DD00534E);
     [arXiv:2512.03642](https://arxiv.org/abs/2512.03642)
-37. B. Wander et al., CatTSunami, ACS Catal. 15, 5283 (2025).
+39. B. Wander et al., CatTSunami, ACS Catal. 15, 5283 (2025).
     [doi:10.1021/acscatal.4c04272](https://doi.org/10.1021/acscatal.4c04272);
     [arXiv:2405.02078](https://arxiv.org/abs/2405.02078)
-38. K. Amirian et al., FPBench. [arXiv:2609.05714](https://arxiv.org/abs/2609.05714)
+40. K. Amirian et al., FPBench. [arXiv:2609.05714](https://arxiv.org/abs/2609.05714)

@@ -388,7 +388,7 @@ few DFT (+U) single points or a short DFT CI-NEB started from the MLIP band.
 - CI-NEB with a universal MLIP gives the curved Li path in LiFePO4 and a
   barrier in seconds on one GPU; barriers differ by a factor of two between
   models (0.14 to 0.32 eV).
-- Zero-shot MLIP barriers have errors of 0.05 to 0.35 eV and tend to be too
+- Zero-shot MLIP barriers have mean errors of 0.05 to 0.5 eV and tend to be too
   low (softening): good for ranking and paths, not for rates.
 - Use MLIP-NEB to screen and to start DFT; refine the saddle with DFT,
   especially where magnetism or polarons matter.
