@@ -108,9 +108,13 @@ The two also meet: NN-xTB tunes the xTB Hamiltonian with a network
 [[27](https://doi.org/10.1038/s41467-026-73184-z)], xTB features help ML
 screen MOF band gaps [[28](https://doi.org/10.1021/acs.jctc.6c00979)], and
 dxtb is differentiable xTB in PyTorch [[29](https://doi.org/10.1063/5.0216715)].
-D3 and D4 dispersion now run on the GPU in TorchSim and with Orb. MLIPs are
-more accurate and faster on GPUs for what they were trained on; good
-workflows use both.
+D3 and D4 dispersion now run on the GPU in TorchSim and with Orb.
+
+| Use xTB when | Use an MLIP when | Combine them |
+|---|---|---|
+| No training data exists for your chemistry | Your system is inside its training data | CREST samples with xTB, the MLIP re-ranks |
+| Unusual elements, charges or spin states | You need DFT-level accuracy for that domain | xTB checks cases outside the MLIP's data |
+| You need electrons: charges, orbitals, gaps | Large or long runs: linear scaling, GPUs | D3/D4 adds dispersion to either |
 
 (background-foundation)=
 ## From bespoke to foundation models
