@@ -430,11 +430,14 @@ few DFT (+U) single points or a short DFT CI-NEB started from the MLIP band.
     machine learned interatomic potentials for migration barrier
     predictions, Digital Discovery 5, 1809 (2026).
     [doi:10.1039/D5DD00534E](https://doi.org/10.1039/D5DD00534E);
-    [arXiv:2512.03642](https://arxiv.org/abs/2512.03642)
+    [arXiv:2512.03642](https://arxiv.org/abs/2512.03642);
+    [code and data](https://github.com/sai-mat-group/mlips-migration-barriers),
+    [Zenodo](https://doi.org/10.5281/zenodo.17483476)
 19. B. Wander et al., CatTSunami, ACS Catal. 15, 5283 (2025).
     [doi:10.1021/acscatal.4c04272](https://doi.org/10.1021/acscatal.4c04272);
     [arXiv:2405.02078](https://arxiv.org/abs/2405.02078)
-20. K. Amirian et al., FPBench. [arXiv:2609.05714](https://arxiv.org/abs/2609.05714)
+20. K. Amirian et al., FPBench. [arXiv:2609.05714](https://arxiv.org/abs/2609.05714);
+    [code](https://github.com/mogroupumd/FPBench)
 21. J. Marks, J. Vandezande and J. Gomes, automated transition-state
     searches with MLIPs. [arXiv:2604.00405](https://arxiv.org/abs/2604.00405)
 22. K. Hoang and M. Johannes, Chem. Mater. 23, 3003 (2011).

@@ -607,8 +607,11 @@ data, accessed 29 September 2026 [[13](https://doi.org/10.1038/s42256-025-01055-
     [doi:10.1038/s41524-024-01500-6](https://doi.org/10.1038/s41524-024-01500-6)
 38. A. K. Bheemaguli, P. Xiao and G. Sai Gautam, Digital Discovery 5, 1809 (2026).
     [doi:10.1039/D5DD00534E](https://doi.org/10.1039/D5DD00534E);
-    [arXiv:2512.03642](https://arxiv.org/abs/2512.03642)
+    [arXiv:2512.03642](https://arxiv.org/abs/2512.03642);
+    [code and data](https://github.com/sai-mat-group/mlips-migration-barriers),
+    [Zenodo](https://doi.org/10.5281/zenodo.17483476)
 39. B. Wander et al., CatTSunami, ACS Catal. 15, 5283 (2025).
     [doi:10.1021/acscatal.4c04272](https://doi.org/10.1021/acscatal.4c04272);
     [arXiv:2405.02078](https://arxiv.org/abs/2405.02078)
-40. K. Amirian et al., FPBench. [arXiv:2609.05714](https://arxiv.org/abs/2609.05714)
+40. K. Amirian et al., FPBench. [arXiv:2609.05714](https://arxiv.org/abs/2609.05714);
+    [code](https://github.com/mogroupumd/FPBench)
