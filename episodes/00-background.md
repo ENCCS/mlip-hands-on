@@ -94,9 +94,9 @@ How they connect:
 
 ![Six families of AI methods for materials as a flow, with interatomic potentials highlighted.](../_static/bg-ai-families.drawio.png)
 
-- MLIPs turn first-principles data into relaxed structures and dynamics.
-- Generators propose candidates, MLIPs screen them, labs make the best ones.
-- Agents steer the loop; lab and open data feed the next round of training.
+- MLIPs sit in the middle: first-principles data in, structures and dynamics out.
+- Generators propose, MLIPs screen, labs make; new data feeds retraining.
+- LLM agents can run any step, from one DFT or MLIP calculation to the whole loop.
 - This lesson covers interatomic potentials only.
 
 Next door, fast quantum chemistry (outside this lesson's hands-on scope):
