@@ -56,9 +56,10 @@ time per replica does not mean the eight-replica job finishes sooner.
 
 The shell runner accepts a sixth argument for the cubic cell count:
 `2` gives 64 atoms per trajectory and `4` gives 512. The notebook cells
-above stay with the smaller 64-atom example. See the separate
-[completed eight-trajectory benchmark](09-results.md) before comparing
-methods; its clock includes startup as well as MD.
+above stay with the smaller 64-atom example. The
+[result guide](09-results.md) explains why the current ALCHEMI and LAMMPS
+examples must not be compared by dividing their elapsed times: their
+integrators and starting velocities are not yet matched.
 
 ```{note}
 The example selects Langevin NVT. Its source shows where to select a

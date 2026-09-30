@@ -81,9 +81,11 @@ These 200-step notebook cells are a short functional demonstration. A
 benchmark should declare its clock, workload, and repetition order before
 running. The launcher's fifth argument sets MD steps, its sixth sets
 `cells` (`2` is 64 atoms; `4` is 512), and its seventh sets warm-up steps. The
-[completed eight-trajectory benchmark](09-results.md) used 200 steps and
-zero separate warm-up steps with both engines; this notebook demonstration
-retains its default ten-step LAMMPS warm-up.
+earlier exploratory eight-trajectory run used 200 steps and zero separate
+warm-up steps with both engines; this notebook demonstration retains its
+default ten-step LAMMPS warm-up. The [result guide](09-results.md) does not
+accept that run as a cross-engine speed comparison because the integrators
+and starting velocities were not matched.
 
 The [reference](../reference/limits.md) distinguishes historical process
 measurements from runs qualified with this branch's CLI input. Only compare
