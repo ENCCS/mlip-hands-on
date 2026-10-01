@@ -12,7 +12,8 @@ SOURCE = Path(__file__).parent
 
 def log_text(atoms, ranks=1, finite=True):
     energy = "-300" if finite else "nan"
-    return (f"Loop time of 0.1 on {ranks} procs for 0 steps with {atoms} atoms\n"
+    return (f"  will use up to {ranks} GPU(s) per node\n"
+            f"Loop time of 0.1 on {ranks} procs for 0 steps with {atoms} atoms\n"
             f"Loop time of 1.0 on {ranks} procs for 10 steps with {atoms} atoms\n"
             f"210 {atoms} 300 {energy} 1 -299\n"
             f"Loop time of 5.0 on {ranks} procs for 200 steps with {atoms} atoms\n"
@@ -60,6 +61,7 @@ class SweepTests(unittest.TestCase):
             self.make_sweep(root)
             outcome = self.run_sweep(root)
             self.assertEqual(outcome.returncode, 0, outcome.stderr)
+
             self.assertEqual(json.loads((root / "accepted.json").read_text())["rows_checked"], 60)
 
     def test_missing_replica_cannot_be_hidden_by_summary(self):
@@ -117,6 +119,15 @@ class SweepTests(unittest.TestCase):
                                       "--results", str(root), "--output", str(root / "accepted.json")],
                                      capture_output=True, text=True)
             self.assertEqual(outcome.returncode, 0, outcome.stderr)
+
+            # A matching MPI count is not enough if Kokkos reports fewer GPUs.
+            log = root / "round3-strong-g4-a32768.log"
+            log.write_text(log.read_text().replace("4 GPU(s)", "1 GPU(s)"))
+            rejected = subprocess.run([sys.executable, str(SOURCE / "summarize_scaling_matrix.py"),
+                                       "--results", str(root), "--output", str(root / "bad-summary.json")],
+                                      capture_output=True, text=True)
+            self.assertNotEqual(rejected.returncode, 0)
+            self.assertFalse((root / "bad-summary.json").exists())
 
 
 if __name__ == "__main__":

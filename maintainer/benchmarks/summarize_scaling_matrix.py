@@ -5,6 +5,7 @@ import csv
 import json
 import math
 import os
+import re
 import statistics
 from pathlib import Path
 from summarize_sweep import LOOP, finite_final_thermo
@@ -38,6 +39,7 @@ def main():
         text = (args.results / f"{stem}.log").read_text()
         loops = LOOP.findall(text)
         if (text.count("Total wall time:") != 1 or "ERROR:" in text or len(loops) != 3 or
+                re.findall(r"will use up to (\d+) GPU\(s\) per node", text) != [str(ranks)] or
                 [int(v[2]) for v in loops] != [0, 10, 200] or
                 any(int(v[1]) != ranks or int(v[3]) != atoms for v in loops) or
                 not math.isclose(float(loops[-1][0]), md, rel_tol=1e-9)):
