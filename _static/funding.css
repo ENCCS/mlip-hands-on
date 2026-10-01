@@ -47,3 +47,7 @@ body[data-theme="dark"] .copyright:before {
     filter: none !important;
     box-shadow: none !important;
 }
+/* the EuroHPC JU SVG has wide built-in margins; size it to match the others visually */
+.cc3-logos img[src*="eurohpc"] {
+    height: 60px;
+}
