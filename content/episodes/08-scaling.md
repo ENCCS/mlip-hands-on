@@ -43,6 +43,52 @@ does not establish that the job will run promptly.
 This episode focuses on the LAMMPS MPI route. The ALCHEMI one-GPU batch
 demonstration is not a claim of multi-GPU domain decomposition.
 
+## Measured one-node scaling on Arrhenius
+
+A separate matched-NVE benchmark used MACE-MP-0a small, silicon starting
+structures and velocities from the common generator, a 0.1 fs timestep,
+ten warm-up steps and 200 measured steps. Unlike the short notebook demo
+above, these runs hold the integrator and measurement boundary fixed.
+Three rounds varied the case order. All 18 cases completed on one Arrhenius
+node; times below are median LAMMPS **MD-loop seconds**, excluding model
+loading, warm-up and queue wait.
+
+### Strong scaling: keep 32,768 atoms fixed
+
+| GH200 GPUs | MPI ranks | MD-loop seconds | Speedup over one GPU | Parallel efficiency |
+| ---: | ---: | ---: | ---: | ---: |
+| 1 | 1 | 237.285 | 1.00× | 100% |
+| 2 | 2 | 139.269 | 1.70× | 85.2% |
+| 4 | 4 | 89.598 | 2.65× | 66.2% |
+
+Four GPUs shorten this trajectory's measured MD time, but do not deliver
+four times the throughput. The ratio is within LAMMPS, not an ALCHEMI
+comparison. It also does not include the cost of launching a short session.
+
+### Weak scaling: increase atoms with GPU count
+
+| GH200 GPUs | Total atoms | Atoms per GPU | MD-loop seconds |
+| ---: | ---: | ---: | ---: |
+| 1 | 8,000 | 8,000 | 87.845 |
+| 2 | 17,576 | 8,788 | 93.184 |
+| 4 | 32,768 | 8,192 | 89.429 |
+
+The MD time stays within 6.1% of the one-GPU value while the total system
+grows. This is **approximate** weak scaling: cubic diamond supercells give
+discrete sizes, so atoms per GPU are not exactly constant.
+
+```{note}
+These are one-node Arrhenius results for the pinned model and native build.
+They do not establish a VRAM maximum or multi-node performance. The logs
+confirm the requested MPI and Kokkos GPU counts; this benchmark did not
+add an independent device-identity or MPI-bandwidth probe.
+```
+
+Job `3203275` completed with exit `0:0`. Every round and the artifact
+identities are recorded in the MLIP science project at
+`docs/evidence/arrhenius-matched-nve-scaling-2026-10-01.md`. The matched
+inputs and runners are retained in `maintainer/benchmarks/`.
+
 ## Can more MPI ranks enlarge a one-GPU simulation?
 
 Two or four MPI ranks can divide one trajectory while sharing a single GPU.
