@@ -10,31 +10,40 @@
     }
 }
 
-/* CC3 logo row (EuroHPC JU, HPC in Europe, EuroCC 3): smaller than the EU emblem */
+/* CC3 logo row (EuroHPC JU, HPC in Europe, EuroCC 3): below the EU emblem and disclaimer, smaller than the emblem */
+footer {
+    display: flex;
+    flex-direction: column;
+}
+footer .related-pages { order: 1; }
+footer .bottom-of-page { order: 2; }
+footer .cc3-logos { order: 3; }
 .cc3-logos {
     display: flex;
-    gap: 1.5rem;
+    gap: 1.75rem;
     align-items: center;
-    margin-bottom: 0.75rem;
+    width: fit-content;
+    margin: 0.5rem 0 1rem;
+    padding: 6px 12px;
+    border-radius: 6px;
 }
 .cc3-logos img {
     height: 40px;
     width: auto;
 }
 
+/* Dark theme: one shared light strip behind the three logos */
+body[data-theme="dark"] .cc3-logos { background: #fff; }
+@media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) .cc3-logos { background: #fff; }
+}
+
 /* Dark theme emblem without CSS nesting support */
 body[data-theme="dark"] .copyright:before {
     background-image: url("EN_Co-funded/EN_Co-fundedbytheEU_RGB_NEG.png");
 }
-body[data-theme="dark"] .cc3-logos img {
-    background: #fff;
-    padding: 3px 6px;
-    border-radius: 4px;
-}
-@media (prefers-color-scheme: dark) {
-    body:not([data-theme="light"]) .cc3-logos img {
-        background: #fff;
-        padding: 3px 6px;
-        border-radius: 4px;
-    }
+.cc3-logos img {
+    background: transparent !important;
+    filter: none !important;
+    box-shadow: none !important;
 }
