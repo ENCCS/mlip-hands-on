@@ -20,7 +20,7 @@ class MatrixTests(unittest.TestCase):
                 for method in ("alchemi", "ordinary", "mps"):
                     rows.append(f"{round_no}\t{cells}\t{atoms}\t{method}\t8\t10\t200\t30.0\t5.0")
                     stem = f"round{round_no}-atoms{atoms}-r8-{method}"
-                    record = {"state": "completed", "replicas": 8,
+                    record = {"state": "completed", "ensemble": "NVE", "replicas": 8,
                               "atoms_per_replica": atoms, "warmup_steps": 10,
                               "measured_steps": 200}
                     if method == "alchemi":
@@ -62,6 +62,27 @@ class MatrixTests(unittest.TestCase):
             record = json.loads(path.read_text())
             record["final_potential_ev"][0] = float("nan")
             path.write_text(json.dumps(record, separators=(",", ":")))
+            self.assertNotEqual(self.run_summary(root).returncode, 0)
+            self.assertFalse((root / "accepted.json").exists())
+
+    def test_wrong_ensemble_refuses(self):
+        for suffix in ("alchemi.log", "ordinary-summary.json"):
+            with self.subTest(suffix=suffix), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                self.complete_fixture(root)
+                path = root / f"round1-atoms64-r8-{suffix}"
+                record = json.loads(path.read_text())
+                record["ensemble"] = "NVT"
+                path.write_text(json.dumps(record, separators=(",", ":")))
+                self.assertNotEqual(self.run_summary(root).returncode, 0)
+                self.assertFalse((root / "accepted.json").exists())
+
+    def test_md_interval_cannot_exceed_whole_workflow(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.complete_fixture(root)
+            table = root / "results.tsv"
+            table.write_text(table.read_text().replace("30.0\t5.0", "1.0\t5.0", 1))
             self.assertNotEqual(self.run_summary(root).returncode, 0)
             self.assertFalse((root / "accepted.json").exists())
 

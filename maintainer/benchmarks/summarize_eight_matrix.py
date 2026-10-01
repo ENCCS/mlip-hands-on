@@ -48,7 +48,8 @@ def main():
         observed.add(key)
         whole = float(row["whole_seconds"])
         md_diagnostic = float(row["md_diagnostic_seconds"])
-        if not all(math.isfinite(value) and value > 0 for value in (whole, md_diagnostic)):
+        if (not all(math.isfinite(value) and value > 0 for value in (whole, md_diagnostic)) or
+                md_diagnostic > whole):
             raise RuntimeError("invalid timing")
         legacy_stem = f"round{round_no}-atoms{atoms}-{method}"
         current_stem = f"round{round_no}-atoms{atoms}-r8-{method}"
@@ -63,7 +64,7 @@ def main():
             if len(records) != 1:
                 raise RuntimeError(f"missing ALCHEMI completion for {stem}")
             record = records[0]
-            if (record["state"] != "completed" or record["replicas"] != 8 or
+            if (record["state"] != "completed" or record.get("ensemble") != "NVE" or record["replicas"] != 8 or
                     record["atoms_per_replica"] != atoms or
                     record["warmup_steps"] != 10 or record["measured_steps"] != 200 or
                     len(record["final_potential_ev"]) != 8 or
@@ -72,7 +73,7 @@ def main():
                 raise RuntimeError(f"invalid ALCHEMI completion for {stem}")
         else:
             record = json.loads((args.results / f"{stem}-summary.json").read_text())
-            if (record["state"] != "completed" or record["replicas"] != 8 or
+            if (record["state"] != "completed" or record.get("ensemble") != "NVE" or record["replicas"] != 8 or
                     record["atoms_per_replica"] != atoms or
                     record["warmup_steps"] != 10 or record["measured_steps"] != 200 or
                     len(record["replica_md_loop_seconds"]) != 8 or
