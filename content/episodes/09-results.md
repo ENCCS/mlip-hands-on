@@ -146,11 +146,17 @@ MLIP science project's `docs/evidence/jupiter-matched-nve-eight-2026-10-01.md`.
 
 ## One trajectory: increase the atom count
 
-The matched NVE size sweep also completed on **one Arrhenius GH200 GPU**.
-It uses the same model, starting-state generator, 0.1 fs timestep, ten
+The matched NVE size sweep uses the same model, starting-state generator,
+0.1 fs timestep, ten
 warm-up steps and 200 measured steps. Each size has three complete rounds.
 Both model paths use float32 weights; this does not make the engines'
 coordinate arithmetic or trajectories bitwise identical.
+
+`````{tab-set}
+````{tab-item} Arrhenius
+:sync: arrhenius
+
+These measurements used **one Arrhenius GH200 GPU**.
 
 | Silicon atoms | ALCHEMI whole workflow | LAMMPS whole workflow | ALCHEMI measured MD call | LAMMPS MD loop |
 | ---: | ---: | ---: | ---: | ---: |
@@ -171,12 +177,54 @@ for ALCHEMI and 263.872 to 266.540 s for LAMMPS.
 maximum size either engine can fit in GPU memory. No failed capacity point
 was tested in this matched sweep.
 ```
+````
+
+````{tab-item} JUPITER
+:sync: jupiter
+
+These measurements used **one JUPITER GH200 GPU**. Whole-workflow columns
+show the median and full min–max range across three rounds. The MD columns
+are internal diagnostics with different engine timer definitions, not
+GPU-kernel speedups.
+
+| Silicon atoms | ALCHEMI whole workflow | LAMMPS whole workflow | ALCHEMI measured MD call | LAMMPS MD loop |
+| ---: | ---: | ---: | ---: | ---: |
+| 64 | 21.825 s (19.582–24.136) | 71.367 s (68.150–640.335) | 4.578 s | 54.032 s |
+| 512 | 22.083 s (20.271–247.676) | 71.964 s (71.911–344.840) | 5.442 s | 54.336 s |
+| 8,000 | 41.490 s (41.118–346.352) | 104.141 s (103.897–355.570) | 24.017 s | 84.682 s |
+| 32,768 | 114.314 s (114.258–343.848) | 265.285 s (261.875–455.189) | 92.843 s | 233.106 s |
+
+```{warning}
+The whole-workflow ranges include substantial delays outside measured MD.
+All repeats are retained; their cause was not isolated. Do not select the
+fastest repeats to claim a stable engine or hardware ranking.
+32,768 atoms is a completed size, not an established VRAM maximum.
+```
+
+Job `2127712` completed with exit `0:0`. Raw repeat values and identities
+are recorded in the MLIP science project's
+`docs/evidence/jupiter-matched-nve-sweeps-2026-10-01.md`.
+````
+`````
+
+```{note}
+Matching the workload does not establish identical physics results. At
+32,768 atoms, the engines' final potential energies differed by about
+0.00335 eV per atom after 21 fs on both sites. This remains to be explained
+before claiming scientific equivalence; the tables report timings only.
+```
 
 ## Increase the number of independent trajectories
 
 Keep the size of each trajectory fixed and vary how many run together.
-The table gives median **whole-workflow seconds** for all requested
-trajectories to finish on one Arrhenius GH200 GPU.
+The tables give **whole-workflow seconds** for all requested trajectories
+to finish on one GPU, not one process's MD time.
+
+`````{tab-set}
+````{tab-item} Arrhenius
+:sync: arrhenius
+
+Median seconds on one Arrhenius GH200 GPU:
 
 | Atoms per trajectory | Trajectories | ALCHEMI batch | LAMMPS ordinary sharing | LAMMPS CUDA MPS |
 | ---: | ---: | ---: | ---: | ---: |
@@ -203,6 +251,45 @@ filesystem conditions. All 60 new cases passed completion checks, including
 84 LAMMPS replica logs and 24 ALCHEMI records. Full repeat values and
 artifact identities are recorded in the MLIP science project at
 `docs/evidence/arrhenius-matched-nve-sweeps-2026-10-01.md`.
+````
+
+````{tab-item} JUPITER
+:sync: jupiter
+
+Median seconds and min–max ranges on one JUPITER GH200 GPU:
+
+| Atoms per trajectory | Trajectories | ALCHEMI batch | LAMMPS ordinary sharing | LAMMPS CUDA MPS |
+| ---: | ---: | ---: | ---: | ---: |
+| 64 | 1 | 21.825 (19.582–24.136) | 71.367 (68.150–640.335) | not tested |
+| 64 | 2 | 21.544 (21.433–54.473) | 78.870 (73.853–79.272) | 303.420 (293.801–350.874) |
+| 64 | 4 | 19.840 (19.744–20.039) | 86.297 (84.569–87.440) | 305.000 (69.275–582.043) |
+| 64 | 8 | 236.323 (22.822–293.039) | 378.148 (369.871–653.521) | 315.483 (79.394–377.167) |
+| 512 | 1 | 22.083 (20.271–247.676) | 71.964 (71.911–344.840) | not tested |
+| 512 | 2 | 20.337 (20.161–20.768) | 78.725 (78.519–79.712) | 293.680 (65.714–300.294) |
+| 512 | 4 | 23.975 (23.802–23.995) | 86.214 (85.304–86.248) | 356.288 (303.472–596.110) |
+| 512 | 8 | 237.613 (220.790–263.248) | 375.344 (114.113–586.199) | 344.726 (78.461–578.893) |
+
+Calculate completed replica-steps per second as
+`trajectories × 200 / whole-workflow seconds`. For example, four 64-atom
+ALCHEMI trajectories completed 800 measured replica-steps in a median
+19.840 seconds: 40.3 replica-steps/s. This is whole-workflow throughput,
+not GPU occupancy or a model-kernel rate.
+
+```{warning}
+The eight-trajectory points and MPS sweeps ran in separate allocations.
+Large repeat variation, especially in those phases, makes these tables
+unsuitable for choosing an optimum batch size or proving that MPS improves
+or worsens MD performance. The timings retain every completed repeat.
+```
+
+All sixty one/two/four-trajectory cases passed checks: 84 LAMMPS logs,
+24 ALCHEMI completion records and twelve MPS service proofs. Plain sweep
+`2127712` and MPS sweep `2127714` completed `0:0`; eight-trajectory points
+come from `2127710` and `2127664`. They use the same starting-state policy,
+but are not one within-allocation experiment. Full evidence is in
+`docs/evidence/jupiter-matched-nve-sweeps-2026-10-01.md`.
+````
+`````
 
 ### One trajectory, multiple MPI ranks sharing one GPU
 
