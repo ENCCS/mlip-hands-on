@@ -20,7 +20,7 @@ footer .bottom-of-page { order: 2; }
 footer .cc3-logos { order: 3; }
 .cc3-logos {
     display: flex;
-    gap: 1.75rem;
+    gap: 2rem;
     align-items: center;
     width: fit-content;
     margin: 0.5rem 0 1rem;
@@ -47,9 +47,9 @@ body[data-theme="dark"] .copyright:before {
     filter: none !important;
     box-shadow: none !important;
 }
-/* the EuroHPC JU SVG has wide built-in margins; size it to match the others visually */
+/* EuroHPC JU is a wide wordmark: slightly lower so its weight matches */
 .cc3-logos img[src*="eurohpc"] {
-    height: 60px;
+    height: 34px;
 }
 
 /* EU emblem linked to the EU website (CC3 website footer instructions) */
