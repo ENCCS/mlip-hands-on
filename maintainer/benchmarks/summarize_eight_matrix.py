@@ -6,6 +6,7 @@ import csv
 import json
 import math
 import os
+import re
 import statistics
 from pathlib import Path
 
@@ -46,7 +47,13 @@ def main():
         md_diagnostic = float(row["md_diagnostic_seconds"])
         if not all(math.isfinite(value) and value > 0 for value in (whole, md_diagnostic)):
             raise RuntimeError("invalid timing")
-        stem = f"round{round_no}-atoms{atoms}-{method}"
+        legacy_stem = f"round{round_no}-atoms{atoms}-{method}"
+        current_stem = f"round{round_no}-atoms{atoms}-r8-{method}"
+        candidates = [stem for stem in (legacy_stem, current_stem)
+                      if (args.results / f"{stem}.log").is_file()]
+        if len(candidates) != 1:
+            raise RuntimeError("missing or ambiguous case log")
+        stem = candidates[0]
         if method == "alchemi":
             lines = (args.results / f"{stem}.log").read_text().splitlines()
             records = [json.loads(line) for line in lines if line.startswith('{"state":')]
@@ -57,6 +64,7 @@ def main():
                     record["atoms_per_replica"] != atoms or
                     record["warmup_steps"] != 10 or record["measured_steps"] != 200 or
                     len(record["final_potential_ev"]) != 8 or
+                    not all(math.isfinite(value) for value in record["final_potential_ev"]) or
                     not math.isclose(record["md_seconds"], md_diagnostic, rel_tol=1e-9)):
                 raise RuntimeError(f"invalid ALCHEMI completion for {stem}")
         else:
@@ -68,6 +76,19 @@ def main():
                     not math.isclose(record["longest_replica_md_loop_seconds"],
                                      md_diagnostic, rel_tol=1e-9)):
                 raise RuntimeError(f"invalid LAMMPS completion for {stem}")
+            for replica in range(8):
+                text = (args.results / f"{stem}-replicas" / f"replica-{replica}.log").read_text()
+                loops = re.findall(r"Loop time of ([0-9.eE+-]+) on (\d+) procs for (\d+) steps with (\d+) atoms", text)
+                if (text.count("Total wall time:") != 1 or "ERROR:" in text or
+                        len(loops) != 3 or [int(row[2]) for row in loops] != [0, 10, 200] or
+                        any(int(row[1]) != 1 or int(row[3]) != atoms for row in loops) or
+                        not math.isclose(float(loops[-1][0]), record["replica_md_loop_seconds"][replica], rel_tol=1e-9)):
+                    raise RuntimeError(f"replica log disagrees with summary for {stem}")
+                final_rows = [line.split() for line in text.splitlines()
+                              if re.match(r"^\s*210\s+\d+\s", line)]
+                if len(final_rows) != 1 or len(final_rows[0]) != 6 or not all(
+                        math.isfinite(float(value)) for value in final_rows[0]):
+                    raise RuntimeError(f"missing finite final thermo for {stem}")
         normalized.append({"round": round_no, "atoms": atoms, "method": method,
                            "whole_seconds": whole,
                            "md_diagnostic_seconds": md_diagnostic})
