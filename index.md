@@ -108,13 +108,15 @@ By the end of this lesson, learners can:
 
 ## Acknowledgements
 
-EuroCC 3 has received funding from the European High-Performance Computing Joint Undertaking (JU) under Grant Agreement No. 101306701. The JU receives support from the European Union's Digital Europe Programme and Germany, Albania, Austria, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Cyprus, Czechia, Denmark, Estonia, Finland, France, Greece, Hungary, Iceland, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Montenegro, the Netherlands, North Macedonia, Norway, Poland, Portugal, Romania, Serbia, Slovakia, Slovenia, Spain, Sweden, Türkiye, and Kosovo. The project is supported by the European High-Performance Computing Joint Undertaking and its members.
+EuroCC 3 has received funding from the European High-Performance Computing Joint Undertaking (JU) under Grant Agreement No. 101306701. The JU receives support from the European Union‘s Digital Europe Programme and Germany, Albania, Austria, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Cyprus, Czechia, Denmark, Estonia, Finland, France, Greece, Hungary, Iceland, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Montenegro, the Netherlands, North Macedonia, Norway, Poland, Portugal, Romania, Serbia, Slovakia, Slovenia, Spain, Sweden, Türkiye, and Kosovo.
 
 Funded by the European Union. Views and opinions expressed are however those of the author(s) only and do not necessarily reflect those of the European Union or EuroHPC Joint Undertaking. Neither the European Union nor the EuroHPC Joint Undertaking can be held responsible for them.
 
 ENCCS has also received national funding through Vinnova and the Swedish Research Council (VR).
 
-HPC in Europe is the umbrella brand uniting Europe's high-performance computing initiatives across 36+ countries. See [hpc-portal.eu](https://hpc-portal.eu/).
+HPC in Europe is the umbrella brand uniting Europe's high-performance computing initiatives across 36+ countries.
+
+The project is supported by the European High-Performance Computing Joint Undertaking and its members.
 
 ## Licence
 
