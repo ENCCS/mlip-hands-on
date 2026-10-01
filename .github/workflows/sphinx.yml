@@ -32,6 +32,7 @@ jobs:
           python maintainer/check-public-content.py
           python maintainer/check-notebook-source.py
           python maintainer/test-notebook-alchemi.py
+          python -m unittest discover -s maintainer/benchmarks -p 'test_*.py'
       - name: Build lesson without executing GPU cells
         run: make html
       - name: Upload HTML for review
