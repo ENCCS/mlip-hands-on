@@ -61,14 +61,45 @@ The earlier Arrhenius 64- and 512-atom workflow timings remain in the MLIP
 science project's evidence as an exploratory functional measurement, not an
 accepted cross-engine benchmark for this lesson.
 
-A publishable ALCHEMI-versus-LAMMPS comparison needs a new, declared run:
-use the same original MACE checkpoint and verified export, identical silicon
-structures and initial velocities, the same 0.1 fs timestep, NVE
-velocity-Verlet, eight replicas, atom count, warm-up and measured steps, and
-one GPU allocation. Run both LAMMPS sharing modes against the same input.
-Counterbalance the method order and report whole-workflow and MD-only clocks
-separately. Check that every replica completed before computing throughput.
-Until that result is qualified, this page makes no cross-engine speed claim.
+### Matched NVE comparison: Arrhenius
+
+A separate benchmark completed on **one Arrhenius GH200 GPU**. Both engines
+used the same MACE-MP-0a small model (original checkpoint and ML-IAP export),
+silicon positions, periodic cells and initial velocities, NVE velocity-Verlet
+at 0.1 fs, ten warm-up steps and 200 measured steps per trajectory. Three
+rounds varied the method order within one allocation. Every trajectory
+completed; the notebook's default Langevin examples are not these inputs.
+
+| Atoms per trajectory | Independent trajectories | ALCHEMI batch | LAMMPS ordinary sharing | LAMMPS CUDA MPS |
+| ---: | ---: | ---: | ---: | ---: |
+| 64 | 8 | 17.63 s | 96.97 s | 84.92 s |
+| 512 | 8 | 26.35 s | 109.14 s | 89.17 s |
+
+These are median **whole-workflow** times: launch to completion of all eight
+trajectories, including imports, model loading, setup, warm-up and MD.
+For example, the 64-atom ALCHEMI row completes 1,600 measured replica-steps
+in 17.63 s: about 90.8 completed replica-steps per whole-workflow second.
+This describes the cost of these short runs, not a GPU-kernel speedup.
+
+ALCHEMI's separately measured batch MD medians were 4.95 s (64 atoms) and
+13.31 s (512 atoms). LAMMPS records an MD-loop time for each process, but
+those intervals do not start together; the longest loop is not a comparable
+synchronized batch clock. Do not use it to compute a cross-engine MD ratio.
+
+```{note}
+All 96 LAMMPS replica logs and six ALCHEMI batches passed completion and
+finite-output checks. The largest final potential-energy difference between
+corresponding trajectories was 0.0069 eV after 21 fs. This short sanity check
+does not establish long-trajectory or NVT agreement. These are Arrhenius
+results only; the matched JUPITER matrix is still being qualified.
+```
+
+The maintainer sources in `maintainer/benchmarks/` retain the matched starting
+state generator and NVE runners. The MLIP science project records all three
+rounds and artifact identities in
+`docs/evidence/arrhenius-matched-nve-eight-2026-10-01.md`; job `3197862`
+completed with exit `0:0`. Larger-system, batch-size and scaling sweeps are
+separate benchmarks and are not inferred from this table.
 
 ### One trajectory, multiple MPI ranks sharing one GPU
 
