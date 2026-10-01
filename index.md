@@ -116,7 +116,8 @@ Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Cyprus, Czechia,
 Denmark, Estonia, Finland, France, Greece, Hungary, Iceland, Ireland, Italy,
 Latvia, Lithuania, Luxembourg, Malta, Montenegro, the Netherlands, North
 Macedonia, Norway, Poland, Portugal, Romania, Serbia, Slovakia, Slovenia,
-Spain, Sweden, Türkiye, and Kosovo.
+Spain, Sweden, Türkiye, and Kosovo. The project is supported by the European
+High-Performance Computing Joint Undertaking and its members.
 
 Funded by the European Union. Views and opinions expressed are however those
 of the author(s) only and do not necessarily reflect those of the European

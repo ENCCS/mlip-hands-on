@@ -15,12 +15,14 @@ html_static_path = ["_static"]
 html_favicon = "_static/favicon.ico"
 html_css_files = ["overrides.css", "funding.css"]
 copyright = (
-    "ENCCS contributors | Co-funded by the European Union (EuroCC 3, grant agreement No. 101306701). "
-    "Views and opinions expressed are however those of the author(s) only and do not necessarily reflect "
-    "those of the European Union or the granting authority (European High-Performance Computing Joint "
-    "Undertaking: EuroHPC JU). Neither the European Union nor the granting authority can be held "
-    "responsible for them."
+    "ENCCS contributors | Funded by the European Union. Views and opinions expressed are however those of "
+    "the author(s) only and do not necessarily reflect those of the European Union or the granting "
+    "authority (European High-Performance Computing Joint Undertaking: EuroHPC JU). Neither the European "
+    "Union nor the granting authority can be held responsible for them. EuroCC 3 has received funding from "
+    "the EuroHPC JU under grant agreement No. 101306701; the project is supported by the European "
+    "High-Performance Computing Joint Undertaking and its members."
 )
+templates_path = ["_templates"]
 html_theme_options = {
     "light_logo": "ENCCS_logo_light.png",
     "dark_logo": "ENCCS_logo_dark.png",

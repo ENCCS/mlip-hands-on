@@ -163,9 +163,9 @@ everywhere. Logos identify the developing organisations.*
   counts in [[4](https://arxiv.org/abs/2401.00096)]). Check your elements and short-range repulsion before
   screening arbitrary crystals.
 
-  ![MPtrj element occurrence across the periodic table.](../_static/mace_mptrj_element_counts.png)
+  ![Number of MPtrj structures containing each element, on the periodic table.](../_static/mptrj-element-counts-matbench.png)
 
-  *MPtrj element occurrence, Batatia et al., arXiv:2401.00096 (CC BY-NC-ND 4.0).*
+  *Number of MPtrj structures containing each element. [Matbench Discovery](https://github.com/janosh/matbench-discovery) (MIT).*
 
 Training data grew over a hundredfold in a few years:
 

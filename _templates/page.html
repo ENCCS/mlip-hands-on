@@ -1,0 +1,9 @@
+{% extends "!page.html" %}
+{% block footer %}
+<div class="cc3-logos">
+  <a href="https://www.eurohpc-ju.europa.eu/index_en"><img src="{{ pathto('_static/logos/cc3/eurohpc.png', 1) }}" alt="EuroHPC Joint Undertaking"></a>
+  <a href="https://hpc-portal.eu/"><img src="{{ pathto('_static/logos/cc3/hpc-in-europe.png', 1) }}" alt="HPC in Europe"></a>
+  <a href="https://hpc-portal.eu/projects/eurocc-3-national-competence-centres-in-the-framework-eurohpc"><img src="{{ pathto('_static/logos/cc3/eurocc3.png', 1) }}" alt="EuroCC 3"></a>
+</div>
+{{ super() }}
+{% endblock footer %}

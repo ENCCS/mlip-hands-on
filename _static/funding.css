@@ -9,3 +9,32 @@
         background-image: url("EN_Co-funded/EN_Co-fundedbytheEU_RGB_POS.png") !important;
     }
 }
+
+/* CC3 logo row (EuroHPC JU, HPC in Europe, EuroCC 3): smaller than the EU emblem */
+.cc3-logos {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+.cc3-logos img {
+    height: 40px;
+    width: auto;
+}
+
+/* Dark theme emblem without CSS nesting support */
+body[data-theme="dark"] .copyright:before {
+    background-image: url("EN_Co-funded/EN_Co-fundedbytheEU_RGB_NEG.png");
+}
+body[data-theme="dark"] .cc3-logos img {
+    background: #fff;
+    padding: 3px 6px;
+    border-radius: 4px;
+}
+@media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) .cc3-logos img {
+        background: #fff;
+        padding: 3px 6px;
+        border-radius: 4px;
+    }
+}

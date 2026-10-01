@@ -47,3 +47,28 @@ functional checks from one through eight GPUs, native ALCHEMI one-GPU
 single/batched smokes, and a bounded MyST notebook/server check. These do
 not establish scientific agreement or scaling performance. See
 `reference/instructor.md` before a live session.
+
+## Licence
+
+Lesson text and pedagogical material: CC BY-SA 4.0 (`LICENSE`). Code: MIT
+(`LICENSE.code`). Reused figures keep the licence given in their caption.
+
+## Acknowledgements
+
+<img src="_static/EN_Co-fundedbytheEU_RGB_POS.png" alt="Co-funded by the European Union" height="60">
+
+ENCCS is the Swedish node of the EuroCC 3 project. EuroCC 3 has received
+funding from the European High-Performance Computing Joint Undertaking (JU)
+under Grant Agreement No. 101306701. The JU receives support from the European
+Union's Digital Europe Programme and the participating states. The project is
+supported by the European High-Performance Computing Joint Undertaking and its
+members.
+
+Funded by the European Union. Views and opinions expressed are however those
+of the author(s) only and do not necessarily reflect those of the European
+Union or the granting authority (EuroHPC Joint Undertaking). Neither the
+European Union nor the granting authority can be held responsible for them.
+
+ENCCS has also received national funding through Vinnova and the Swedish
+Research Council (VR).
+
