@@ -108,6 +108,15 @@ By the end of this lesson, learners can:
 
 ## Acknowledgements
 
+```{raw} html
+<div class="funding-logos">
+  <a href="https://european-union.europa.eu/index_en"><img class="eu" src='_static/EN_Co-fundedbytheEU_RGB_POS.png' alt="Co-funded by the European Union"></a>
+  <a href="https://www.eurohpc-ju.europa.eu/index_en"><img src='_static/logos/cc3/eurohpc.svg' alt="EuroHPC Joint Undertaking"></a>
+  <a href="https://hpc-portal.eu/projects/eurocc-3-national-competence-centres-in-the-framework-eurohpc"><img src='_static/logos/cc3/eurocc3.svg' alt="EuroCC 3"></a>
+  <span class="hpcie"><a href="https://hpc-portal.eu/"><img src='_static/logos/cc3/hpc-in-europe.svg' alt="HPC in Europe"></a><a href="https://hpc-portal.eu/">hpc-portal.eu</a></span>
+</div>
+```
+
 EuroCC 3 has received funding from the European High-Performance Computing Joint Undertaking (JU) under Grant Agreement No. 101306701. The JU receives support from the European Union's Digital Europe Programme and Germany, Albania, Austria, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Cyprus, Czechia, Denmark, Estonia, Finland, France, Greece, Hungary, Iceland, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Montenegro, the Netherlands, North Macedonia, Norway, Poland, Portugal, Romania, Serbia, Slovakia, Slovenia, Spain, Sweden, Türkiye, and Kosovo.
 
 Funded by the European Union. Views and opinions expressed are however those of the author(s) only and do not necessarily reflect those of the European Union or EuroHPC Joint Undertaking. Neither the European Union nor the EuroHPC Joint Undertaking can be held responsible for them.

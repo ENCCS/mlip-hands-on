@@ -20,7 +20,9 @@ footer .bottom-of-page { order: 2; }
 footer .cc3-logos { order: 3; }
 .cc3-logos {
     display: flex;
-    gap: 2rem;
+    flex-wrap: wrap;
+    row-gap: 12px;
+    gap: 1.5rem;
     align-items: center;
     width: fit-content;
     margin: 0.5rem 0 1rem;
@@ -28,7 +30,8 @@ footer .cc3-logos { order: 3; }
     border-radius: 6px;
 }
 .cc3-logos img {
-    height: 40px;
+    height: 36px;
+    flex-shrink: 0;
     width: auto;
 }
 
@@ -49,11 +52,15 @@ body[data-theme="dark"] .copyright:before {
 }
 /* EuroHPC JU is a wide wordmark: slightly lower so its weight matches */
 .cc3-logos img[src*="eurohpc"] {
-    height: 34px;
+    height: 30px;
 }
 /* national funders (optional in the CC3 footer template) */
 .cc3-logos img[src*="vinnova"] {
-    height: 28px;
+    height: 25px;
+}
+/* host partners of ENCCS */
+.cc3-logos img[src*="liu"] {
+    height: 27px;
 }
 
 /* EU emblem linked to the EU website (CC3 website footer instructions) */
@@ -64,4 +71,26 @@ body[data-theme="dark"] .copyright:before {
     left: 0;
     width: 300px;
     height: 90px;
+}
+
+/* Acknowledgements section on the front page: logo row as on the funding slide (CC3 template) */
+.funding-logos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 2rem;
+    width: fit-content;
+    margin: 0.5rem 0 1.25rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+}
+.funding-logos img { height: 40px; width: auto; background: transparent !important; filter: none !important; box-shadow: none !important; }
+.funding-logos img.eu { height: 60px; }
+.funding-logos img[src*="eurohpc"] { height: 38px; }
+.funding-logos .hpcie { display: inline-flex; flex-direction: column; align-items: center; font-size: 0.75rem; }
+body[data-theme="dark"] .funding-logos { background: #fff; }
+body[data-theme="dark"] .funding-logos .hpcie a { color: #1a5fb4; }
+@media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) .funding-logos { background: #fff; }
+    body:not([data-theme="light"]) .funding-logos .hpcie a { color: #1a5fb4; }
 }
