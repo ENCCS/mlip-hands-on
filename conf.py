@@ -17,7 +17,7 @@ html_css_files = ["overrides.css", "funding.css"]
 copyright = (
     "ENCCS contributors | "
     "EuroCC 3 has received funding from the European High-Performance Computing Joint Undertaking"
-    " (JU) under Grant Agreement No. 101306701. The JU receives support from the European Union‘s"
+    " (JU) under Grant Agreement No. 101306701. The JU receives support from the European Union's"
     " Digital Europe Programme and Germany, Albania, Austria, Belgium, Bosnia and Herzegovina, "
     "Bulgaria, Croatia, Cyprus, Czechia, Denmark, Estonia, Finland, France, Greece, Hungary, "
     "Iceland, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Montenegro, the Netherlands, "
