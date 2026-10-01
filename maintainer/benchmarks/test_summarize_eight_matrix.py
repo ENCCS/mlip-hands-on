@@ -65,6 +65,21 @@ class MatrixTests(unittest.TestCase):
             self.assertNotEqual(self.run_summary(root).returncode, 0)
             self.assertFalse((root / "accepted.json").exists())
 
+    def test_separate_mps_phase_is_not_a_cross_engine_matrix(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            self.complete_fixture(root)
+            path = root / "results.tsv"
+            lines = path.read_text().splitlines()
+            path.write_text("\n".join([lines[0]] + [line for line in lines[1:] if "\tmps\t" in line]) + "\n")
+            result = subprocess.run([sys.executable, str(SOURCE), "--results", str(root),
+                                     "--phase", "mps", "--output", str(root / "accepted.json")],
+                                    capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            summary = json.loads((root / "accepted.json").read_text())
+            self.assertEqual(summary["phase"], "mps")
+            self.assertEqual(set(summary["whole_workflow_medians"]["64"]), {"mps"})
+
     def test_summary_cannot_hide_failed_replica(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

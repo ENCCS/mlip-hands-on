@@ -18,6 +18,7 @@ FIELDS = ["round", "cells", "atoms", "method", "replicas", "warmup",
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results", type=Path, required=True)
+    parser.add_argument("--phase", choices=("all", "plain", "mps"), default="all")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     table = args.results / "results.tsv"
@@ -26,9 +27,11 @@ def main():
         if reader.fieldnames != FIELDS:
             raise RuntimeError("matrix columns do not match the contract")
         rows = list(reader)
+    methods = ("alchemi", "ordinary", "mps") if args.phase == "all" else (
+        ("alchemi", "ordinary") if args.phase == "plain" else ("mps",))
     expected = {(round_no, atoms, method)
                 for round_no in (1, 2, 3) for atoms in (64, 512)
-                for method in ("alchemi", "ordinary", "mps")}
+                for method in methods}
     if len(rows) != len(expected):
         raise RuntimeError("matrix incomplete or duplicated")
     observed = set()
@@ -97,10 +100,10 @@ def main():
     medians = {str(atoms): {
         method: statistics.median(row["whole_seconds"] for row in normalized
                                   if row["atoms"] == atoms and row["method"] == method)
-        for method in ("alchemi", "ordinary", "mps")}
+        for method in methods}
         for atoms in (64, 512)}
     result = {"state": "complete-pending-scientific-review", "format": 1,
-              "ensemble": "NVE", "replicas": 8, "warmup_steps": 10,
+              "phase": args.phase, "ensemble": "NVE", "replicas": 8, "warmup_steps": 10,
               "measured_steps": 200, "whole_workflow_medians": medians,
               "clock_note": "MD diagnostics are not directly comparable across engines",
               "rows": normalized}
@@ -108,7 +111,7 @@ def main():
     with os.fdopen(fd, "w") as stream:
         json.dump(result, stream, separators=(",", ":"))
         stream.write("\n")
-    print("Validated 18 completed cases; scientific review remains required")
+    print(f"Validated {len(expected)} completed cases; scientific review remains required")
 
 
 if __name__ == "__main__":
