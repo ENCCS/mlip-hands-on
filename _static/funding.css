@@ -51,3 +51,13 @@ body[data-theme="dark"] .copyright:before {
 .cc3-logos img[src*="eurohpc"] {
     height: 60px;
 }
+
+/* EU emblem linked to the EU website (CC3 website footer instructions) */
+.copyright { position: relative; }
+.eu-emblem-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 90px;
+}

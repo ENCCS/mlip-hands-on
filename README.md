@@ -30,13 +30,8 @@ Text and pedagogical material: CC BY-SA 4.0 (`LICENSE`). Code: MIT
 
 <img src="_static/EN_Co-fundedbytheEU_RGB_POS.png" alt="Co-funded by the European Union" height="60">
 
-ENCCS is the Swedish node of the EuroCC 3 project, which has received funding
-from the European High-Performance Computing Joint Undertaking (JU) under
-Grant Agreement No. 101306701. The project is supported by the European
-High-Performance Computing Joint Undertaking and its members. ENCCS also
-receives national funding from Vinnova and the Swedish Research Council (VR).
+ENCCS is the Swedish node of the EuroCC 3 project. EuroCC 3 has received funding from the European High-Performance Computing Joint Undertaking (JU) under Grant Agreement No. 101306701. The JU receives support from the European Union's Digital Europe Programme and Germany, Albania, Austria, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Cyprus, Czechia, Denmark, Estonia, Finland, France, Greece, Hungary, Iceland, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Montenegro, the Netherlands, North Macedonia, Norway, Poland, Portugal, Romania, Serbia, Slovakia, Slovenia, Spain, Sweden, Türkiye, and Kosovo. The project is supported by the European High-Performance Computing Joint Undertaking and its members.
 
-Funded by the European Union. Views and opinions expressed are however those
-of the author(s) only and do not necessarily reflect those of the European
-Union or the granting authority (EuroHPC Joint Undertaking). Neither the
-European Union nor the granting authority can be held responsible for them.
+Funded by the European Union. Views and opinions expressed are however those of the author(s) only and do not necessarily reflect those of the European Union or EuroHPC Joint Undertaking. Neither the European Union nor the EuroHPC Joint Undertaking can be held responsible for them.
+
+ENCCS has also received national funding through Vinnova and the Swedish Research Council (VR).

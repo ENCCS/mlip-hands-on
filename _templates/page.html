@@ -6,4 +6,15 @@
   <a href="https://hpc-portal.eu/projects/eurocc-3-national-competence-centres-in-the-framework-eurohpc"><img src="{{ pathto('_static/logos/cc3/eurocc3.svg', 1) }}" alt="EuroCC 3"></a>
 </div>
 {{ super() }}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var c = document.querySelector(".copyright");
+    if (!c) return;
+    var a = document.createElement("a");
+    a.href = "https://european-union.europa.eu/index_en";
+    a.className = "eu-emblem-link";
+    a.setAttribute("aria-label", "European Union");
+    c.prepend(a);
+  });
+</script>
 {% endblock footer %}
