@@ -43,15 +43,19 @@ does not establish that the job will run promptly.
 This episode focuses on the LAMMPS MPI route. The ALCHEMI one-GPU batch
 demonstration is not a claim of multi-GPU domain decomposition.
 
-## Measured one-node scaling on Arrhenius
+## Measured one-node scaling
 
 A separate matched-NVE benchmark used MACE-MP-0a small, silicon starting
 structures and velocities from the common generator, a 0.1 fs timestep,
 ten warm-up steps and 200 measured steps. Unlike the short notebook demo
 above, these runs hold the integrator and measurement boundary fixed.
-Three rounds varied the case order. All 18 cases completed on one Arrhenius
-node; times below are median LAMMPS **MD-loop seconds**, excluding model
+Three rounds varied the case order. All 18 cases completed separately on
+each site; times below are median LAMMPS **MD-loop seconds**, excluding model
 loading, warm-up and queue wait.
+
+`````{tab-set}
+````{tab-item} Arrhenius
+:sync: arrhenius
 
 ### Strong scaling: keep 32,768 atoms fixed
 
@@ -88,6 +92,48 @@ Job `3203275` completed with exit `0:0`. Every round and the artifact
 identities are recorded in the MLIP science project at
 `docs/evidence/arrhenius-matched-nve-scaling-2026-10-01.md`. The matched
 inputs and runners are retained in `maintainer/benchmarks/`.
+````
+
+````{tab-item} JUPITER
+:sync: jupiter
+
+### Strong scaling: keep 32,768 atoms fixed
+
+| GH200 GPUs | MPI ranks | MD-loop seconds | Speedup over one GPU | Parallel efficiency |
+| ---: | ---: | ---: | ---: | ---: |
+| 1 | 1 | 235.822 | 1.00× | 100% |
+| 2 | 2 | 136.923 | 1.72× | 86.1% |
+| 4 | 4 | 87.376 | 2.70× | 67.5% |
+
+These are within-LAMMPS ratios for the same trajectory. Four GPUs reduce
+MD time, but the gain is less than fourfold. They are not comparisons with
+ALCHEMI or measurements of whole-workflow time.
+
+### Weak scaling: increase atoms with GPU count
+
+| GH200 GPUs | Total atoms | Atoms per GPU | MD-loop seconds |
+| ---: | ---: | ---: | ---: |
+| 1 | 8,000 | 8,000 | 84.763 |
+| 2 | 17,576 | 8,788 | 91.825 |
+| 4 | 32,768 | 8,192 | 87.122 |
+
+Median MD time stays within 8.4% of the one-GPU value. The diamond
+supercells make this approximate weak scaling, not exactly equal atoms
+per GPU.
+
+```{note}
+All eighteen cases completed on one JUPITER Booster node. The logs confirm
+the requested MPI and Kokkos GPU counts. This does not establish a memory
+maximum, inter-node performance or independently measured MPI bandwidth.
+Large variation in the separate short-run whole-workflow comparisons is
+not hidden by these MD-only scaling clocks.
+```
+
+Job `2127713` completed with exit `0:0`. All three rounds and artifact
+identities are recorded in the MLIP science project's
+`docs/evidence/jupiter-matched-nve-scaling-2026-10-01.md`.
+````
+`````
 
 ## Can more MPI ranks enlarge a one-GPU simulation?
 
