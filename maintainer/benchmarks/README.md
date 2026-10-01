@@ -27,7 +27,10 @@ python maintainer/benchmarks/generate_starts.py \
 The intended comparison is NVE velocity-Verlet at 0.1 fs with the same
 original MACE-MP-0a small checkpoint and its verified ML-IAP export. ALCHEMI
 uses `run_alchemi_nve.py`; LAMMPS uses `lammps_mace_nve.in`. Both start from
-the generated records. Keep initial geometry, velocities, model, atom count,
+the generated records. Use float32 model weights in both paths: cast the
+ALCHEMI model and export ML-IAP with `--dtype float32`. Coordinate and
+integrator arithmetic can still differ; bitwise trajectories are not claimed.
+Keep initial geometry, velocities, model, atom count,
 warm-up, measured steps, GPU type and allocation fixed within each table.
 Only method or the declared sweep dimension may change. Check complete
 replica count and finite outputs before accepting a row.
@@ -48,7 +51,7 @@ completed and failed case identities. A transport-uncertain Slurm submission
 is reconciled read-only, not replayed. Arrhenius and JUPITER get separate
 tables and separate artifact identities.
 
-## Planned matrices
+## Declared matrices
 
 1. Eight trajectories on one GPU: 64 and 512 atoms each; ALCHEMI batch,
    LAMMPS ordinary sharing, and LAMMPS CUDA MPS. Ten warm-up and 200
@@ -70,3 +73,35 @@ The fourth varies resources by design and must never be presented as an
 ALCHEMI multi-GPU result. Short functional checks and OOM probes are not
 speed measurements. A result enters the lesson only after site qualification
 and a separate science-evidence record in `mlip-hands-on`.
+
+## Check completed outputs
+
+Run the CPU validators only after the scheduler reports a certain successful
+outcome. A partial TSV or one completed replica is not a completed matrix.
+Choose a fresh summary output filename; existing summaries are never replaced.
+
+```bash
+python maintainer/benchmarks/summarize_eight_matrix.py \
+  --results "$PRIVATE_RESULTS/eight" --phase all \
+  --output "$PRIVATE_RESULTS/eight-summary.json"
+python maintainer/benchmarks/summarize_sweep.py \
+  --results "$PRIVATE_RESULTS/sweep" --phase all \
+  --output "$PRIVATE_RESULTS/sweep-summary.json"
+python maintainer/benchmarks/summarize_scaling_matrix.py \
+  --results "$PRIVATE_RESULTS/scaling" \
+  --output "$PRIVATE_RESULTS/scaling-summary.json"
+```
+
+Where MPS requires a separate site allocation, validate `--phase plain` and
+`--phase mps` independently. An eight-trajectory plain phase has twelve
+cases; its MPS phase has six. The size/batch sweep has 48 plain cases and
+twelve MPS cases. `--phase all` requires the complete 18- or 60-case set.
+Retain the original per-allocation tables when combining results, and label
+the separate allocations in the science record. Combining tables does not
+make method order counterbalanced within a single allocation.
+
+The validators check every LAMMPS replica log, requested atom and step counts,
+finite final output, timer agreement, and observed MPS service where required.
+Their output is deliberately labelled `complete-pending-scientific-review`:
+mechanical checks do not establish scientific equivalence or justify a
+performance claim. Retain all repeat times, not only the fastest run.
