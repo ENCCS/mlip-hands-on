@@ -98,8 +98,67 @@ The maintainer sources in `maintainer/benchmarks/` retain the matched starting
 state generator and NVE runners. The MLIP science project records all three
 rounds and artifact identities in
 `docs/evidence/arrhenius-matched-nve-eight-2026-10-01.md`; job `3197862`
-completed with exit `0:0`. Larger-system, batch-size and scaling sweeps are
-separate benchmarks and are not inferred from this table.
+completed with exit `0:0`.
+
+## One trajectory: increase the atom count
+
+The matched NVE size sweep also completed on **one Arrhenius GH200 GPU**.
+It uses the same model, starting-state generator, 0.1 fs timestep, ten
+warm-up steps and 200 measured steps. Each size has three complete rounds.
+Both model paths use float32 weights; this does not make the engines'
+coordinate arithmetic or trajectories bitwise identical.
+
+| Silicon atoms | ALCHEMI whole workflow | LAMMPS whole workflow | ALCHEMI measured MD call | LAMMPS MD loop |
+| ---: | ---: | ---: | ---: | ---: |
+| 64 | 17.572 s | 91.641 s | 4.914 s | 75.824 s |
+| 512 | 17.705 s | 87.564 s | 5.099 s | 71.741 s |
+| 8,000 | 37.821 s | 106.053 s | 24.103 s | 88.782 s |
+| 32,768 | 110.429 s | 264.351 s | 92.750 s | 237.431 s |
+
+Compare the two **whole-workflow** columns: both measure launch to clean
+completion. The MD columns help locate time spent in the simulation, but
+ALCHEMI times a synchronized run call and LAMMPS reports its engine loop.
+Their definitions differ; these columns are not a GPU-kernel speedup.
+For 32,768 atoms, whole-workflow times ranged from 110.426 to 110.531 s
+for ALCHEMI and 263.872 to 266.540 s for LAMMPS.
+
+```{note}
+32,768 atoms is the largest shared completed point in this sweep, not the
+maximum size either engine can fit in GPU memory. No failed capacity point
+was tested in this matched sweep.
+```
+
+## Increase the number of independent trajectories
+
+Keep the size of each trajectory fixed and vary how many run together.
+The table gives median **whole-workflow seconds** for all requested
+trajectories to finish on one Arrhenius GH200 GPU.
+
+| Atoms per trajectory | Trajectories | ALCHEMI batch | LAMMPS ordinary sharing | LAMMPS CUDA MPS |
+| ---: | ---: | ---: | ---: | ---: |
+| 64 | 1 | 17.572 | 91.641 | not tested |
+| 64 | 2 | 17.685 | 88.074 | 88.970 |
+| 64 | 4 | 17.653 | 87.157 | 84.972 |
+| 64 | 8 | 17.630 | 96.970 | 84.920 |
+| 512 | 1 | 17.705 | 87.564 | not tested |
+| 512 | 2 | 17.864 | 89.947 | 85.911 |
+| 512 | 4 | 20.320 | 87.479 | 88.352 |
+| 512 | 8 | 26.350 | 109.140 | 89.170 |
+
+Calculate completed replica-steps per second as
+`trajectories × 200 / whole-workflow seconds`. For 64 atoms, eight
+trajectories give 90.8 for ALCHEMI, 16.5 for ordinary LAMMPS sharing and
+18.8 for MPS. For 512 atoms, the corresponding rates are 60.7, 14.7 and
+17.9. Eight trajectories was the highest-throughput point **tested here**,
+not an optimum batch size or proof that the GPU was fully occupied.
+
+The one-, two- and four-trajectory points completed in job `3203214`;
+the eight-trajectory points come from job `3197862`. Their starting files
+match exactly, but the two allocations need not have identical cache or
+filesystem conditions. All 60 new cases passed completion checks, including
+84 LAMMPS replica logs and 24 ALCHEMI records. Full repeat values and
+artifact identities are recorded in the MLIP science project at
+`docs/evidence/arrhenius-matched-nve-sweeps-2026-10-01.md`.
 
 ### One trajectory, multiple MPI ranks sharing one GPU
 
