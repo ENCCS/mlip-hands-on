@@ -28,9 +28,8 @@ for this and checks the allocation boundary before calling `srun`.
 
 For strong scaling, fix `cells` and vary GPU count. For weak scaling,
 increase `cells` with GPU count so atoms per GPU stay approximately fixed.
-Record the actual atoms, ranks, nodes, warm-up, measured steps, elapsed
-seconds, and GPU type alongside every result. A calculation that merely
-finishes is not a scaling measurement.
+Record atom count, GPU count and MD time for each run. Keep the model,
+timestep, warm-up and measured step count the same when comparing runs.
 
 ```{warning}
 Do not launch this from a login node. Request an allocation for the chosen
@@ -40,18 +39,15 @@ reservation must be checked for the requested node count; `--test-only`
 does not establish that the job will run promptly.
 ```
 
-This episode focuses on the LAMMPS MPI route. The ALCHEMI one-GPU batch
-demonstration is not a claim of multi-GPU domain decomposition.
+Here, MPI ranks work on different parts of **one trajectory**. In the
+ALCHEMI batch example, the trajectories are independent instead.
 
 ## Measured one-node scaling
 
-A separate matched-NVE benchmark used MACE-MP-0a small, silicon starting
-structures and velocities from the common generator, a 0.1 fs timestep,
-ten warm-up steps and 200 measured steps. Unlike the short notebook demo
-above, these runs hold the integrator and measurement boundary fixed.
-Three rounds varied the case order. All 18 cases completed separately on
-each site; times below are median LAMMPS **MD-loop seconds**, excluding model
-loading, warm-up and queue wait.
+These measurements use silicon and MACE-MP-0a small, NVE at 0.1 fs,
+ten warm-up steps and 200 measured steps. Each value is the median of
+three runs. **MD-loop seconds** exclude loading, warm-up and queue wait;
+they measure the time LAMMPS spends advancing the trajectory.
 
 `````{tab-set}
 ````{tab-item} Arrhenius
@@ -65,9 +61,8 @@ loading, warm-up and queue wait.
 | 2 | 2 | 139.269 | 1.70× | 85.2% |
 | 4 | 4 | 89.598 | 2.65× | 66.2% |
 
-Four GPUs shorten this trajectory's measured MD time, but do not deliver
-four times the throughput. The ratio is within LAMMPS, not an ALCHEMI
-comparison. It also does not include the cost of launching a short session.
+Four GPUs reduce MD time from 237 to 90 seconds, a 2.65× speedup.
+The gain is less than fourfold; adding GPUs does not divide the time exactly.
 
 ### Weak scaling: increase atoms with GPU count
 
@@ -81,17 +76,6 @@ The MD time stays within 6.1% of the one-GPU value while the total system
 grows. This is **approximate** weak scaling: cubic diamond supercells give
 discrete sizes, so atoms per GPU are not exactly constant.
 
-```{note}
-These are one-node Arrhenius results for the pinned model and native build.
-They do not establish a VRAM maximum or multi-node performance. The logs
-confirm the requested MPI and Kokkos GPU counts; this benchmark did not
-add an independent device-identity or MPI-bandwidth probe.
-```
-
-Job `3203275` completed with exit `0:0`. Every round and the artifact
-identities are recorded in the MLIP science project at
-`docs/evidence/arrhenius-matched-nve-scaling-2026-10-01.md`. The matched
-inputs and runners are retained in `maintainer/benchmarks/`.
 ````
 
 ````{tab-item} JUPITER
@@ -105,9 +89,8 @@ inputs and runners are retained in `maintainer/benchmarks/`.
 | 2 | 2 | 136.923 | 1.72× | 86.1% |
 | 4 | 4 | 87.376 | 2.70× | 67.5% |
 
-These are within-LAMMPS ratios for the same trajectory. Four GPUs reduce
-MD time, but the gain is less than fourfold. They are not comparisons with
-ALCHEMI or measurements of whole-workflow time.
+Four GPUs reduce MD time from 236 to 87 seconds, a 2.70× speedup.
+This compares the same LAMMPS trajectory, not separate independent runs.
 
 ### Weak scaling: increase atoms with GPU count
 
@@ -121,19 +104,14 @@ Median MD time stays within 8.4% of the one-GPU value. The diamond
 supercells make this approximate weak scaling, not exactly equal atoms
 per GPU.
 
-```{note}
-All eighteen cases completed on one JUPITER Booster node. The logs confirm
-the requested MPI and Kokkos GPU counts. This does not establish a memory
-maximum, inter-node performance or independently measured MPI bandwidth.
-Large variation in the separate short-run whole-workflow comparisons is
-not hidden by these MD-only scaling clocks.
-```
-
-Job `2127713` completed with exit `0:0`. All three rounds and artifact
-identities are recorded in the MLIP science project's
-`docs/evidence/jupiter-matched-nve-scaling-2026-10-01.md`.
 ````
 `````
+
+```{note}
+These are one-node, within-LAMMPS MD timings—not multi-node performance,
+memory limits or ALCHEMI speedups. [Benchmark methods and checks](../reference/benchmarks.md)
+records the repeats, software identities and validation details.
+```
 
 ## Can more MPI ranks enlarge a one-GPU simulation?
 
@@ -156,11 +134,7 @@ bash scripts/run-lammps-shared-gpu-mpi.sh "$PWD" 4 "$MLIP_LMP" "$MLIP_MLIAP_MODE
 The [shared-GPU launcher](../../scripts/run-lammps-shared-gpu-mpi.sh) uses
 `-k on g 1`: **one GPU per node**, not one per rank. On Arrhenius, request
 `--network=single_node_vni` and use the site's qualified PMI-2 route.
-Increase `cells` in fresh, bounded runs; record completed sizes and explicit
-CUDA out-of-memory failures separately. A short completed run establishes a
-capacity point, not sustained throughput or scientific equivalence. CUDA MPS
-is recommended for usable multi-rank Kokkos performance; without it, do not
-interpret a slow shared-GPU run as a meaningful speed comparison.
-The [bounded Arrhenius result](09-results.md)
-reports the completed sizes and a separate 200-step timing check; neither
-establishes an absolute memory limit or a universal speedup.
+Increase `cells` gradually and record both completed sizes and CUDA
+out-of-memory errors. Keep CUDA MPS enabled for this shared-GPU comparison.
+The [Arrhenius results](09-results.md) show that adding ranks did not enlarge
+the completed system in the sizes tested, and improved MD time only modestly.

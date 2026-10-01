@@ -17,9 +17,7 @@ The model is not baked into the SIF. The run script binds it read-only at
 
 For native LAMMPS, use the Arrhenius GCC/CUDA environment and site MPICH
 wrappers. The [build episode](../episodes/03-lammps-mpi.md) shows the
-participant-facing CMake command. Older guarded build jobs remain in the
-`main` branch's Git history and target its old layout. Select a verified MPI-enabled
-ML-IAP/Kokkos `lmp` as `MLIP_LMP`.
+CMake configuration for an MPI-enabled ML-IAP/Kokkos executable.
 Set `MLIP_NATIVE_PREFIX` to the installed LAMMPS prefix and
 `MLIP_NATIVE_PYTHON` to its matching MACE Python environment, then run
 `source scripts/arrhenius-lammps-env.sh` in the allocated shell. For an older

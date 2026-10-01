@@ -2,7 +2,7 @@
 
 Copy `.env.example` to a private file outside the checkout as shown in
 [Before you start](../setup/index.md), then edit these paths for your site.
-No account, model weight, SIF, executable or token belongs in Git.
+Keep accounts, model weights, SIFs, executables and tokens outside Git.
 
 | Variable | What it names |
 | --- | --- |
@@ -15,7 +15,7 @@ No account, model weight, SIF, executable or token belongs in Git.
 | `MLIP_ARTIFACT_ROOT` | Parent of your private model and runtime files; also used by the replica example for its fresh output directory |
 | `MLIP_NATIVE_RUNTIME_ARCHIVE` | Optional Arrhenius archive unpacked into private compute-node scratch by the Jupyter job |
 
-The scripts take the lesson root as their first argument. From that root,
+The run scripts take the lesson root as their first argument. From that root,
 `"$PWD"` supplies it. Relaxation starts are tracked under
 `examples/starts/`.
 

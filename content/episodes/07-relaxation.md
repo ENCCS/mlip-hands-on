@@ -67,7 +67,13 @@ fi
   -var start "$PWD/examples/starts/si-relax-01.data"
 ```
 
-The code prints energies and a maximum force. A smaller final force suggests
-relaxation progressed; identical final coordinates are not guaranteed by
-different minimizers and numerical implementations. This exercise checks
-that both routes run from the same starts, not scientific equivalence.
+Read the reported energies and maximum force to see how relaxation
+progressed. The algorithms use different stopping rules, so identical
+final coordinates are not expected just because they start from the same
+structure and model.
+
+```{note}
+FIRE and conjugate gradient are different minimizers. Compare their
+reported energies and forces, but do not treat this short example as proof
+that they find the same relaxed state.
+```

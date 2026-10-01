@@ -18,9 +18,9 @@ gets a different initial velocity seed. `Batch.from_data_list` combines
 their atom data so the MACE model evaluates them in one batched operation;
 the trajectories do not exchange atoms or forces.
 
-On an allocated GPU, run one replica and then eight. Keep the model, step
-count, and GPU the same. The printed energies are physical outputs, not
-timings; use a clock around the commands when measuring throughput.
+Run one trajectory, then eight on the same allocated GPU. Both commands
+below run 2,000 steps. Bash `time` prints the elapsed `real` time, including
+loading the model and starting the calculation.
 
 The [Python source](../../examples/alchemi_si_one_cell.py) shown in the
 previous episode changes only `MLIP_REPLICAS`: the loop creates independently
@@ -50,16 +50,17 @@ time apptainer exec --cleanenv --nv \
   "$MLIP_ALCHEMI_SIF" python /opt/mlip/md.py
 ```
 
-For a throughput comparison, count *all* completed replica steps and divide
-by elapsed seconds. Eight replicas take more total work than one; a shorter
-time per replica does not mean the eight-replica job finishes sooner.
+Compare total completed work, not only elapsed time. One trajectory
+completes 2,000 steps; eight complete 16,000 replica-steps. Divide that
+count by `real` seconds to find whole-workflow throughput. The eight runs
+can finish later while still completing more work per second.
 
 The shell runner accepts a sixth argument for the cubic cell count:
 `2` gives 64 atoms per trajectory and `4` gives 512. The notebook cells
 above stay with the smaller 64-atom example. The
-[result guide](09-results.md) explains why the current ALCHEMI and LAMMPS
-examples must not be compared by dividing their elapsed times: their
-integrators and starting velocities are not yet matched.
+[result guide](09-results.md) uses a separate matched NVE workload to
+compare engines. These notebook demonstrations have different thermostats
+and starting velocities from the LAMMPS example.
 
 ```{note}
 The example selects Langevin NVT. Its source shows where to select a

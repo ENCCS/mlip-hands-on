@@ -1,7 +1,8 @@
 # The two GH200 systems
 
 Both sites pair an Arm Grace CPU closely with a Hopper GPU. A compute node
-contains four GH200 superchips, but an exercise can request one GPU. The
+contains four GH200 superchips. The first examples use one GPU; the site's
+scheduler determines how much of the node you must allocate. The
 GPU's HBM and the Grace CPU's memory are different memory pools; a program
 using the GPU does not automatically gain the sum as GPU memory.
 
@@ -12,8 +13,7 @@ using the GPU does not automatically gain the sum as GPU memory.
 
 These are [NAISS's Arrhenius specifications](https://www.naiss.se/resources/arrhenius-technical-description/)
 and [JSC's JUPITER specifications](https://apps.fz-juelich.de/jsc/hps/jupiter/configuration.html).
-Check the allocation and `nvidia-smi` on the day: software environment,
-availability, and effective resource limits can change.
+Use `nvidia-smi` in your allocation to check the visible GPUs and memory.
 
 ```{figure} ../_static/jupiter-booster-racks.jpg
 :alt: JUPITER Booster racks
@@ -23,6 +23,5 @@ JUPITER Booster racks. Image credit: Forschungszentrum Jülich / Sascha Kreklau;
 license and source are recorded in `THIRD_PARTY.md` in the lesson repository.
 ```
 
-The first examples use one GPU. The final episode uses LAMMPS MPI across
-GPUs; it does not assume that the same Slurm flags or MPI transport work
-unchanged at both sites.
+The scaling episode uses several GPUs for one LAMMPS trajectory. Follow
+your site's setup page: the MPI stack and Slurm options differ.

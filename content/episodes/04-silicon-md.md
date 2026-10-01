@@ -20,9 +20,8 @@ model with NVE integration and a Langevin thermostat. Both use a 0.1 fs
 timestep, but their thermostat implementations need not yield identical
 trajectories.
 
-Load the notebook's ALCHEMI adapter. It sends the *visible Python cell* to
-the selected SIF on the allocated GPU; the documentation kernel does not
-need to import ALCHEMI itself.
+First load the notebook adapter. It runs the Python cell below inside your
+ALCHEMI SIF on the allocated GPU, rather than in the Jupyter environment.
 
 ```{code-cell} ipython3
 %run ../../scripts/notebook_alchemi.py
@@ -102,8 +101,12 @@ print(f"Completed {replicas} trajectories of {len(atoms)} Si atoms for {steps} s
 print("Final potential energies (eV):", batch.energy.reshape(-1).detach().cpu().tolist())
 ```
 
-It prints a completion line and final potential energy. Increase the step
-count to 2,000 to see its 1,000-step energy/temperature progress lines.
+The cell creates the silicon structure, draws initial velocities for 300 K,
+prepares the neighbor list, and advances the atoms with Langevin MD.
+It prints a completion line and final potential energy. Change
+`%%alchemi 1 200` to `%%alchemi 1 2000` to see energy and temperature
+reported every 1,000 steps. The commented Nose–Hoover lines show where
+to change the thermostat.
 
 The LAMMPS calculation uses its CLI and the input shown below. The input
 creates the silicon cell, selects the exported MACE potential, and sets the
@@ -134,7 +137,6 @@ fi
   -var steps 200 -var seed 20260924 -var bath_seed 20260925
 ```
 
-LAMMPS prints step, atom count, temperature, and potential energy. The
-input currently prints every ten steps; it includes a commented 1,000-step
-option for longer runs. The next episode repeats independent ALCHEMI
-trajectories on one GPU.
+LAMMPS prints step, atom count, temperature and energy every ten steps.
+For longer runs, the input includes a commented `thermo 1000` option.
+The next episode runs several independent ALCHEMI trajectories on one GPU.

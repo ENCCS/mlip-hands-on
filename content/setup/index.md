@@ -10,9 +10,8 @@ cd mlip-hands-on
 export MLIP_LESSON_ROOT="$PWD"
 ```
 
-The lesson source is in `content/`; readable programs and LAMMPS inputs are
-in `examples/`; the short commands you run are in `scripts/`. Nothing in
-`maintainer/` is required for a participant run.
+Pages are in `content/`, programs and LAMMPS inputs in `examples/`, and
+shell scripts in `scripts/`. You do not need `maintainer/` to run the lesson.
 
 Create a private environment file outside the checkout. Replace the example
 directory below with your own project-storage path before running the block.
@@ -42,8 +41,8 @@ You need an allocated NVIDIA GPU, the pinned original MACE checkpoint, an
 ALCHEMI image, and an MPI-enabled ML-IAP/Kokkos LAMMPS executable. The
 checkpoint and built artifacts stay outside Git. Follow the
 [Arrhenius](arrhenius.md) or [JUPITER](jupiter.md) setup page to prepare them
-before running an MD example. Do not submit a GPU job just to test the clone
-or the environment file.
+before running an MD example. Cloning the repository and editing the
+environment file can be done on the login node; MD needs a GPU allocation.
 
 [Inputs and paths](../reference/inputs.md) explains each variable. To use the
 same pages as notebooks, continue with [Open the MyST notebook](notebook.md)

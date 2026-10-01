@@ -1,9 +1,13 @@
 # Molecular dynamics with MACE on GPUs
 
-Use one silicon system to explore molecular dynamics and geometry relaxation
-with NVIDIA ALCHEMI Toolkit and LAMMPS ML-IAP/Kokkos. The pages show commands
-you can run on an allocated GH200 GPU. The same MyST Markdown opens as a
-notebook; no separate `.ipynb` files are maintained.
+Run silicon molecular dynamics and geometry relaxation with NVIDIA ALCHEMI
+Toolkit and LAMMPS ML-IAP/Kokkos. Start with one trajectory, run independent
+trajectories together, then explore how system size and GPU count affect
+performance. Follow Setup first, then the Episodes in order.
+
+The examples run on allocated GH200 GPUs. Their MyST Markdown pages also
+open as notebooks, so you can read and run the same code without a separate
+`.ipynb` copy. Reference explains inputs, measurements and known limits.
 
 ```{toctree}
 :caption: Setup
@@ -36,6 +40,7 @@ episodes/09-results
 :maxdepth: 1
 
 reference/inputs
+reference/benchmarks
 reference/limits
 reference/instructor
 ```

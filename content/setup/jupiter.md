@@ -3,8 +3,7 @@
 JUPITER Booster also has GH200 GPUs, but its Slurm and MPI configuration
 differs from Arrhenius.
 
-The same hash-verified ARM/GH200 ALCHEMI SIF has passed bounded one-GPU
-single-trajectory, eight-trajectory, and relaxation checks on both sites.
+Use the same ARM/GH200 ALCHEMI SIF as on Arrhenius.
 JUPITER production compute nodes have no external internet access, according
 to the [site environment guide](https://apps.fz-juelich.de/jsc/hps/jupiter/environment.html).
 Do not run the Docker-backed image build there unless its OCI and Python
@@ -16,15 +15,13 @@ project storage and run:
 bash scripts/run-alchemi.sh "$PWD" "$MLIP_ALCHEMI_SIF" "$MLIP_MODEL" 1 200
 ```
 
-A pinned native ALCHEMI environment is also tested, but it is a separate
-runtime route. The short SIF checks do not establish long-run performance or
-scientific equivalence.
+A native ALCHEMI environment is an alternative; the examples here use the
+SIF so both sites run the same container environment.
 
 Build native MPI ML-IAP/Kokkos LAMMPS with JUPITER's matching compiler,
 OpenMPI, CUDA and Python libraries. The [build episode](../episodes/03-lammps-mpi.md)
-shows the participant-facing command. Earlier guarded jobs remain in Git
-history only; they target the old layout.
-The participant MD command uses the `lmp` executable and an input file:
+shows the CMake configuration. Run MD with the resulting `lmp` executable
+and the supplied input file.
 
 Set `MLIP_NATIVE_PREFIX` to the native LAMMPS installed prefix and
 `MLIP_NATIVE_PYTHON` to its matching MACE environment, then run
@@ -34,7 +31,8 @@ Set `MLIP_NATIVE_PREFIX` to the native LAMMPS installed prefix and
 bash scripts/run-lammps.sh "$PWD" "$MLIP_LMP" "$MLIP_MLIAP_MODEL" 2 200
 ```
 
-Run a one-GPU command inside a one-GPU Slurm allocation and inspect its
-`CUDA_VISIBLE_DEVICES` before running. The notebook starts in the batch
+Run this command inside a GPU allocation and check `CUDA_VISIBLE_DEVICES`
+before running; using one GPU need not mean the scheduler allocates only
+one GPU. The notebook starts in the batch
 shell so its native LAMMPS child does not inherit a separate step's MPI
 descriptors. The scaling episode gives the distinct multi-rank MPI pattern.

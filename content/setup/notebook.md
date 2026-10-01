@@ -1,7 +1,7 @@
 # Open the MyST notebook
 
 The `.md` pages are the notebooks. Use a private JupyterLab environment
-with Jupytext and the lesson's bounded MyST renderer. Start the server inside
+with Jupytext and the lesson's MyST renderer. Start the server inside
 an allocated GPU job and open its authenticated URL through your site's
 approved SSH forwarding route. Do not share the token or expose a public
 listener.
@@ -27,7 +27,8 @@ may use a currently authorized `MLIP_RESERVATION`; JUPITER has a separate
 Booster job file. Both start JupyterLab inside one GPU allocation with TLS.
 
 On your laptop, from its own checkout of this lesson, connect through the
-site's configured SSH login alias and the reported job ID:
+site's configured SSH login alias and the reported job ID. For example,
+replace `SITE_LOGIN_ALIAS` with your alias and `JOB_ID` with the submitted job:
 
 ```bash
 bash scripts/connect-from-laptop.sh notebook SITE_LOGIN_ALIAS JOB_ID
@@ -37,7 +38,11 @@ The connector checks the running allocation and the server certificate
 fingerprint, then forwards to laptop loopback. Read the token URL from the
 private job log using your authenticated site login, and use the connector's
 local port in that URL. Keep the forwarding terminal open while using the
-notebook; stop the Slurm job when finished.
+notebook. When finished, close the tunnel and cancel the notebook job:
+
+```bash
+scancel JOB_ID
+```
 
 Open a lesson `.md` as a Jupytext notebook. The single-trajectory ALCHEMI
 page loads `scripts/notebook_alchemi.py` once, then runs its visible Python

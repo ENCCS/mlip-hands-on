@@ -45,17 +45,14 @@ seeds and writes a separate log. It waits for every process to exit:
 :linenos:
 ```
 
-The cell below uses that launcher. This is process sharing, not ALCHEMI's
-in-process batch. It does not create eight overlapping Slurm steps. On
-Arrhenius the MPI-enabled LAMMPS children need a networked Slurm step around
-their launcher, without making the eight independent clients members of one
-PMI job; JUPITER can launch them from the batch shell.
+The cell uses one launcher for all eight processes, not eight Slurm steps.
+Arrhenius needs a networked wrapper step for native LAMMPS; JUPITER can
+start the processes from the notebook's batch shell.
 
 ```{note}
 The Arrhenius `--mpi=none` option belongs to the **one-rank wrapper step**.
-It does not make this a serial LAMMPS build or turn eight trajectories into
-one MPI trajectory. This route was functionally checked for eight 64-atom
-replicas on one GH200; the multi-GPU MPI route is a separate exercise.
+The LAMMPS build still supports MPI, but these are eight independent
+trajectories—not ranks collaborating on one trajectory.
 ```
 
 ```{code-cell} ipython3
@@ -72,22 +69,16 @@ time "${launch[@]}" bash scripts/run-lammps-replicas.sh "$PWD" "$MLIP_LMP" \
   "$MLIP_MLIAP_MODEL" "$MLIP_ARTIFACT_ROOT/replicas-${SLURM_JOB_ID}" 200
 ```
 
-The output directory must be new. Do not treat eight independent process
-times as one elapsed time. CUDA MPS is an optional third configuration;
-enabling it changes GPU process scheduling but does not turn LAMMPS into an
-ALCHEMI batch.
+Read each trajectory's log in the new output directory. To repeat the
+example within the same job, choose a different output directory. The
+outer `time` measures how long **all eight** processes take to finish;
+one process's MD-loop time does not measure the entire set.
 
-These 200-step notebook cells are a short functional demonstration. A
-benchmark should declare its clock, workload, and repetition order before
-running. The launcher's fifth argument sets MD steps, its sixth sets
-`cells` (`2` is 64 atoms; `4` is 512), and its seventh sets warm-up steps. The
-earlier exploratory eight-trajectory run used 200 steps and zero separate
-warm-up steps with both engines; this notebook demonstration retains its
-default ten-step LAMMPS warm-up. The [result guide](09-results.md) does not
-accept that run as a cross-engine speed comparison because the integrators
-and starting velocities were not matched.
+The launcher's fifth argument sets steps, its sixth sets `cells`
+(`2` gives 64 atoms; `4` gives 512), and its seventh sets warm-up steps.
+This example uses 200 measured steps after ten warm-up steps.
 
-The [reference](../reference/limits.md) distinguishes historical process
-measurements from runs qualified with this branch's CLI input. Only compare
-numbers measured with the same model, atom count, steps, warm-up convention,
-and GPU allocation.
+CUDA MPS is an optional alternative: it changes how CUDA processes share
+the GPU, not how the systems are batched inside LAMMPS. The
+[result tables](09-results.md) compare ordinary sharing and MPS using
+a separate matched NVE workload.

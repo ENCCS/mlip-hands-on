@@ -2,9 +2,9 @@
 
 MACE is a machine-learned interatomic potential: it predicts energy and
 atomic forces from a structure. The examples use one pinned MACE-MP-0a
-small checkpoint. Its source and SHA-256 are in
-[the model record](../reference/model.toml). Download the original model
-to private storage; do not commit its weights.
+small checkpoint. Download it to private storage and set `MLIP_MODEL`
+to its path. [The model record](../reference/model.toml) lists its source
+and SHA-256; keep the weights outside Git.
 
 ALCHEMI reads the trusted original checkpoint. LAMMPS ML-IAP reads an
 exported `.pt` file from the same checkpoint:
@@ -13,12 +13,15 @@ exported `.pt` file from the same checkpoint:
 bash scripts/export-mace-mliap.sh "$MLIP_MODEL"
 ```
 
-The short script refuses to overwrite an existing export. Its export command
-is `python -m mace.cli.create_lammps_model "$MLIP_MODEL" --format mliap
---dtype float32`; it writes a second artifact beside the checkpoint. Point
-`MLIP_MLIAP_MODEL` to the output. The files are different formats; neither
-should be substituted for the other. Before a class, check that the export
-loads with the pinned LAMMPS build.
+This writes a second file beside the checkpoint. Set `MLIP_MLIAP_MODEL`
+to that output, not to the original checkpoint. The script runs
+`python -m mace.cli.create_lammps_model "$MLIP_MODEL" --format mliap --dtype float32`
+and refuses to overwrite an existing export.
+
+```{note}
+The files represent the same model in different formats: ALCHEMI needs the
+original checkpoint; LAMMPS ML-IAP needs the export. Do not swap their paths.
+```
 
 The silicon examples use periodic diamond Si at lattice parameter 5.43 Å.
 This is a small, readable workload, not a validation of the model for all
