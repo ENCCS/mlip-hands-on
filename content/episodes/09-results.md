@@ -61,7 +61,15 @@ The earlier Arrhenius 64- and 512-atom workflow timings remain in the MLIP
 science project's evidence as an exploratory functional measurement, not an
 accepted cross-engine benchmark for this lesson.
 
-### Matched NVE comparison: Arrhenius
+### Matched NVE comparison
+
+Both sites used the same pinned model, generated starting states, NVE at
+0.1 fs, ten warm-up steps and 200 measured steps per trajectory. Select
+the site below; do not mix the sites' timings into an engine speedup.
+
+`````{tab-set}
+````{tab-item} Arrhenius
+:sync: arrhenius
 
 A separate benchmark completed on **one Arrhenius GH200 GPU**. Both engines
 used the same MACE-MP-0a small model (original checkpoint and ML-IAP export),
@@ -90,8 +98,7 @@ synchronized batch clock. Do not use it to compute a cross-engine MD ratio.
 All 96 LAMMPS replica logs and six ALCHEMI batches passed completion and
 finite-output checks. The largest final potential-energy difference between
 corresponding trajectories was 0.0069 eV after 21 fs. This short sanity check
-does not establish long-trajectory or NVT agreement. These are Arrhenius
-results only; the matched JUPITER matrix is still being qualified.
+does not establish long-trajectory or NVT agreement.
 ```
 
 The maintainer sources in `maintainer/benchmarks/` retain the matched starting
@@ -99,6 +106,43 @@ state generator and NVE runners. The MLIP science project records all three
 rounds and artifact identities in
 `docs/evidence/arrhenius-matched-nve-eight-2026-10-01.md`; job `3197862`
 completed with exit `0:0`.
+````
+
+````{tab-item} JUPITER
+:sync: jupiter
+
+The same eight-trajectory workloads completed using **one JUPITER GH200
+GPU**. ALCHEMI and ordinary LAMMPS sharing ran together in job `2127710`;
+MPS ran in a separate allocation, job `2127664`. All three rounds are
+retained. The table reports median whole-workflow seconds and the full
+min–max repeat range, not GPU-kernel time.
+
+| Atoms per trajectory | ALCHEMI batch | LAMMPS ordinary sharing | LAMMPS CUDA MPS |
+| ---: | ---: | ---: | ---: |
+| 64 | 236.323 s (22.822–293.039) | 378.148 s (369.871–653.521) | 315.483 s (79.394–377.167) |
+| 512 | 237.613 s (220.790–263.248) | 375.344 s (114.113–586.199) | 344.726 s (78.461–578.893) |
+
+```{warning}
+Whole-workflow timings varied widely during this qualification. Result-file
+reads also intermittently timed out. These measurements show the observed
+cost of completing the short jobs under those conditions, not a stable
+engine ranking or a GH200 comparison with Arrhenius. No slow repeat was
+discarded. The exact cause of the time outside MD was not isolated.
+```
+
+ALCHEMI's measured batch MD medians were 4.65 s (64 atoms) and 13.46 s
+(512 atoms). The medians of the longest individual LAMMPS loops were
+69.38/85.83 s under ordinary sharing and 55.84/53.37 s under MPS.
+Those LAMMPS intervals are not a synchronized batch wall clock; do not
+divide them by the ALCHEMI MD timer to claim a kernel speedup.
+
+All 96 LAMMPS replica logs, six ALCHEMI batches and six MPS service proofs
+passed checks. The largest final potential-energy difference was 0.0067 eV
+after 21 fs: a short sanity check, not long-trajectory agreement.
+Both jobs completed with exit `0:0`. Full repeats and identities are in the
+MLIP science project's `docs/evidence/jupiter-matched-nve-eight-2026-10-01.md`.
+````
+`````
 
 ## One trajectory: increase the atom count
 
