@@ -51,6 +51,10 @@ body[data-theme="dark"] .copyright:before {
 .cc3-logos img[src*="eurohpc"] {
     height: 34px;
 }
+/* national funders (optional in the CC3 footer template) */
+.cc3-logos img[src*="vinnova"] {
+    height: 28px;
+}
 
 /* EU emblem linked to the EU website (CC3 website footer instructions) */
 .copyright { position: relative; }
