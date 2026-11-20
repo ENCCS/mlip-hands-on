@@ -58,6 +58,9 @@ body[data-theme="dark"] .copyright:before {
 .cc3-logos img[src*="vinnova"] {
     height: 25px;
 }
+.cc3-logos img[src*="national/vr"] {
+    height: 25px;
+}
 /* host partners of ENCCS */
 .cc3-logos img[src*="liu"] {
     height: 27px;
